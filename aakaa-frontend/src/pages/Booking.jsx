@@ -131,56 +131,40 @@ export default function Booking() {
     }
   }, [step]);
 
-  // Initiate Payment Gateway
+  // Initiate Concierge Booking (Bypass Payment Gateway)
   const handleInitiatePayment = async () => {
     try {
-      const amount = selectedTherapist ? parseInt(selectedTherapist.price.replace(/[^0-9]/g, '')) : 850;
+      setStep(STEPS.PROCESSING);
       
       const bookingData = {
           userName: userData.name || "Anonymous", 
           userEmail: userData.email || "guest@example.com",
           therapistId: selectedTherapist ? selectedTherapist._id : null,
           date: bookingDetails.date,
-          time: bookingDetails.time
+          time: bookingDetails.time,
+          status: "Pending Verification" // Keep it pending until admin approves from dashboard after talking on WhatsApp
       };
 
-      // 1. Create order on backend
-      const response = await fetch(`http://localhost:5000/api/payments/create-order`, {
+      const response = await fetch("http://localhost:5000/api/bookings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, bookingData, category: 'therapy' }) 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
       });
-      const order = await response.json();
-      setCurrentOrder(order);
 
-      // If backend returned a mock order (due to mock mode or API key failure)
-      if (order.mock) {
+      if (response.ok) {
         setIsMockPaymentOpen(true);
-        return;
+        setStep(STEPS.CHECKOUT); // keep them on the checkout screen underneath the modal
+      } else {
+        const errorData = await response.json();
+        alert(errorData.msg || "Failed to save booking. Please try again.");
+        setStep(STEPS.SCHEDULING);
       }
 
-      setStep(STEPS.PROCESSING);
-
-      // 2. Create Kotak Hidden Form and Submit
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = order.actionUrl;
-
-      // Add all formData fields provided by backend
-      Object.keys(order.formData).forEach((key) => {
-        const hiddenField = document.createElement("input");
-        hiddenField.type = "hidden";
-        hiddenField.name = key;
-        hiddenField.value = order.formData[key];
-        form.appendChild(hiddenField);
-      });
-
-      document.body.appendChild(form);
-      form.submit();
-
     } catch (error) {
-      console.error("Payment initiation failed:", error);
-      alert("Payment service unavailable. Try again.");
+      console.error("Booking initiation failed:", error);
+      alert("Booking service unavailable. Try again.");
       setStep(STEPS.CHECKOUT);
     }
   };

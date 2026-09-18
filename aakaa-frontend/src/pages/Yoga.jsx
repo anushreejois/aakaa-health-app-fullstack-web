@@ -63,15 +63,15 @@ export default function Yoga() {
     setBookingError("");
     setBookingSuccess(null);
 
-    const amount = getSelectedAmount();
-
     const bookingData = {
       userName: formData.name,
       userEmail: formData.email,
       bookingType: bookingType,
+      status: "Pending Verification"
     };
+    
     if (bookingType === "class") {
-      bookingData.classId = bookingClass._id;
+      bookingData.classId = bookingClass?._id;
     } else if (bookingType === "private") {
       bookingData.instructorName = privateInstructor;
       bookingData.date = privateDate;
@@ -79,47 +79,24 @@ export default function Yoga() {
     }
 
     try {
-      // 1. Create order on backend
-      const orderRes = await fetch("http://localhost:5000/api/payments/create-order", {
+      const response = await fetch("http://localhost:5000/api/yoga/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, bookingData, category: 'yoga' })
+        body: JSON.stringify(bookingData),
       });
 
-      if (!orderRes.ok) {
-        throw new Error("Unable to initialize payment transaction.");
-      }
-
-      const order = await orderRes.json();
-      setCurrentOrder(order);
-
-      // If backend returned a mock order (due to mock fallback on invalid credentials)
-      if (order.mock) {
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentOrder(data);
         setIsMockPaymentOpen(true);
-        setBookingLoading(false);
-        return;
+      } else {
+        const errorData = await response.json();
+        setBookingError(errorData.msg || "Failed to save booking. Please try again.");
       }
-
-      // 2. Create Kotak Hidden Form and Submit
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = order.actionUrl;
-
-      // Add all formData fields provided by backend
-      Object.keys(order.formData).forEach((key) => {
-        const hiddenField = document.createElement("input");
-        hiddenField.type = "hidden";
-        hiddenField.name = key;
-        hiddenField.value = order.formData[key];
-        form.appendChild(hiddenField);
-      });
-
-      document.body.appendChild(form);
-      form.submit();
-
-    } catch (err) {
-      console.error(err);
-      setBookingError(err.message || "Payment service unavailable. Please try again.");
+    } catch (error) {
+      console.error("Booking initiation failed:", error);
+      setBookingError("Booking service unavailable. Try again.");
+    } finally {
       setBookingLoading(false);
     }
   };

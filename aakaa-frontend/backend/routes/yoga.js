@@ -75,8 +75,8 @@ router.delete('/classes/:id', auth, async (req, res) => {
 });
 
 // @route   POST /api/yoga/bookings
-// @desc    Book a yoga class, monthly pass, or private session (Internal/Admin only - public must use payment flow)
-router.post('/bookings', auth, async (req, res) => {
+// @desc    Book a yoga class, monthly pass, or private session (Public for Concierge Flow)
+router.post('/bookings', async (req, res) => {
   const { userName, userEmail, classId, bookingType, instructorName, date, time } = req.body;
 
   try {

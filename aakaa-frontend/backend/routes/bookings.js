@@ -4,8 +4,8 @@ const auth = require('../middleware/auth');
 const Booking = require('../models/Booking');
 
 // @route   POST /api/bookings
-// @desc    Create a new booking (Internal/Admin only - public must use payment flow)
-router.post('/', auth, async (req, res) => {
+// @desc    Create a new booking (Public for Concierge Flow)
+router.post('/', async (req, res) => {
   const { userName, userEmail, therapistId, date, time, status } = req.body;
 
   try {

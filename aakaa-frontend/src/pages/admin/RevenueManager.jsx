@@ -38,6 +38,24 @@ const RevenueManager = () => {
     }
   }, [token]);
 
+  const handleApprovePayment = async (bookingId, category) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/payments/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ bookingId, category })
+      });
+      if (response.ok) {
+        fetchStats(false); // Refresh data instantly
+      }
+    } catch (err) {
+      console.error("Failed to approve payment", err);
+    }
+  };
+
   const handleModeChange = (newMode) => {
     setIsChanging(true);
     setMode(newMode);
@@ -185,6 +203,7 @@ const RevenueManager = () => {
                   <th className="px-8 py-5">Gross Amount</th>
                   <th className="px-8 py-5">Payment Status</th>
                   <th className="px-8 py-5">Timestamp</th>
+                  <th className="px-8 py-5">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-aakaa-green/5">
@@ -208,14 +227,28 @@ const RevenueManager = () => {
                     <td className="px-8 py-5">
                       <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                         txn.status === 'confirmed' ? 'bg-green-50 text-green-600 border-green-100' :
+                        txn.status === 'Pending Verification' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                         txn.status === 'rescheduled' ? 'bg-orange-50 text-orange-600 border-orange-100' :
                         'bg-red-50 text-red-600 border-red-100'
                       }`}>
                         {txn.status === 'confirmed' ? 'settled' : txn.status}
                       </span>
+                      {txn.transactionId && (
+                        <div className="text-[9px] font-mono mt-1 text-gray-500">UTR: {txn.transactionId}</div>
+                      )}
                     </td>
                     <td className="px-8 py-5 text-xs font-bold text-aakaa-gold/60">
                       {new Date(txn.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-8 py-5">
+                      {txn.status === 'Pending Verification' && (
+                        <button 
+                          onClick={() => handleApprovePayment(txn._id, mode === 'app' ? 'therapy' : 'yoga')}
+                          className="px-4 py-2 bg-aakaa-green text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-aakaa-green/90 transition-colors shadow-sm"
+                        >
+                          Approve
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

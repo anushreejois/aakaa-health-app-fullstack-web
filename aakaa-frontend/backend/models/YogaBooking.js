@@ -8,7 +8,8 @@ const yogaBookingSchema = new mongoose.Schema({
   instructorName: { type: String, default: "" },
   date: { type: String, default: "" },
   time: { type: String, default: "" },
-  status: { type: String, default: 'confirmed', enum: ['confirmed', 'cancelled', 'Pending Payment'] },
+  status: { type: String, default: 'confirmed', enum: ['confirmed', 'cancelled', 'Pending Payment', 'Pending Verification'] },
+  transactionId: { type: String, default: "" },
   paymentId: { type: String, default: "" },
   meetLink: { type: String, default: 'https://meet.google.com/mock-yoga-class' }
 }, { timestamps: true });

@@ -6,7 +6,8 @@ const bookingSchema = new mongoose.Schema({
   therapistId: { type: mongoose.Schema.Types.ObjectId, ref: 'Therapist' },
   date: { type: String, required: true },
   time: { type: String, required: true },
-  status: { type: String, default: 'confirmed', enum: ['confirmed', 'Pending Assignment', 'rescheduled', 'cancelled', 'Pending Payment'] },
+  status: { type: String, default: 'confirmed', enum: ['confirmed', 'Pending Assignment', 'rescheduled', 'cancelled', 'Pending Payment', 'Pending Verification'] },
+  transactionId: { type: String, default: '' },
   meetLink: { type: String, default: 'https://meet.google.com/mock-link' }
 }, { timestamps: true });
 

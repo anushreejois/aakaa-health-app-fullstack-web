@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { User, Menu, X, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,10 +46,28 @@ const Navbar = () => {
           rounded-b-3xl lg:rounded-b-[2.5rem]
         `}
       >
-        {/* LOGO */}
-        <a href="/" className="text-2xl md:text-3xl font-bold tracking-tighter text-aakaa-green font-heading">
-          Aakaa.psy
-        </a>
+        {/* INTERACTIVE LOGO */}
+        <motion.a 
+          href="/" 
+          initial="hidden"
+          whileHover="hover"
+          className="text-3xl md:text-4xl font-light tracking-tight font-josefin relative group inline-flex"
+        >
+          {['A', 'a', 'k', 'a', 'A'].map((letter, i) => (
+            <motion.span
+              key={i}
+              variants={{
+                hidden: { y: 0, color: '#1E4D36' },
+                hover: { y: -4, color: '#9C9E8E' }
+              }}
+              transition={{ duration: 0.2, delay: i * 0.05, type: "spring", stiffness: 300 }}
+              className="inline-block"
+            >
+              {letter}
+            </motion.span>
+          ))}
+          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-aakaa-gold transition-all duration-500 ease-out group-hover:w-full rounded-full"></span>
+        </motion.a>
 
         {/* Desktop Nav */}
         <ul className="hidden md:flex items-center gap-8 text-[14px] font-medium text-aakaa-gold">

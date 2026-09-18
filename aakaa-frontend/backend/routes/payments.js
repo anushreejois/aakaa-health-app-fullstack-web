@@ -108,12 +108,16 @@ router.post('/create-order', async (req, res) => {
 
 // @route   POST /api/payments/verify
 router.post('/verify', async (req, res) => {
-  const { encResponse, mock, status, orderId, pendingBookingId, category } = req.body;
+  const { encResponse, mock, status, orderId, pendingBookingId, category, transactionId } = req.body;
 
   try {
     let paymentVerified = false;
+    let pendingQR = false;
 
-    if (mock || !kotak_merchant_id) {
+    if (status === 'qr_submitted') {
+      pendingQR = true;
+      paymentVerified = true;
+    } else if (mock || !kotak_merchant_id) {
       if (status === 'success') {
         paymentVerified = true;
       }
@@ -136,13 +140,23 @@ router.post('/verify', async (req, res) => {
     }
 
     let confirmedBooking = null;
+    let newStatus = pendingQR ? 'Pending Verification' : 'confirmed';
+
     if (pendingBookingId) {
       if (category === 'therapy') {
-        confirmedBooking = await Booking.findByIdAndUpdate(pendingBookingId, { status: 'confirmed' }, { new: true });
+        confirmedBooking = await Booking.findByIdAndUpdate(
+          pendingBookingId, 
+          { status: newStatus, transactionId: transactionId || '' }, 
+          { new: true }
+        );
       } else if (category === 'yoga') {
-        confirmedBooking = await YogaBooking.findByIdAndUpdate(pendingBookingId, { status: 'confirmed' }, { new: true });
+        confirmedBooking = await YogaBooking.findByIdAndUpdate(
+          pendingBookingId, 
+          { status: newStatus, transactionId: transactionId || '' }, 
+          { new: true }
+        );
         
-        if (confirmedBooking && confirmedBooking.bookingType === 'class') {
+        if (confirmedBooking && confirmedBooking.bookingType === 'class' && !pendingQR) {
            const yClass = await YogaClass.findById(confirmedBooking.classId);
            if (yClass) {
              yClass.bookedSpots += 1;
@@ -153,13 +167,38 @@ router.post('/verify', async (req, res) => {
     }
 
     return res.json({ 
-      status: 'success', 
-      message: 'Payment verified successfully',
+      status: pendingQR ? 'pending' : 'success', 
+      message: pendingQR ? 'Payment submitted for verification' : 'Payment verified successfully',
       booking: confirmedBooking 
     });
 
   } catch (err) {
     console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   POST /api/payments/approve
+// @desc    Admin endpoint to approve manual QR payments
+router.post('/approve', async (req, res) => {
+  // In a real app, require auth middleware here
+  const { bookingId, category } = req.body;
+  try {
+    let confirmedBooking = null;
+    if (category === 'therapy') {
+      confirmedBooking = await Booking.findByIdAndUpdate(bookingId, { status: 'confirmed' }, { new: true });
+    } else if (category === 'yoga') {
+      confirmedBooking = await YogaBooking.findByIdAndUpdate(bookingId, { status: 'confirmed' }, { new: true });
+      if (confirmedBooking && confirmedBooking.bookingType === 'class') {
+         const yClass = await YogaClass.findById(confirmedBooking.classId);
+         if (yClass) {
+           yClass.bookedSpots += 1;
+           await yClass.save();
+         }
+      }
+    }
+    res.json({ success: true, booking: confirmedBooking });
+  } catch (err) {
     res.status(500).send('Server Error');
   }
 });

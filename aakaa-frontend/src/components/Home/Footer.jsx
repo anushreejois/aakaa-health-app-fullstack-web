@@ -1,4 +1,5 @@
 import { Instagram, Twitter, Linkedin, Github, Mail, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -49,10 +50,11 @@ export default function Footer() {
             <div>
               <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Support</h4>
               <ul className="space-y-4 text-white/60 text-sm font-medium">
-                <li><a href="#" className="hover:text-aakaa-gold transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-aakaa-gold transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-aakaa-gold transition-colors">Cookie Settings</a></li>
-                <li><a href="#" className="hover:text-aakaa-gold transition-colors">Contact Help</a></li>
+                <li><Link to="/privacy-policy" className="hover:text-aakaa-gold transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-aakaa-gold transition-colors">Terms of Service</Link></li>
+                <li><Link to="/refund-cancellation" className="hover:text-aakaa-gold transition-colors">Refund & Cancellation</Link></li>
+                <li><Link to="/crisis-resources" className="hover:text-rose-300 transition-colors">Crisis Resources</Link></li>
+                <li><a href="mailto:hello@aakaa.app" className="hover:text-aakaa-gold transition-colors">Contact Help</a></li>
               </ul>
             </div>
 
@@ -66,8 +68,15 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Medical Disclaimer */}
+        <div className="mt-12 p-4 bg-red-900/10 border border-red-500/20 rounded-xl text-center">
+          <p className="text-red-200/70 text-[11px] leading-relaxed max-w-4xl mx-auto">
+            <strong className="text-red-200/90 font-bold uppercase tracking-wider">Medical Disclaimer:</strong> Aakaa Health does not provide emergency medical services. If you are in a life-threatening situation, experiencing a mental health crisis, or having thoughts of self-harm, please do not use this site. Call your local emergency services or a crisis helpline immediately.
+          </p>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
+        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
           <p className="text-white/40 text-xs font-medium tracking-wide">
             © {new Date().getFullYear()} Aakaa Psy. All rights reserved.
           </p>
