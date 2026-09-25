@@ -42,52 +42,87 @@ router.post('/', async (req, res) => {
   }
 });
 
+const YogaBooking = require('../models/YogaBooking');
+
+// Helper function to calculate stats
+const calculateStats = (records, pricePerItem) => {
+  const confirmed = records.filter(b => b.status === 'confirmed' || b.status === 'active' || b.status === 'completed');
+  const totalRevenue = confirmed.reduce((acc, curr) => acc + (curr.amount || pricePerItem), 0);
+  
+  const now = new Date();
+  const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+  const currentMonth = confirmed.filter(b => new Date(b.createdAt) >= firstDayCurrentMonth);
+  const lastMonth = confirmed.filter(b => {
+    const d = new Date(b.createdAt);
+    return d >= firstDayLastMonth && d < firstDayCurrentMonth;
+  });
+
+  const currentRevenue = currentMonth.reduce((acc, curr) => acc + (curr.amount || pricePerItem), 0);
+  const lastRevenue = lastMonth.reduce((acc, curr) => acc + (curr.amount || pricePerItem), 0);
+
+  let revenueChange = "0%";
+  if (lastRevenue > 0) {
+    const change = ((currentRevenue - lastRevenue) / lastRevenue) * 100;
+    revenueChange = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+  } else if (currentRevenue > 0) {
+    revenueChange = "+100%";
+  }
+
+  let growthChange = "0%";
+  if (lastMonth.length > 0) {
+    const change = ((currentMonth.length - lastMonth.length) / lastMonth.length) * 100;
+    growthChange = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+  } else if (currentMonth.length > 0) {
+    growthChange = "+100%";
+  }
+
+  return {
+    revenue: totalRevenue,
+    revenueChange,
+    growth: confirmed.length,
+    growthChange,
+    transactions: records
+  };
+};
+
 // @route   GET /api/bookings/stats
 // @desc    Get revenue and booking stats
 router.get('/stats', auth, async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
-    
-    // Calculate total revenue (confirmed only)
-    const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
-    const totalRevenue = confirmedBookings.length * 850;
-    
-    // Calculate stats for current month vs last month
-    const now = new Date();
-    const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const therapyBookings = await Booking.find().populate('therapistId', 'name').sort({ createdAt: -1 });
+    const yogaBookings = await YogaBooking.find().sort({ createdAt: -1 });
 
-    const currentMonthBookings = confirmedBookings.filter(b => new Date(b.createdAt) >= firstDayCurrentMonth);
-    const lastMonthBookings = confirmedBookings.filter(b => {
-      const d = new Date(b.createdAt);
-      return d >= firstDayLastMonth && d < firstDayCurrentMonth;
-    });
+    // Format therapy transactions for the frontend
+    const formattedTherapyBookings = therapyBookings.map(b => ({
+      _id: b._id,
+      userName: b.userName,
+      userEmail: b.userEmail,
+      therapistName: b.therapistId ? b.therapistId.name : 'Unassigned',
+      amount: 850, // default consultation price
+      status: b.status,
+      transactionId: b.transactionId,
+      createdAt: b.createdAt
+    }));
 
-    const currentRevenue = currentMonthBookings.length * 850;
-    const lastRevenue = lastMonthBookings.length * 850;
+    // Format yoga transactions
+    const formattedYogaBookings = yogaBookings.map(b => ({
+      _id: b._id,
+      userName: b.userName,
+      userEmail: b.userEmail,
+      amount: b.amountPaid || 499,
+      status: b.status,
+      transactionId: b.transactionId,
+      createdAt: b.createdAt
+    }));
 
-    let revenueChange = "0%";
-    if (lastRevenue > 0) {
-      const change = ((currentRevenue - lastRevenue) / lastRevenue) * 100;
-      revenueChange = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
-    } else if (currentRevenue > 0) {
-      revenueChange = "+100%";
-    }
+    const appStats = calculateStats(formattedTherapyBookings, 850);
+    const websiteStats = calculateStats(formattedYogaBookings, 499);
 
-    let growthChange = "0%";
-    if (lastMonthBookings.length > 0) {
-      const change = ((currentMonthBookings.length - lastMonthBookings.length) / lastMonthBookings.length) * 100;
-      growthChange = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
-    } else if (currentMonthBookings.length > 0) {
-      growthChange = "+100%";
-    }
-    
     res.json({
-      revenue: totalRevenue,
-      revenueChange: revenueChange,
-      growth: confirmedBookings.length,
-      growthChange: growthChange,
-      transactions: bookings
+      app: appStats,
+      website: websiteStats
     });
   } catch (err) {
     console.error(err.message);

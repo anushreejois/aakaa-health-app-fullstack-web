@@ -12,7 +12,11 @@ const therapistSchema = new mongoose.Schema({
   bio: { type: String, default: "" },
   availability: [{ type: String }],
   views: { type: Number, default: 0 },
-  bookings: { type: Number, default: 0 }
+  bookings: { type: Number, default: 0 },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  licenseNumber: { type: String },
+  licenseFileUrl: { type: String },
+  status: { type: String, default: 'pending', enum: ['pending', 'approved', 'rejected'] }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Therapist', therapistSchema);

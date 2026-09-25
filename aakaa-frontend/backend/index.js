@@ -23,6 +23,7 @@ app.use('/api/blogs', require('./routes/blogs'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/yoga', require('./routes/yoga'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Serve React Frontend Static Files (Production Monolith)
 const path = require('path');

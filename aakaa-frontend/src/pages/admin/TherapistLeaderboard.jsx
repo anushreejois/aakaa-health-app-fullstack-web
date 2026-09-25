@@ -4,9 +4,9 @@ import { exportToCSV } from '../../utils/csvUtils';
 import TherapistModal from '../../components/admin/TherapistModal';
 import { useAuth } from '../../context/AuthContext';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { API_BASE_URL } from '../../config';
 
-const API_BASE = "http://localhost:5000/api/therapists";
+const API_BASE = `${API_BASE_URL}/api/therapists`;
 
 const TherapistLeaderboard = () => {
   const [therapists, setTherapists] = useState([]);

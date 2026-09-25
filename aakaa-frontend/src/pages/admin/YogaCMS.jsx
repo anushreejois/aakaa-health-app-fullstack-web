@@ -3,6 +3,7 @@ import { Calendar, Clock, Plus, Trash2, CheckCircle, Users, DollarSign, Award, X
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { createPortal } from 'react-dom';
+import { API_BASE_URL } from '../../config';
 
 const YogaCMS = () => {
   const [classes, setClasses] = useState([]);
@@ -38,12 +39,12 @@ const YogaCMS = () => {
     setLoading(true);
     try {
       // Fetch classes
-      const classesRes = await fetch('http://localhost:5000/api/yoga/classes');
+      const classesRes = await fetch(`${API_BASE_URL}/api/yoga/classes`);
       const classesData = await classesRes.json();
       setClasses(classesData);
 
       // Fetch bookings
-      const bookingsRes = await fetch('http://localhost:5000/api/yoga/bookings', {
+      const bookingsRes = await fetch(`${API_BASE_URL}/api/yoga/bookings`, {
         headers: { 'x-auth-token': token }
       });
       const bookingsData = await bookingsRes.json();
@@ -63,7 +64,7 @@ const YogaCMS = () => {
     e.preventDefault();
     setFormLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/yoga/classes', {
+      const res = await fetch(`${API_BASE_URL}/api/yoga/classes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ const YogaCMS = () => {
     if (!window.confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/yoga/classes/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/yoga/classes/${id}`, {
         method: 'DELETE',
         headers: { 'x-auth-token': token }
       });
