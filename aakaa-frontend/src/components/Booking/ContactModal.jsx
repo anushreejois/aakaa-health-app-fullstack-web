@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, PhoneCall, MessageCircle, X } from 'lucide-react';
 
-const MockPaymentModal = ({ isOpen, onClose, amount, orderId }) => {
+const ContactModal = ({ isOpen, onClose, amount, orderId }) => {
   if (!isOpen) return null;
 
   const handleWhatsApp = () => {
@@ -77,4 +77,4 @@ const MockPaymentModal = ({ isOpen, onClose, amount, orderId }) => {
   );
 };
 
-export default MockPaymentModal;
+export default ContactModal;

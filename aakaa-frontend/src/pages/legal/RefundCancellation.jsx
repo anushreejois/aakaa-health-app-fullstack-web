@@ -3,55 +3,67 @@ import { CreditCard } from 'lucide-react';
 
 export default function RefundCancellation() {
   return (
-    <div className="pt-32 pb-20 bg-gray-50 min-h-screen">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 bg-aakaa-green text-white rounded-2xl flex items-center justify-center">
-            <CreditCard size={24} />
+    <div className="bg-white min-h-screen pt-28 pb-20">
+      {/* Banner Area */}
+      <div className="w-full max-w-[95%] md:max-w-7xl mx-auto bg-aakaa-green text-white py-16 px-6 mb-16 rounded-[2.5rem] shadow-sm">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+              <CreditCard size={32} />
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-black text-gray-900">Refund & Cancellation Policy</h1>
-            <p className="text-gray-500 font-medium mt-1">Effective Date: {new Date().toLocaleDateString()}</p>
-          </div>
+          <h1 className="text-4xl md:text-5xl font-black mb-4">Refund & Cancellation Policy</h1>
         </div>
+      </div>
 
-        <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-sm border border-gray-100 prose prose-green max-w-none">
-          <p>
+      {/* Content Area */}
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="prose prose-lg prose-green max-w-none text-gray-700">
+          <p className="text-xl font-medium text-gray-900 mb-10 leading-relaxed">
             At Aakaa Health, we strive to provide a seamless experience for booking therapy sessions and yoga classes. 
             However, we understand that plans can change. This policy outlines the terms under which cancellations 
             and refunds are processed.
           </p>
 
-          <h3>1. Therapy Session Cancellations</h3>
-          <ul>
-            <li><strong>More than 24 hours notice:</strong> You can cancel or reschedule your therapy session up to 24 hours before the scheduled start time without any penalty. A full refund will be initiated to your original payment method.</li>
-            <li><strong>Less than 24 hours notice:</strong> Cancellations made within 24 hours of the scheduled start time are generally non-refundable. Our therapists dedicate this time specifically for you.</li>
-            <li><strong>No Shows:</strong> If you do not show up for your scheduled session without prior notice, no refund will be provided.</li>
-          </ul>
+          <div className="space-y-12">
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">Cancellations & Rescheduling</h3>
+              <ul className="space-y-3">
+                <li>Fees paid for sessions booked with Aakaa Health are refundable if the booking is cancelled by you up to <strong>3 hours prior</strong> to the scheduled start time of the session.</li>
+                <li>You can also reschedule the session up to <strong>3 hours prior</strong> to the scheduled start time without any penalty.</li>
+              </ul>
+            </section>
 
-          <h3>2. Yoga Class Cancellations</h3>
-          <ul>
-            <li><strong>More than 12 hours notice:</strong> You can cancel your yoga class booking up to 12 hours before the class begins for a full refund.</li>
-            <li><strong>Less than 12 hours notice:</strong> Cancellations made within 12 hours of the class start time are non-refundable.</li>
-          </ul>
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">No Shows & Late Cancellations</h3>
+              <ul className="space-y-3">
+                <li>If you fail to cancel or reschedule at least 3 hours prior to the session and do not attend at the scheduled time, you shall not be eligible for a refund of fees or rescheduling. Our professionals dedicate this time specifically for you.</li>
+              </ul>
+            </section>
 
-          <h3>3. Therapist/Instructor Cancellations</h3>
-          <p>
-            In the rare event that a therapist or yoga instructor needs to cancel a session, you will be notified 
-            immediately and provided with the option to either reschedule at your convenience or receive a full 100% refund.
-          </p>
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">Therapist/Instructor Cancellations</h3>
+              <p className="leading-relaxed">
+                In the rare event that a professional needs to cancel a session, you will be notified immediately and provided with the option to either reschedule at your convenience or receive a full 100% refund.
+              </p>
+            </section>
 
-          <h3>4. Refund Processing Time</h3>
-          <p>
-            Approved refunds are typically processed within 5-7 business days. The exact time it takes for the funds 
-            to appear in your account depends on your bank or payment provider (e.g., credit card company, UPI provider).
-          </p>
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">Refund Processing</h3>
+              <ul className="space-y-3">
+                <li>Refunds shall be made through the original mode of payment used during the booking.</li>
+                <li>Approved refunds are typically processed within 5-7 business days, subject to the payment service provider's terms and conditions.</li>
+              </ul>
+            </section>
 
-          <h3>5. Contact for Disputes</h3>
-          <p>
-            If you believe you have been charged in error or have an extenuating circumstance regarding a cancellation, 
-            please contact our support team at <strong>hello@aakaa.app</strong> within 48 hours of the scheduled session.
-          </p>
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">Contact for Disputes</h3>
+              <p className="leading-relaxed">
+                If you believe you have been charged in error or have an extenuating circumstance regarding a cancellation, 
+                please contact our support team at <strong>hello@aakaa.app</strong> within 48 hours of the scheduled session.
+              </p>
+            </section>
+          </div>
         </div>
       </div>
     </div>

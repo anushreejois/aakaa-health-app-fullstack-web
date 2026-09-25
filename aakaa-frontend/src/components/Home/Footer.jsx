@@ -51,7 +51,7 @@ export default function Footer() {
               <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Support</h4>
               <ul className="space-y-4 text-white/60 text-sm font-medium">
                 <li><Link to="/privacy-policy" className="hover:text-aakaa-gold transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-aakaa-gold transition-colors">Terms of Service</Link></li>
+                <li><Link to="/terms-and-conditions" className="hover:text-aakaa-gold transition-colors">Terms and Conditions</Link></li>
                 <li><Link to="/refund-cancellation" className="hover:text-aakaa-gold transition-colors">Refund & Cancellation</Link></li>
                 <li><Link to="/crisis-resources" className="hover:text-rose-300 transition-colors">Crisis Resources</Link></li>
                 <li><a href="mailto:hello@aakaa.app" className="hover:text-aakaa-gold transition-colors">Contact Help</a></li>
@@ -62,7 +62,7 @@ export default function Footer() {
               <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Contact</h4>
               <ul className="space-y-4 text-white/60 text-sm font-medium">
                 <li className="flex items-center gap-2"><Mail size={14} /> hello@aakaa.app</li>
-                <li className="flex items-center gap-2"><Globe size={14} /> Mumbai, India</li>
+                <li className="flex items-center gap-2"><Globe size={14} /> Bengaluru, India</li>
               </ul>
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
           <p className="text-white/40 text-xs font-medium tracking-wide">
-            © {new Date().getFullYear()} Aakaa Psy. All rights reserved.
+            © {new Date().getFullYear()} AakaA LLP. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">
             <span className="hover:text-white transition-colors cursor-pointer">Security</span>

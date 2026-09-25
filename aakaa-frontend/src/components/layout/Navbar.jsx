@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { User, Menu, X, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -30,20 +30,19 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50">
+    <nav className="fixed top-4 left-0 right-0 z-50 flex flex-col items-center px-4 md:px-8 pointer-events-none">
       {/* Main Navbar */}
       <div
         className={`
-          w-full px-6 lg:px-16
+          pointer-events-auto
+          w-full max-w-6xl px-6 md:px-8
           flex items-center justify-between
           transition-all duration-500 ease-out
-          ${scrolled ? "py-3" : "py-4"}
-          ${scrolled
-            ? "bg-gradient-to-r from-aakaa-cream/80 via-aakaa-cream/80 to-aakaa-cream/80 backdrop-blur-xl shadow-[0_12px_35px_rgba(0,0,0,0.12)]"
-            : "bg-transparent"
-          }
-          border-b border-white/60
-          rounded-b-3xl lg:rounded-b-[2.5rem]
+          ${scrolled 
+            ? "py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.12)] bg-gradient-to-br from-white/50 to-white/20 backdrop-blur-3xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" 
+            : "py-4 shadow-[0_8px_32px_rgba(0,0,0,0.06)] bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]"}
+          border border-white/50
+          rounded-full
         `}
       >
         {/* INTERACTIVE LOGO */}
@@ -70,7 +69,7 @@ const Navbar = () => {
         </motion.a>
 
         {/* Desktop Nav */}
-        <ul className="hidden md:flex items-center gap-8 text-[14px] font-medium text-aakaa-gold">
+        <ul className="hidden md:flex items-center gap-8 text-[14px] font-bold text-aakaa-green">
           {menuItems.map((item) => (
             <li key={item.name}>
               <a
@@ -119,29 +118,37 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Dropdown */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden w-full bg-aakaa-cream/80 backdrop-blur-xl border-b border-white/50 shadow-[0_12px_30px_rgba(0,0,0,0.10)] rounded-b-3xl">
-          <div className="px-6 py-4 space-y-2">
-            {menuItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={`
-                  block text-sm font-medium rounded-full px-4 py-2
-                  text-aakaa-gold
-                  ${item.highlight
-                    ? "bg-aakaa-green text-white text-center shadow-[0_10px_25px_rgba(30,77,54,0.35)]"
-                    : "bg-white/40 hover:bg-white/70"
-                  }
-                `}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden pointer-events-auto w-full max-w-6xl mt-3 bg-white/80 backdrop-blur-2xl border border-white/80 shadow-[0_12px_30px_rgba(0,0,0,0.10)] rounded-3xl overflow-hidden"
+          >
+            <div className="px-6 py-4 space-y-2">
+              {menuItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={`
+                    block text-sm font-bold rounded-2xl px-4 py-3
+                    text-aakaa-green
+                    ${item.highlight
+                      ? "bg-aakaa-green text-white text-center shadow-[0_10px_25px_rgba(30,77,54,0.35)]"
+                      : "bg-white/40 hover:bg-white/70"
+                    }
+                  `}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

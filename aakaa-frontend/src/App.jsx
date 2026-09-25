@@ -14,7 +14,7 @@ import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Legal Pages
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
-import TermsOfService from "./pages/legal/TermsOfService";
+import TermsAndConditions from "./pages/legal/TermsAndConditions";
 import RefundCancellation from "./pages/legal/RefundCancellation";
 import CrisisResources from "./pages/legal/CrisisResources";
 
@@ -37,7 +37,7 @@ function AppContent() {
         
         {/* Legal & Compliance Routes */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/refund-cancellation" element={<RefundCancellation />} />
         <Route path="/crisis-resources" element={<CrisisResources />} />
         

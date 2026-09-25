@@ -21,7 +21,7 @@ import {
 import Footer from "../components/Home/Footer";
 import BookingQuiz from "../components/Booking/BookingQuiz";
 import TherapistProfileView from "../components/Booking/TherapistProfileView";
-import MockPaymentModal from "../components/Booking/MockPaymentModal";
+import ContactModal from "../components/Booking/ContactModal";
 
 const STEPS = {
   CHOICE: "choice",
@@ -163,8 +163,9 @@ export default function Booking() {
       }
 
     } catch (error) {
-      console.error("Booking initiation failed:", error);
-      alert("Booking service unavailable. Try again.");
+      console.error("Booking initiation failed (Server Offline):", error);
+      // Fallback: If the backend is down, still open the WhatsApp/Call modal so they can reach us manually!
+      setIsMockPaymentOpen(true);
       setStep(STEPS.CHECKOUT);
     }
   };
@@ -886,10 +887,10 @@ export default function Booking() {
           />
         )}
 
-        <MockPaymentModal 
+        <ContactModal 
           isOpen={isMockPaymentOpen}
           onClose={() => setIsMockPaymentOpen(false)}
-          amount={1003}
+          amount={selectedTherapist ? selectedTherapist.price.replace(/[^0-9]/g, '') : '850'}
           orderId={currentOrder?.id}
           onPaymentSuccess={async (paymentResponse) => {
             setIsMockPaymentOpen(false);

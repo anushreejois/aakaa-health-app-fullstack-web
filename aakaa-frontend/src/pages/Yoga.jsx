@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Calendar, Clock, User, Award, CheckCircle, Info, Sparkles, X, Brain, Heart, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "../components/Home/Footer";
-import MockPaymentModal from "../components/Booking/MockPaymentModal";
+import ContactModal from "../components/Booking/ContactModal";
 
 export default function Yoga() {
   const [classes, setClasses] = useState([]);
@@ -826,7 +826,7 @@ export default function Yoga() {
         )}
       </AnimatePresence>
 
-      <MockPaymentModal 
+      <ContactModal 
         isOpen={isMockPaymentOpen}
         onClose={() => setIsMockPaymentOpen(false)}
         amount={getSelectedAmount()}
