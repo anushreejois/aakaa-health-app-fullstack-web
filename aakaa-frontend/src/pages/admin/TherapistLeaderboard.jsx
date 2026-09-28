@@ -101,8 +101,8 @@ const TherapistLeaderboard = () => {
 
   const filteredAndSortedTherapists = useMemo(() => {
     let items = [...therapists].filter(t => 
-      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.specialties.join(' ').toLowerCase().includes(searchQuery.toLowerCase())
+      (t.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (t.specialties || []).join(' ').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (sortConfig.key) {
@@ -256,7 +256,7 @@ const TherapistLeaderboard = () => {
                           <span className="text-sm font-bold text-aakaa-green group-hover:translate-x-1 transition-transform">{therapist.name}</span>
                         </div>
                       </td>
-                      <td className="px-8 py-6 text-sm text-aakaa-gold font-medium">{therapist.specialties.slice(0, 2).join(', ')}</td>
+                      <td className="px-8 py-6 text-sm text-aakaa-gold font-medium">{(therapist.specialties || []).slice(0, 2).join(', ')}</td>
                       <td className="px-8 py-6 text-center">
                         <div className="flex items-center justify-center gap-2 text-aakaa-green font-black">
                           <Calendar size={16} className="opacity-30" />
