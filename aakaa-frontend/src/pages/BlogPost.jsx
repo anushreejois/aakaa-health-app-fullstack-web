@@ -25,17 +25,28 @@ export default function BlogPost() {
   // Dynamic SEO Injection
   useEffect(() => {
     if (blog) {
-      // Update Page Title
-      document.title = `${blog.seoTitle || blog.title} | Aakaapsy`;
+      // 1. Update Page Title
+      document.title = `${blog.seoTitle || blog.title} | Aakaa Health`;
       
-      // Update Meta Description
-      let metaDescription = document.querySelector('meta[name="description"]');
-      if (!metaDescription) {
-        metaDescription = document.createElement('meta');
-        metaDescription.name = 'description';
-        document.head.appendChild(metaDescription);
-      }
-      metaDescription.content = blog.seoDescription || blog.snippet;
+      // Helper function to set meta tags
+      const setMetaTag = (attrName, attrValue, content) => {
+        let meta = document.querySelector(`meta[${attrName}="${attrValue}"]`);
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute(attrName, attrValue);
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', content);
+      };
+
+      // 2. SEO Description
+      setMetaTag('name', 'description', blog.seoDescription || blog.snippet);
+      
+      // 3. Open Graph (Social Media & iMessage Previews)
+      setMetaTag('property', 'og:title', blog.seoTitle || blog.title);
+      setMetaTag('property', 'og:description', blog.seoDescription || blog.snippet);
+      if (blog.image) setMetaTag('property', 'og:image', blog.image);
+      setMetaTag('property', 'og:type', 'article');
     }
   }, [blog, slug]);
 
