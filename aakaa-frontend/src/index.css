@@ -129,4 +129,11 @@
                 0 18px 36px -18px rgba(0, 0, 0, 0.03);
     transform: translateY(-6px);
   }
+
+  /* Override aakaa-cream to always include the modern dot grid */
+  .bg-aakaa-cream {
+    background-color: #F8F7F3 !important;
+    background-image: radial-gradient(rgba(30, 77, 54, 0.15) 1.5px, transparent 1.5px) !important;
+    background-size: 24px 24px !important;
+  }
 }
