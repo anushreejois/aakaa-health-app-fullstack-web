@@ -90,9 +90,13 @@ const BookingRescheduler = () => {
         ));
         showNotification(`Rescheduled to ${newTime}`);
         setShowModal(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to reschedule: ${errorData.msg || 'Server Error'}`);
       }
     } catch (error) {
       console.error("Error rescheduling:", error);
+      alert("Error: Could not connect to server");
     }
   };
 
