@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import waitlistImage from "../../assets/waitlist.jpg";
 import { Smartphone, Mail, CheckCircle, ArrowRight } from "lucide-react";
 import ScrollReveal from "../ui/ScrollReveal";
+import { API_BASE_URL } from "../../config";
 
 export default function WaitlistSection() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export default function WaitlistSection() {
     e.preventDefault();
     if (email) {
       try {
-        const response = await fetch("http://localhost:5000/api/waitlist", {
+        const response = await fetch(`${API_BASE_URL}/api/waitlist`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
