@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, CheckCircle, XCircle, Download, X, AlertCircle } from 'lucide-react';
 import { exportToCSV } from '../../utils/csvUtils';
-import { createPortal } from 'react-dom';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -255,8 +254,8 @@ const BookingRescheduler = () => {
 
       {/* Reschedule Modal */}
       <AnimatePresence>
-        {showModal && createPortal(
-          <div className="fixed inset-0 bg-aakaa-green/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        {showModal && (
+          <div className="fixed inset-0 bg-aakaa-green/40 backdrop-blur-md z-[100] flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -309,8 +308,7 @@ const BookingRescheduler = () => {
                 </div>
               </form>
             </motion.div>
-          </div>,
-          document.body
+          </div>
         )}
       </AnimatePresence>
     </div>
