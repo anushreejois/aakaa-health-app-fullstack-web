@@ -9,6 +9,8 @@
 
   body {
     background-color: #F8F7F3 !important;
+    background-image: radial-gradient(rgba(30, 77, 54, 0.08) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
     color: #1E4D36 !important;
     font-family: 'Inter', sans-serif !important;
     -webkit-font-smoothing: antialiased;
