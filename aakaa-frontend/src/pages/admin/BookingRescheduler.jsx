@@ -180,6 +180,17 @@ const BookingRescheduler = () => {
                       <td className="px-8 py-6 text-right space-x-2">
                         {booking.status !== 'cancelled' && (
                           <div className="flex items-center justify-end gap-3">
+                            {booking.status.toLowerCase() === 'pending verification' && (
+                              <>
+                                <button 
+                                  onClick={() => handleStatusUpdate(booking._id, 'confirmed')}
+                                  className="text-[10px] font-black uppercase tracking-widest text-green-500 hover:scale-105 transition-transform"
+                                >
+                                  Approve
+                                </button>
+                                <div className="h-4 w-px bg-aakaa-green/10" />
+                              </>
+                            )}
                             <button 
                               onClick={() => openRescheduleModal(booking)}
                               className="text-[10px] font-black uppercase tracking-widest text-aakaa-green hover:scale-105 transition-transform"
