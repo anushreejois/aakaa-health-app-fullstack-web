@@ -15,6 +15,7 @@ const BookingRescheduler = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
   const { token } = useAuth();
 
@@ -67,7 +68,8 @@ const BookingRescheduler = () => {
 
   const openRescheduleModal = (booking) => {
     setSelectedBooking(booking);
-    setNewTime(booking.time);
+    setNewDate(booking.date || '');
+    setNewTime(booking.time || '');
     setShowModal(true);
   };
 
@@ -80,14 +82,14 @@ const BookingRescheduler = () => {
           'Content-Type': 'application/json',
           'x-auth-token': token
         },
-        body: JSON.stringify({ time: newTime, status: 'rescheduled' })
+        body: JSON.stringify({ date: newDate, time: newTime, status: 'rescheduled' })
       });
 
       if (response.ok) {
         setBookings(prev => prev.map(b => 
-          b._id === selectedBooking._id ? { ...b, time: newTime, status: 'rescheduled' } : b
+          b._id === selectedBooking._id ? { ...b, date: newDate, time: newTime, status: 'rescheduled' } : b
         ));
-        showNotification(`Rescheduled to ${newTime}`);
+        showNotification(`Rescheduled to ${newDate} at ${newTime}`);
         setShowModal(false);
       } else {
         const errorData = await response.json();
@@ -282,21 +284,49 @@ const BookingRescheduler = () => {
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Target Date & Time</label>
-                  <div className="relative group">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-aakaa-gold group-focus-within:text-aakaa-green transition-colors" size={18} />
-                    <input
-                      required
-                      type="text"
-                      value={newTime}
-                      onChange={(e) => setNewTime(e.target.value)}
-                      className="w-full pl-12 pr-6 py-4 bg-aakaa-cream/10 border border-aakaa-green/5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-aakaa-green/5 focus:border-aakaa-green/20 font-bold text-aakaa-green transition-all"
-                      placeholder="YYYY-MM-DD HH:MM AM/PM"
-                    />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Target Date</label>
+                    <div className="relative group">
+                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-aakaa-gold group-focus-within:text-aakaa-green transition-colors" size={18} />
+                      <input
+                        required
+                        type="date"
+                        value={newDate}
+                        onChange={(e) => setNewDate(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-aakaa-cream/10 border border-aakaa-green/5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-aakaa-green/5 focus:border-aakaa-green/20 font-bold text-aakaa-green transition-all"
+                      />
+                    </div>
                   </div>
-                  <p className="text-[9px] text-aakaa-gold font-bold uppercase tracking-tighter opacity-40">System will notify all parties upon confirmation</p>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Target Time</label>
+                    <div className="relative group">
+                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-aakaa-gold group-focus-within:text-aakaa-green transition-colors" size={18} />
+                      <select
+                        required
+                        value={newTime}
+                        onChange={(e) => setNewTime(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-aakaa-cream/10 border border-aakaa-green/5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-aakaa-green/5 focus:border-aakaa-green/20 font-bold text-aakaa-green transition-all cursor-pointer"
+                      >
+                        <option value="" disabled>Select Time</option>
+                        <option value="08:00 AM">08:00 AM</option>
+                        <option value="09:00 AM">09:00 AM</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="01:00 PM">01:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="07:00 PM">07:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
+                <p className="text-[9px] text-aakaa-gold font-bold uppercase tracking-tighter opacity-40">System will notify all parties upon confirmation</p>
 
                 <div className="pt-4 flex gap-4">
                   <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-8 py-4 border border-aakaa-green/10 rounded-2xl text-sm font-black text-aakaa-gold hover:bg-aakaa-cream transition-colors uppercase tracking-widest">
