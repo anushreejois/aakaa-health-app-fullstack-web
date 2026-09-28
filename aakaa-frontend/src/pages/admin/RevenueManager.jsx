@@ -72,7 +72,7 @@ const RevenueManager = () => {
 
   const stats = currentModeData ? [
     { 
-      label: `${mode === 'app' ? 'App' : 'Website'} Gross Revenue`, 
+      label: `${mode === 'app' ? 'Therapy' : 'Yoga'} Gross Revenue`, 
       value: `₹${currentModeData.revenue.toLocaleString()}`, 
       change: currentModeData.revenueChange, 
       icon: ShoppingBag, 
@@ -80,7 +80,7 @@ const RevenueManager = () => {
       bgColor: 'bg-emerald-50' 
     },
     { 
-      label: `${mode === 'app' ? 'Consultation Sessions' : 'Website Bookings'}`, 
+      label: `${mode === 'app' ? 'Therapy Sessions' : 'Yoga Sessions'}`, 
       value: `${currentModeData.growth}`, 
       change: currentModeData.growthChange, 
       icon: TrendingUp, 
@@ -96,7 +96,7 @@ const RevenueManager = () => {
         <div>
           <h1 className="text-3xl font-bold text-aakaa-green tracking-tight">Revenue Dashboard</h1>
           <p className="text-aakaa-gold text-sm font-medium mt-1">
-            Compare and analyze financial logs from both the patient website and therapist app ecosystem.
+            Compare and analyze financial logs from both the Therapy and Yoga services.
           </p>
         </div>
         
@@ -112,7 +112,7 @@ const RevenueManager = () => {
               }`}
             >
               <Sparkles size={14} />
-              App Revenues
+              Therapy Revenues
             </button>
             <button
               onClick={() => handleModeChange('website')}
@@ -123,7 +123,7 @@ const RevenueManager = () => {
               }`}
             >
               <Landmark size={14} />
-              Website Revenues
+              Yoga Revenues
             </button>
           </div>
 
@@ -132,7 +132,7 @@ const RevenueManager = () => {
             className="flex items-center gap-2 bg-white text-aakaa-green border border-aakaa-green/10 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-aakaa-green hover:text-white transition-all shadow-sm"
           >
             <Download size={15} />
-            <span>Export {mode === 'app' ? 'App' : 'Web'} Ledger</span>
+            <span>Export {mode === 'app' ? 'Therapy' : 'Yoga'} Ledger</span>
           </button>
         </div>
       </div>
@@ -180,7 +180,7 @@ const RevenueManager = () => {
       <div className="bg-white rounded-[2.5rem] border border-aakaa-green/5 premium-shadow overflow-hidden">
         <div className="p-8 border-b border-aakaa-green/5 bg-aakaa-cream/5 flex items-center justify-between">
           <h3 className="font-bold text-xl text-aakaa-green">
-            {mode === 'app' ? 'Caregiver Consultation Ledger' : 'Website Booking Ledger'}
+            {mode === 'app' ? 'Therapy Consultation Ledger' : 'Yoga Booking Ledger'}
           </h3>
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-aakaa-gold">
             <CreditCard size={12} className="text-green-500 animate-pulse" />
