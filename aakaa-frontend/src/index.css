@@ -130,10 +130,10 @@
     transform: translateY(-6px);
   }
 
-  /* Override aakaa-cream to always include the modern dot grid */
-  .bg-aakaa-cream {
+  /* Modern Dot Grid Background */
+  .bg-dot-grid {
     background-color: #F8F7F3 !important;
-    background-image: radial-gradient(rgba(30, 77, 54, 0.15) 1.5px, transparent 1.5px) !important;
+    background-image: radial-gradient(circle, rgba(30, 77, 54, 0.25) 1.5px, transparent 1.5px) !important;
     background-size: 24px 24px !important;
   }
 }

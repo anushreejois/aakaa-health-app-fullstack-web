@@ -29,7 +29,7 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="scroll-mt-24 py-28 bg-aakaa-cream"
+      className="scroll-mt-24 py-28 "
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
 

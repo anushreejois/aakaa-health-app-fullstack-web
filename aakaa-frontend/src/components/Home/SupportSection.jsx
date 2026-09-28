@@ -33,7 +33,7 @@ export default function SupportSection() {
   return (
     <section
       id="services"
-      className="scroll-mt-24 py-28 bg-aakaa-cream"
+      className="scroll-mt-24 py-28 "
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-10">
 

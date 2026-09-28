@@ -67,7 +67,7 @@ function StatCard({ icon: Icon, value, label, delay = 0 }) {
 
 export default function StatsSection() {
   return (
-    <section className="py-28 bg-aakaa-cream">
+    <section className="py-28 ">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
 
         {/* Heading */}

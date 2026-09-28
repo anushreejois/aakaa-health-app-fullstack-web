@@ -52,7 +52,7 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="scroll-mt-24 py-28 bg-aakaa-cream"
+      className="scroll-mt-24 py-28 "
     >
       <div className="max-w-4xl mx-auto px-6 lg:px-10">
 
