@@ -22,6 +22,7 @@ import Footer from "../components/Home/Footer";
 import BookingQuiz from "../components/Booking/BookingQuiz";
 import TherapistProfileView from "../components/Booking/TherapistProfileView";
 import ContactModal from "../components/Booking/ContactModal";
+import { API_BASE_URL } from "../config";
 
 const STEPS = {
   CHOICE: "choice",
@@ -62,7 +63,7 @@ export default function Booking() {
   useEffect(() => {
     const fetchTherapists = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/therapists");
+        const response = await fetch(`${API_BASE_URL}/api/therapists`);
         const data = await response.json();
         setTherapists(data);
         setLoading(false);
@@ -81,7 +82,7 @@ export default function Booking() {
       
       const fetchOccupiedSlots = async () => {
         try {
-          const response = await fetch(`http://localhost:5000/api/bookings`);
+          const response = await fetch(`${API_BASE_URL}/api/bookings`);
           const allBookings = await response.json();
           
           let slots = [];
@@ -145,7 +146,7 @@ export default function Booking() {
           status: "Pending Verification" // Keep it pending until admin approves from dashboard after talking on WhatsApp
       };
 
-      const response = await fetch("http://localhost:5000/api/bookings", {
+      const response = await fetch(`${API_BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -174,7 +175,7 @@ export default function Booking() {
   const handlePaymentSuccess = async (paymentResponse) => {
     try {
       // Verify signature on backend
-      const verifyRes = await fetch("http://localhost:5000/api/payments/verify", {
+      const verifyRes = await fetch(`${API_BASE_URL}/api/payments/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -229,7 +230,7 @@ export default function Booking() {
 
   const checkAvailabilityBeforePayment = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/bookings`);
+      const response = await fetch(`${API_BASE_URL}/api/bookings`);
       const allBookings = await response.json();
       
       let currentOccupied = [];
@@ -263,7 +264,7 @@ export default function Booking() {
 
   const handleSaveBooking = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/bookings", {
+      const response = await fetch(`${API_BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

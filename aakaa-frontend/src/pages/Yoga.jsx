@@ -3,6 +3,7 @@ import { Calendar, Clock, User, Award, CheckCircle, Info, Sparkles, X, Brain, He
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "../components/Home/Footer";
 import ContactModal from "../components/Booking/ContactModal";
+import { API_BASE_URL } from "../config";
 
 export default function Yoga() {
   const [classes, setClasses] = useState([]);
@@ -35,7 +36,7 @@ export default function Yoga() {
 
   const fetchClasses = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/yoga/classes");
+      const res = await fetch(`${API_BASE_URL}/api/yoga/classes`);
       if (res.ok) {
         const data = await res.json();
         setClasses(data);
@@ -79,7 +80,7 @@ export default function Yoga() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/yoga/bookings", {
+      const response = await fetch(`${API_BASE_URL}/api/yoga/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingData),
@@ -106,7 +107,7 @@ export default function Yoga() {
     setBookingError("");
     try {
       // 1. Verify signature on backend
-      const verifyRes = await fetch("http://localhost:5000/api/payments/verify", {
+      const verifyRes = await fetch(`${API_BASE_URL}/api/payments/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -150,7 +151,7 @@ export default function Yoga() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/yoga/bookings", {
+      const res = await fetch(`${API_BASE_URL}/api/yoga/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
