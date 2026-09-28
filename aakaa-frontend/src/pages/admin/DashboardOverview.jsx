@@ -45,7 +45,7 @@ const DashboardOverview = ({ onNavigate }) => {
   const [realWaitlist, setRealWaitlist] = useState([]);
   const [realBookings, setRealBookings] = useState([]);
   const [realTherapists, setRealTherapists] = useState([]);
-  const [realStats, setRealStats] = useState({ revenue: 0, revenueChange: "+0%", growth: "0", growthChange: "+0%" });
+  const [realStats, setRealStats] = useState({ revenue: 0, revenueChange: "+0%", sessions: 0, sessionsChange: "+0%" });
   const [loading, setLoading] = useState(true);
 
   const ranges = ['Today', '7D', '30D', 'All Time'];
@@ -177,9 +177,9 @@ const DashboardOverview = ({ onNavigate }) => {
                   <stat.icon size={24} />
                 </div>
                 <div className={`flex items-center gap-1 text-[11px] font-black px-3 py-1.5 rounded-full ${
-                  stat.change.startsWith('+') ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'
+                  stat.change?.startsWith('+') ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'
                 }`}>
-                  {stat.change.startsWith('+') ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                  {stat.change?.startsWith('+') ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                   {stat.change}
                 </div>
               </div>
