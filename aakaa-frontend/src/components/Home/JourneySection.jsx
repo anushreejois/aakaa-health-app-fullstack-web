@@ -62,14 +62,14 @@ export default function JourneySection() {
             {/* RIGHT CONTENT */}
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Your journey to mental wellness starts here.
+                Awaken to a higher state of well-being.
               </h2>
 
               <div className="space-y-4">
                 <p className="text-gray-600 leading-relaxed max-w-xl">
-                  At Aakaa, we believe mental wellness is a journey, not a destination.
-                  Our tools are designed to help you understand yourself better,
-                  develop healthy habits, and find calm in everyday life.
+                  At Aakaa, we view wellness as an ongoing evolution of the self. 
+                  We provide the elite tools and personalized guidance necessary to transcend daily stress, 
+                  cultivate profound self-awareness, and achieve lasting inner peace.
                 </p>
 
                 <AnimatePresence>

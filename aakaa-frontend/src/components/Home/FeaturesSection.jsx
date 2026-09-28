@@ -5,23 +5,23 @@ import ScrollReveal from "../ui/ScrollReveal";
 export default function FeaturesSection() {
   const features = [
     {
-      title: "Guided Meditation",
-      desc: "Access a library of guided meditation sessions tailored to your needs, from stress relief to better sleep.",
+      title: "Curated Meditation",
+      desc: "Access an elite library of guided sessions tailored to your precise emotional state, from deep stress relief to restorative sleep.",
       icon: Heart,
     },
     {
-      title: "Mood Tracking",
-      desc: "Monitor your emotional patterns over time with intuitive mood tracking and gain insights into your mental health.",
+      title: "Emotional Cartography",
+      desc: "Map your emotional landscape over time with intuitive, private tracking. Uncover profound insights into your cognitive patterns.",
       icon: BarChart2,
     },
     {
-      title: "Breathing Exercises",
-      desc: "Learn powerful breathing techniques to calm your mind, reduce anxiety, and regain focus in moments of stress.",
+      title: "Breathwork Mastery",
+      desc: "Harness ancient breathing techniques backed by modern neuroscience to instantly ground your mind and neutralize anxiety.",
       icon: Wind,
     },
     {
-      title: "Digital Journaling",
-      desc: "Express your thoughts and feelings in a private, secure space. Reflect on your journey and track your growth.",
+      title: "Reflective Journaling",
+      desc: "A secure, serene space to articulate your deepest thoughts. Reflect on your daily journey and visualize your personal evolution.",
       icon: Edit3,
     },
   ];
@@ -37,11 +37,10 @@ export default function FeaturesSection() {
         <ScrollReveal>
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-              Meet Aakaa: Your Mental Wellness Companion
+              The Aakaa Experience: Holistic Mental Wellness
             </h2>
             <p className="mt-4 text-gray-600">
-              Everything you need to master your mental well-being in one
-              beautifully designed app.
+              Curated practices and profound insights to help you master your mental well-being in one beautifully integrated platform.
             </p>
           </div>
         </ScrollReveal>

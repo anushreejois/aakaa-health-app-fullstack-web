@@ -4,7 +4,7 @@ import mindfulnessImage from "../../assets/mindfulness.jpg";
 
 export default function HeroSection() {
   const [index, setIndex] = useState(0);
-  const words = ["Mind", "Anxiety", "Stress", "Peace"];
+  const words = ["Balance", "Clarity", "Stillness", "Peace"];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -44,7 +44,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <h1 className="text-[56px] lg:text-[72px] xl:text-[80px] font-bold leading-[1.05] text-gray-900 tracking-tight">
-            Master your <br />
+            Cultivate your <br />
             <span className="relative inline-block min-w-[280px]">
               <AnimatePresence mode="wait">
                 <motion.span
@@ -60,7 +60,7 @@ export default function HeroSection() {
               </AnimatePresence>
             </span>
             <br />
-            with us
+            within
           </h1>
 
 
@@ -70,9 +70,7 @@ export default function HeroSection() {
             transition={{ delay: 0.4, duration: 1 }}
             className="mt-8 text-lg lg:text-xl text-gray-600 max-w-md leading-relaxed"
           >
-            Aakaa is your personal mental wellness companion, designed to help you
-            navigate life's challenges with guided support, mindfulness, and
-            self-care tools.
+            Aakaa is a sanctuary for your mind. Experience premium, evidence-based therapy and holistic wellness tools designed to guide you toward lasting calm and profound self-discovery.
           </motion.p>
 
           <motion.div 
