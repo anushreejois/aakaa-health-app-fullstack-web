@@ -45,31 +45,44 @@ const DashboardOverview = ({ onNavigate }) => {
   const [realWaitlist, setRealWaitlist] = useState([]);
   const [realBookings, setRealBookings] = useState([]);
   const [realTherapists, setRealTherapists] = useState([]);
+  const [realStats, setRealStats] = useState({ revenue: 0, revenueChange: "+0%", growth: "0", growthChange: "+0%" });
   const [loading, setLoading] = useState(true);
 
   const ranges = ['Today', '7D', '30D', 'All Time'];
-  const currentStats = mockRevenueData.statsByRange[timeRange];
 
   // Fetch all data from backend (with 10-second real-time polling)
   useEffect(() => {
     if (!token) return;
     const fetchData = async () => {
       try {
-        const [waitlistRes, bookingsRes, therapistsRes] = await Promise.all([
+        const [waitlistRes, bookingsRes, therapistsRes, statsRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/waitlist`, { headers: { 'x-auth-token': token } }),
           fetch(`${API_BASE_URL}/api/bookings`, { headers: { 'x-auth-token': token } }),
-          fetch(`${API_BASE_URL}/api/therapists`) // Therapist list is public
+          fetch(`${API_BASE_URL}/api/therapists`), // Therapist list is public
+          fetch(`${API_BASE_URL}/api/bookings/stats`, { headers: { 'x-auth-token': token } })
         ]);
 
-        const [waitlistData, bookingsData, therapistsData] = await Promise.all([
+        const [waitlistData, bookingsData, therapistsData, statsData] = await Promise.all([
           waitlistRes.json(),
           bookingsRes.json(),
-          therapistsRes.json()
+          therapistsRes.json(),
+          statsRes.json()
         ]);
 
         setRealWaitlist(Array.isArray(waitlistData) ? waitlistData : []);
         setRealBookings(Array.isArray(bookingsData) ? bookingsData : []);
         setRealTherapists(Array.isArray(therapistsData) ? therapistsData : []);
+        
+        // Calculate Total Revenue from Therapy (app) and Yoga (website)
+        const totalRevenue = (statsData.app?.revenue || 0) + (statsData.website?.revenue || 0);
+        // Average Growth (simplistic logic)
+        setRealStats({
+          revenue: totalRevenue,
+          revenueChange: statsData.app?.revenueChange || "+0%",
+          sessions: (statsData.app?.growth || 0) + (statsData.website?.growth || 0),
+          sessionsChange: statsData.app?.growthChange || "+0%"
+        });
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching admin data:", error);
@@ -90,10 +103,10 @@ const DashboardOverview = ({ onNavigate }) => {
   }, []);
 
   const stats = [
-    { label: 'Total Revenue', value: `₹${currentStats.revenue.toLocaleString()}`, change: currentStats.revenueChange, icon: ShoppingBag, color: 'text-blue-600', bgColor: 'bg-blue-50', stroke: '#2563eb' },
-    { label: 'Growth', value: `${currentStats.growth}%`, change: currentStats.growthChange, icon: TrendingUp, color: 'text-emerald-600', bgColor: 'bg-emerald-50', stroke: '#10b981' },
-    { label: 'Sessions', value: (Array.isArray(realBookings) ? realBookings.length : 0) || currentStats.sessions, change: currentStats.sessionsChange, icon: Calendar, color: 'text-purple-600', bgColor: 'bg-purple-50', stroke: '#8b5cf6' },
-    { label: 'Waitlist', value: (Array.isArray(realWaitlist) ? realWaitlist.length : 0) || currentStats.newUsers, change: currentStats.usersChange, icon: Users, color: 'text-orange-600', bgColor: 'bg-orange-50', stroke: '#f97316' },
+    { label: 'Total Revenue', value: `₹${realStats.revenue.toLocaleString()}`, change: realStats.revenueChange, icon: ShoppingBag, color: 'text-blue-600', bgColor: 'bg-blue-50', stroke: '#2563eb' },
+    { label: 'Growth', value: `${realStats.sessionsChange}`, change: realStats.sessionsChange, icon: TrendingUp, color: 'text-emerald-600', bgColor: 'bg-emerald-50', stroke: '#10b981' },
+    { label: 'Sessions', value: realStats.sessions || (Array.isArray(realBookings) ? realBookings.length : 0), change: "+0%", icon: Calendar, color: 'text-purple-600', bgColor: 'bg-purple-50', stroke: '#8b5cf6' },
+    { label: 'Waitlist', value: Array.isArray(realWaitlist) ? realWaitlist.length : 0, change: "+0%", icon: Users, color: 'text-orange-600', bgColor: 'bg-orange-50', stroke: '#f97316' },
   ];
 
   return (
@@ -135,7 +148,7 @@ const DashboardOverview = ({ onNavigate }) => {
             ))}
           </div>
           <button 
-            onClick={() => exportToCSV(mockRevenueData.transactions, 'payment_history.csv')}
+            onClick={() => exportToCSV(realBookings, 'payment_history.csv')}
             className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-black transition-all shadow-xl"
           >
             <Download size={18} />
