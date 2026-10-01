@@ -14,7 +14,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative pt-36 pb-32  overflow-hidden">
+    <section className="relative pt-36 pb-32">
       {/* Animated Background Blobs */}
       <motion.div 
         animate={{ 
