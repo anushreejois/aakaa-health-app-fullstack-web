@@ -1,7 +1,7 @@
 import HeroSection from "../components/Home/HeroSection";
 import StatsSection from "../components/Home/StatsSection";
 import ConcernSection from "../components/Home/ConcernSection";
-import FeaturesSection from "../components/Home/FeaturesSection";
+
 import SupportSection from "../components/Home/SupportSection";
 import TestimonialsSection from "../components/Home/TestimonialsSection";
 import FAQSection from "../components/Home/FAQSection";
@@ -20,7 +20,7 @@ export default function Home() {
       <ConcernSection />
       <JourneySection />
       <TherapyPreviewSection />
-      <FeaturesSection />
+
       <SupportSection />
       <TestimonialsSection />
       <FAQSection />
