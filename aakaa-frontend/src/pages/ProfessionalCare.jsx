@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
   Brain, 
   MessageCircle, 
   Target, 
@@ -12,7 +11,11 @@ import {
   ArrowRight,
   Sparkles,
   X,
-  CheckCircle
+  CheckCircle,
+  Users,
+  Heart,
+  Smile,
+  Moon
 } from "lucide-react";
 import ScrollReveal from "../components/ui/ScrollReveal";
 import Footer from "../components/Home/Footer";
@@ -62,6 +65,42 @@ const therapyTypes = [
     icon: Brain,
     color: "bg-rose-50 text-rose-600",
     glow: "group-hover:shadow-rose-500/20"
+  },
+  {
+    title: "Couples Therapy",
+    desc: "Strengthen relationships through better communication, conflict resolution, and mutual understanding.",
+    fullDesc: "Couples therapy helps partners improve their relationship. Whether you're dealing with specific conflicts, seeking to rebuild trust, or simply wanting to strengthen your connection, our specialized therapists can guide you.",
+    benefits: ["Communication skills", "Conflict resolution", "Rebuilding trust", "Deeper intimacy"],
+    icon: Users,
+    color: "bg-indigo-50 text-indigo-600",
+    glow: "group-hover:shadow-indigo-500/20"
+  },
+  {
+    title: "Family Counseling",
+    desc: "Heal family dynamics and create a more supportive, understanding home environment.",
+    fullDesc: "Family counseling addresses issues that affect the health and functioning of a family. It can help family members through difficult periods, major transitions, or behavioral health issues in children and adolescents.",
+    benefits: ["Improved dynamics", "Better boundary setting", "Shared understanding", "Crisis management"],
+    icon: Heart,
+    color: "bg-pink-50 text-pink-600",
+    glow: "group-hover:shadow-pink-500/20"
+  },
+  {
+    title: "Mindfulness & Meditation",
+    desc: "Learn holistic techniques to stay present, reduce stress, and find inner peace.",
+    fullDesc: "Mindfulness-based therapy incorporates meditation and present-moment awareness to help you detach from negative thought cycles. It is highly effective for reducing stress, anxiety, and preventing depression relapse.",
+    benefits: ["Stress reduction", "Better focus", "Emotional balance", "Self-compassion"],
+    icon: Smile,
+    color: "bg-teal-50 text-teal-600",
+    glow: "group-hover:shadow-teal-500/20"
+  },
+  {
+    title: "Sleep Therapy (CBT-I)",
+    desc: "Evidence-based approaches to overcome insomnia and improve sleep quality naturally.",
+    fullDesc: "Cognitive Behavioral Therapy for Insomnia (CBT-I) is the first-line treatment for chronic sleep issues. It helps you identify and replace thoughts and behaviors that cause or worsen sleep problems with habits that promote sound sleep.",
+    benefits: ["Better sleep quality", "Establish routines", "Reduce sleep anxiety", "Natural approach"],
+    icon: Moon,
+    color: "bg-slate-50 text-slate-600",
+    glow: "group-hover:shadow-slate-500/20"
   }
 ];
 
@@ -159,27 +198,6 @@ export default function ProfessionalCare() {
                 </motion.div>
               </ScrollReveal>
             ))}
-            
-            {/* View All Card - Premium Style */}
-            <ScrollReveal delay={400}>
-              <Link 
-                to="/booking" 
-                className="group relative bg-aakaa-green p-10 rounded-[2.5rem] flex flex-col justify-between items-start text-white hover:shadow-[0_25px_60px_rgba(30,77,54,0.4)] hover:-translate-y-2 transition-all duration-500 h-full overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-125 group-hover:rotate-12 transition-all duration-700">
-                  <Sparkles size={120} />
-                </div>
-                
-                <div>
-                  <h3 className="text-3xl font-bold mb-4 tracking-tight">Expand Your Care</h3>
-                  <p className="text-white/70 text-base leading-relaxed">Discover 20+ specialized approaches crafted for your well-being.</p>
-                </div>
-                
-                <div className="mt-8 px-6 py-3 bg-white text-aakaa-green rounded-full font-bold flex items-center gap-2 group-hover:gap-4 transition-all shadow-xl">
-                  Explore Catalogue <ArrowRight size={20} />
-                </div>
-              </Link>
-            </ScrollReveal>
           </div>
 
         </div>
