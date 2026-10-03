@@ -12,6 +12,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { BlogProvider } from "./context/BlogContext";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
+import ProfessionalCare from "./pages/ProfessionalCare";
+
 // Legal Pages
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsAndConditions from "./pages/legal/TermsAndConditions";
@@ -33,6 +35,7 @@ function AppContent() {
         <Route path="/blogs" element={<BlogList />} />
         <Route path="/blogs/:slug" element={<BlogPost />} />
         <Route path="/booking" element={<Booking />} />
+        <Route path="/professional-care" element={<ProfessionalCare />} />
         <Route path="/yoga" element={<Yoga />} />
         
         {/* Legal & Compliance Routes */}

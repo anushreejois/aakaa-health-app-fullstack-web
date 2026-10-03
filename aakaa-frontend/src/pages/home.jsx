@@ -10,7 +10,6 @@ import WaitlistSection from "../components/Home/WaitlistSection";
 
 import Footer from "../components/Home/Footer";
 import JourneySection from "../components/Home/JourneySection";
-import TherapyPreviewSection from "../components/Home/TherapyPreviewSection";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
       <StatsSection />
       <ConcernSection />
       <JourneySection />
-      <TherapyPreviewSection />
 
       <SupportSection />
       <TestimonialsSection />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Brain, Briefcase, Heart, Smile, ArrowLeft, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,6 +11,7 @@ const concerns = [
 ];
 
 export default function ConcernSection() {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
@@ -86,7 +88,7 @@ export default function ConcernSection() {
             {/* CTA */}
             <button
               onClick={() => {
-                if (selected !== null) setStep(2);
+                if (selected !== null) navigate("/professional-care");
               }}
               disabled={selected === null}
               className={`
@@ -103,90 +105,6 @@ export default function ConcernSection() {
           </motion.div>
         )}
 
-        {step === 2 && (
-          <motion.div 
-            key="step2"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-xl mx-auto bg-white/60 backdrop-blur-xl border border-white/80 p-12 rounded-[3rem] shadow-[0_30px_80px_rgba(0,0,0,0.05)] relative"
-          >
-            <button 
-              onClick={() => setStep(1)}
-              className="absolute left-8 top-8 text-aakaa-gold hover:text-aakaa-green transition-colors"
-            >
-              <ArrowLeft size={24} />
-            </button>
-
-            <div className="w-20 h-20 mx-auto bg-aakaa-green text-white rounded-3xl flex items-center justify-center mb-8 shadow-xl shadow-aakaa-green/20">
-              {(() => {
-                const SelectedIcon = concerns[selected].icon;
-                return <SelectedIcon size={36} />;
-              })()}
-            </div>
-
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">
-              We can help with that.
-            </h2>
-            <p className="text-gray-600 mb-10 text-lg">
-              Join the waitlist to be the first to access our personalized tools for <span className="text-aakaa-green font-bold">{selectedConcern}</span>.
-            </p>
-
-            <form 
-              onSubmit={(e) => {
-                e.preventDefault();
-                setStep(3);
-              }}
-              className="flex flex-col gap-4"
-            >
-              <input 
-                type="email" 
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:border-aakaa-green focus:ring-4 focus:ring-aakaa-green/10 transition bg-white/80"
-              />
-              <button 
-                type="submit"
-                className="w-full bg-aakaa-green text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-aakaa-green/90 transition-all shadow-[0_15px_30px_rgba(30,77,54,0.35)] hover:-translate-y-1 active:scale-95"
-              >
-                Join Waitlist
-              </button>
-            </form>
-
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <p className="text-sm text-gray-500 mb-3">Professional help available now</p>
-              <a 
-                href="/booking" 
-                className="inline-flex items-center gap-2 text-aakaa-green font-bold hover:underline"
-              >
-                Talk to a specialized therapist instead →
-              </a>
-            </div>
-          </motion.div>
-        )}
-
-        {step === 3 && (
-          <motion.div 
-            key="step3"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", damping: 15 }}
-            className="max-w-md mx-auto py-16"
-          >
-            <div className="w-24 h-24 mx-auto bg-aakaa-green text-white rounded-[2rem] flex items-center justify-center mb-8 shadow-2xl shadow-aakaa-green/30">
-              <CheckCircle size={48} />
-            </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6 tracking-tight">
-              You're on the list!
-            </h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              Thank you for joining. We'll let you know as soon as Aakaa is ready to help you with <span className="text-aakaa-green font-bold">{selectedConcern}</span>.
-            </p>
-          </motion.div>
-        )}
         </AnimatePresence>
       </div>
 
