@@ -10,7 +10,7 @@ export default {
         // Adding your custom AakaA colors here
         aakaa: {
           green: '#1E4D36',
-          cream: '#F8F7F3',
+          cream: '#F6F3E6',
           gold: '#9C9E8E',
         }
       },
