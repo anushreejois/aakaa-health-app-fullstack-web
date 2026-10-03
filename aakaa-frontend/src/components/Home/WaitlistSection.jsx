@@ -41,7 +41,7 @@ export default function WaitlistSection() {
   return (
     <section
       id="waitlist"
-      className="scroll-mt-24 pt-28 pb-4 bg-white relative overflow-hidden"
+      className="scroll-mt-24 pt-28 pb-4 relative overflow-hidden"
     >
       {/* Decorative Blur */}
       <div className="absolute top-1/2 left-0 w-1/3 h-1/2 bg-aakaa-gold/5 blur-[100px] -translate-y-1/2 pointer-events-none" />

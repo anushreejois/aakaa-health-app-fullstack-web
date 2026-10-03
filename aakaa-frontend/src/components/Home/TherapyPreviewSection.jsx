@@ -68,7 +68,7 @@ export default function TherapyPreviewSection() {
   const [selectedTherapy, setSelectedTherapy] = useState(null);
 
   return (
-    <section id="therapy" className="py-28 bg-[#fafaf8] relative overflow-hidden">
+    <section id="therapy" className="py-28 relative overflow-hidden">
       {/* Premium Background Blooms */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-aakaa-green/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-aakaa-gold/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
