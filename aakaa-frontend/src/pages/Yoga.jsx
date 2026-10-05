@@ -309,26 +309,26 @@ export default function Yoga() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
 
             {/* Monthly Pass Card */}
-            <div className="bg-white/80 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-10 border border-white hover:shadow-xl hover:shadow-aakaa-green/5 transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
+            <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-10 border border-white hover:border-aakaa-green/10 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-aakaa-green/5 rounded-full blur-2xl"></div>
 
-              <div className="space-y-6">
+              <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
-                  <span className="px-5 py-1.5 bg-aakaa-green/10 text-aakaa-green rounded-full text-[10px] font-black uppercase tracking-wider">
+                  <span className="px-5 py-1.5 bg-aakaa-green/10 text-aakaa-green rounded-full text-[10px] font-bold uppercase tracking-wider">
                     Unlimited Access
                   </span>
                   <span className="text-xs text-gray-400 font-bold">Group Classes</span>
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-black text-gray-800 font-heading">Monthly Unlimited Pass</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">Monthly Unlimited Pass</h3>
                   <p className="text-gray-500 text-xs mt-2 leading-relaxed">
                     Gain full access to all 6 scheduled weekly live classes. Perfect for maintaining a consistent, daily somatic routine to keep stress at bay.
                   </p>
                 </div>
 
                 <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
-                  <span className="text-4xl font-black text-aakaa-green">₹2,499</span>
+                  <span className="text-4xl font-bold text-gray-900">₹2,499</span>
                   <span className="text-xs text-gray-400 font-bold">/ Month</span>
                 </div>
 
@@ -350,7 +350,7 @@ export default function Yoga() {
 
               <button
                 onClick={openMonthlyBooking}
-                className="w-full mt-8 py-4 bg-aakaa-green text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-aakaa-green/90 transition-all shadow-md"
+                className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
               >
                 Purchase Monthly Pass
               </button>
