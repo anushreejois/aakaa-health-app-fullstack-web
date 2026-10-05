@@ -10,11 +10,11 @@ export default function Yoga() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
-  
+
   // Booking Modal State
   const [bookingType, setBookingType] = useState("class"); // class, monthly, private
   const [bookingClass, setBookingClass] = useState(null);
-  
+
   // Private Session Form inputs
   const [privateInstructor, setPrivateInstructor] = useState("Elena Rostova");
   const [privateDate, setPrivateDate] = useState("");
@@ -25,7 +25,7 @@ export default function Yoga() {
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [bookingError, setBookingError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Payment states
   const [currentOrder, setCurrentOrder] = useState(null);
   const [isMockPaymentOpen, setIsMockPaymentOpen] = useState(false);
@@ -70,7 +70,7 @@ export default function Yoga() {
       bookingType: bookingType,
       status: "Pending Verification"
     };
-    
+
     if (bookingType === "class") {
       bookingData.classId = bookingClass?._id;
     } else if (bookingType === "private") {
@@ -204,26 +204,26 @@ export default function Yoga() {
 
   return (
     <div className="min-h-screen bg-aakaa-cream flex flex-col pt-32 overflow-hidden">
-      
+
       {/* Decorative floating animated orbs for premium visual feel */}
       <div className="absolute top-40 right-[-10%] w-96 h-96 bg-aakaa-green/5 rounded-full blur-3xl -z-10 pointer-events-none animate-pulse"></div>
       <div className="absolute top-[800px] left-[-10%] w-[500px] h-[500px] bg-aakaa-gold/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 lg:px-10 pb-24 space-y-28">
-        
+
         {/* Hero Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-3xl relative"
         >
           <div className="absolute -top-10 -left-10 w-48 h-48 bg-gradient-to-tr from-aakaa-green/10 to-transparent rounded-full blur-3xl -z-10"></div>
-          
+
           <span className="inline-flex items-center gap-2 mb-5 bg-aakaa-green/10 text-aakaa-green px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest border border-aakaa-green/15">
             <Sparkles className="w-3.5 h-3.5" /> Somatic Wellness
           </span>
-          
+
           <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05] tracking-tight mb-8">
             Somatic Yoga & <br />
             <span className="text-aakaa-green pr-2">Mindful Movement</span>
@@ -234,7 +234,7 @@ export default function Yoga() {
         </motion.div>
 
         {/* Healer Focus Section - Two-Column Balanced Layout */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -242,13 +242,13 @@ export default function Yoga() {
         >
           {/* Therapist Focus Content Card */}
           <div className="w-full bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-12 shadow-sm hover:shadow-2xl transition-all duration-500 border border-white relative overflow-hidden">
-            
+
             {/* Soft decorative light leaks */}
             <div className="absolute -top-32 -right-32 w-[400px] h-[400px] bg-aakaa-green/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
             <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-aakaa-gold/5 rounded-full blur-3xl"></div>
 
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              
+
               {/* Text Column */}
               <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-8">
                 <div>
@@ -258,19 +258,19 @@ export default function Yoga() {
                       Emotional Release
                     </span>
                   </div>
-                  
+
                   <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
                     Releasing Stress from <br />
                     <span className="text-aakaa-green">the Body</span>
                   </h2>
                   <p className="text-gray-600 text-[15px] leading-relaxed mb-4">
-                    Emotional trauma, anxiety, and daily stress manifest physically—causing tightness in muscle groups like the hips, shoulders, and jaw. Without active physical release, this tension accumulates and leads to emotional burnout.
+                    Emotional trauma, anxiety, and daily stress manifest physically causing tightness in muscle groups like the hips, shoulders, and jaw. Without active physical release, this tension accumulates and leads to emotional burnout.
                   </p>
                   <p className="text-gray-600 text-[15px] leading-relaxed">
                     Somatic yoga offers a gentle tool for self-preservation. By integrating body-based mindfulness, you release stored energy, settle your nervous system, and return to center, ensuring you can move through life with clarity.
                   </p>
                 </div>
-                
+
                 {/* Clean, Modern Left-Border Quote Accent Block */}
                 <div className="border-l-4 border-aakaa-green/40 bg-white/60 pl-5 py-3 rounded-r-2xl max-w-xl">
                   <span className="text-[11px] uppercase tracking-[0.2em] text-gray-700 font-bold leading-relaxed">
@@ -282,9 +282,9 @@ export default function Yoga() {
               {/* Image Column */}
               <div className="lg:col-span-5 relative group">
                 <div className="absolute inset-0 bg-gradient-to-tr from-aakaa-green/20 to-transparent rounded-[2rem] -z-10 group-hover:scale-105 transition-transform duration-700"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?q=80&w=1000&auto=format&fit=crop" 
-                  alt="Restorative somatic yoga stretch in a peaceful setting" 
+                <img
+                  src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?q=80&w=1000&auto=format&fit=crop"
+                  alt="Restorative somatic yoga stretch in a peaceful setting"
                   className="w-full h-[280px] lg:h-[360px] object-cover rounded-[2rem] shadow-2xl border border-white/10 group-hover:scale-[1.02] transition-transform duration-500"
                 />
               </div>
@@ -307,11 +307,11 @@ export default function Yoga() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            
+
             {/* Monthly Pass Card */}
             <div className="bg-white/80 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-10 border border-white hover:shadow-xl hover:shadow-aakaa-green/5 transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-aakaa-green/5 rounded-full blur-2xl"></div>
-              
+
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <span className="px-5 py-1.5 bg-aakaa-green/10 text-aakaa-green rounded-full text-[10px] font-black uppercase tracking-wider">
@@ -319,7 +319,7 @@ export default function Yoga() {
                   </span>
                   <span className="text-xs text-gray-400 font-bold">Group Classes</span>
                 </div>
-                
+
                 <div>
                   <h3 className="text-2xl font-black text-gray-800 font-heading">Monthly Unlimited Pass</h3>
                   <p className="text-gray-500 text-xs mt-2 leading-relaxed">
@@ -359,7 +359,7 @@ export default function Yoga() {
             {/* 1-on-1 Private Session Card */}
             <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-10 border border-white hover:border-aakaa-green/10 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-aakaa-gold/10 rounded-full blur-2xl"></div>
-              
+
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                   <span className="px-5 py-1.5 bg-aakaa-gold/10 text-aakaa-gold rounded-full text-[10px] font-bold uppercase tracking-wider">
@@ -367,7 +367,7 @@ export default function Yoga() {
                   </span>
                   <span className="text-xs text-gray-400 font-bold">1-on-1 Guidance</span>
                 </div>
-                
+
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900">Private Somatic Session</h3>
                   <p className="text-gray-500 text-xs mt-2 leading-relaxed">
@@ -408,7 +408,7 @@ export default function Yoga() {
         </motion.section>
 
         {/* The Science of Somatic Healing Section */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 45 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -457,7 +457,7 @@ export default function Yoga() {
         </motion.section>
 
         {/* Classes Catalog Grid */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -469,18 +469,17 @@ export default function Yoga() {
               <h2 className="text-3xl font-extrabold text-gray-900 font-heading tracking-tight">Upcoming Wellness Sessions</h2>
               <p className="text-gray-500 text-xs md:text-sm font-semibold mt-1">Book individual online classes led by somatic instructors.</p>
             </div>
-            
+
             {/* Level Filters */}
             <div className="flex flex-wrap gap-2.5">
               {["All", "Beginner", "Intermediate", "All Levels"].map((level) => (
                 <button
                   key={level}
                   onClick={() => setSelectedLevel(level)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 ${
-                    selectedLevel === level
+                  className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 ${selectedLevel === level
                       ? "bg-aakaa-green text-white shadow-lg shadow-aakaa-green/20"
                       : "bg-white text-gray-600 border border-gray-100 hover:border-aakaa-green/30"
-                  }`}
+                    }`}
                 >
                   {level === "All" ? "All Classes" : level}
                 </button>
@@ -577,11 +576,10 @@ export default function Yoga() {
                       <button
                         disabled={isFull}
                         onClick={() => openClassBooking(yogaClass)}
-                        className={`w-full mt-4 py-3.5 rounded-2xl font-black uppercase tracking-widest text-[10px] text-center transition-all duration-300 ${
-                          isFull
+                        className={`w-full mt-4 py-3.5 rounded-2xl font-black uppercase tracking-widest text-[10px] text-center transition-all duration-300 ${isFull
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                             : "bg-aakaa-green text-white hover:bg-aakaa-green/90 shadow-md hover:shadow-lg shadow-aakaa-green/10"
-                        }`}
+                          }`}
                       >
                         {isFull ? "Fully Booked" : "Book Class"}
                       </button>
@@ -707,7 +705,7 @@ export default function Yoga() {
                           </div>
                         </>
                       )}
-                      
+
                       {bookingType === "monthly" && (
                         <>
                           <div className="flex justify-between text-sm">
@@ -814,12 +812,12 @@ export default function Yoga() {
                       disabled={bookingLoading}
                       className="w-full py-4 bg-aakaa-green text-white font-bold rounded-2xl shadow-lg shadow-aakaa-green/20 hover:bg-aakaa-green/95 transition-all text-center text-xs uppercase tracking-widest"
                     >
-                      {bookingLoading 
-                        ? "Processing Booking..." 
-                        : bookingType === "class" 
-                          ? `Confirm & Pay ₹${bookingClass?.price}` 
-                          : bookingType === "monthly" 
-                            ? "Confirm & Pay ₹2,499" 
+                      {bookingLoading
+                        ? "Processing Booking..."
+                        : bookingType === "class"
+                          ? `Confirm & Pay ₹${bookingClass?.price}`
+                          : bookingType === "monthly"
+                            ? "Confirm & Pay ₹2,499"
                             : "Confirm & Pay ₹850"}
                     </button>
                   </form>
@@ -830,7 +828,7 @@ export default function Yoga() {
         )}
       </AnimatePresence>
 
-      <ContactModal 
+      <ContactModal
         isOpen={isMockPaymentOpen}
         onClose={() => setIsMockPaymentOpen(false)}
         amount={getSelectedAmount()}
