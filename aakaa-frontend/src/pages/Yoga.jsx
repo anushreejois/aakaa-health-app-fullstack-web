@@ -221,7 +221,7 @@ export default function Yoga() {
           <div className="absolute -top-10 -left-10 w-48 h-48 bg-gradient-to-tr from-aakaa-green/10 to-transparent rounded-full blur-3xl -z-10"></div>
           
           <span className="inline-flex items-center gap-2 mb-5 bg-aakaa-green/10 text-aakaa-green px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest border border-aakaa-green/15">
-            <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} /> Somatic Wellness
+            <Sparkles className="w-3.5 h-3.5" /> Somatic Wellness
           </span>
           
           <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05] tracking-tight mb-8">
