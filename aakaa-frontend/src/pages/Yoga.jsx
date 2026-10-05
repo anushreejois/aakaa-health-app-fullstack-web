@@ -224,9 +224,9 @@ export default function Yoga() {
             <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} /> Somatic Wellness
           </span>
           
-          <h1 className="text-5xl lg:text-7xl font-extrabold text-gray-900 leading-[1.1] font-heading tracking-tight">
+          <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05] tracking-tight mb-8">
             Somatic Yoga & <br />
-            <span className="text-aakaa-green bg-gradient-to-r from-aakaa-green to-[#2E734E] bg-clip-text text-transparent">Mindful Movement</span>
+            <span className="text-aakaa-green pr-2">Mindful Movement</span>
           </h1>
           <p className="mt-6 text-gray-600 text-lg md:text-xl leading-relaxed max-w-2xl font-medium">
             Nurture your nervous system, release deeply stored stress, and connect with your physical self. Join our expert-led online live classes tailored for mental health integration.
@@ -241,37 +241,40 @@ export default function Yoga() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           {/* Therapist Focus Content Card */}
-          <div className="w-full bg-gradient-to-br from-[#1E4D36] via-[#173E2B] to-[#0F291C] text-white rounded-[2.5rem] p-8 lg:p-12 shadow-2xl relative overflow-hidden border border-white/5">
+          <div className="w-full bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-12 shadow-sm hover:shadow-2xl transition-all duration-500 border border-white relative overflow-hidden">
             
             {/* Soft decorative light leaks */}
-            <div className="absolute -top-32 -right-32 w-[400px] h-[400px] bg-aakaa-gold/15 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
-            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <div className="absolute -top-32 -right-32 w-[400px] h-[400px] bg-aakaa-green/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-aakaa-gold/5 rounded-full blur-3xl"></div>
 
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               
               {/* Text Column */}
               <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-8">
                 <div>
-                  <span className="inline-block text-[9px] uppercase tracking-[0.25em] font-black bg-white/10 px-6 py-2.5 rounded-full border border-white/15 mb-6">
-                    Specialized Therapist Care
-                  </span>
+                  <div className="flex items-center gap-2 mb-8 animate-fade-in">
+                    <div className="w-10 h-[1px] bg-aakaa-gold/40" />
+                    <span className="text-aakaa-gold text-[11px] font-bold uppercase tracking-[0.3em]">
+                      Emotional Release
+                    </span>
+                  </div>
                   
-                  <h2 className="text-3xl lg:text-5xl font-black font-heading mb-6 leading-tight tracking-tight">
-                    Holding Space for <br />
-                    <span className="bg-gradient-to-r from-aakaa-gold via-white to-aakaa-gold bg-clip-text text-transparent">the Healers</span>
+                  <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+                    Releasing Stress from <br />
+                    <span className="text-aakaa-green">the Body</span>
                   </h2>
-                  <p className="text-white/80 text-xs md:text-sm leading-relaxed mb-4 font-medium">
-                    Clinical therapists, psychologists, and counselors hold space for clients' heavy emotional challenges daily. Without active physical release, this vicarious trauma accumulates as chronic tension, leading to compassion fatigue and emotional burnout.
+                  <p className="text-gray-600 text-[15px] leading-relaxed mb-4">
+                    Emotional trauma, anxiety, and daily stress manifest physically—causing tightness in muscle groups like the hips, shoulders, and jaw. Without active physical release, this tension accumulates and leads to emotional burnout.
                   </p>
-                  <p className="text-white/80 text-xs md:text-sm leading-relaxed font-medium">
-                    Somatic yoga offers therapists a clinical tool of self preservation. By integrating body based mindfulness, you release stored energy from your psoas and shoulders, settle your nervous system, and return to center ensuring you can continue to hold space safely.
+                  <p className="text-gray-600 text-[15px] leading-relaxed">
+                    Somatic yoga offers a gentle tool for self-preservation. By integrating body-based mindfulness, you release stored energy, settle your nervous system, and return to center, ensuring you can move through life with clarity.
                   </p>
                 </div>
                 
                 {/* Clean, Modern Left-Border Quote Accent Block */}
-                <div className="border-l-4 border-aakaa-gold bg-white/5 pl-5 py-3 rounded-r-2xl max-w-xl">
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-white/90 font-black leading-relaxed font-sans">
-                    "To create space for others, you must first create space within yourself."
+                <div className="border-l-4 border-aakaa-green/40 bg-white/60 pl-5 py-3 rounded-r-2xl max-w-xl">
+                  <span className="text-[11px] uppercase tracking-[0.2em] text-gray-700 font-bold leading-relaxed">
+                    "To heal the mind, we must first listen to the body."
                   </span>
                 </div>
               </div>
@@ -299,8 +302,8 @@ export default function Yoga() {
           className="space-y-12"
         >
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <h2 className="text-3xl font-extrabold text-gray-900 font-heading tracking-tight">Flexible Somatic Programs</h2>
-            <p className="text-gray-500 text-xs md:text-sm font-semibold">Choose between unlimited group access or individual custom alignment sessions.</p>
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Flexible Somatic Programs</h2>
+            <p className="text-gray-500 text-sm">Choose between unlimited group access or individual custom alignment sessions.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -354,40 +357,40 @@ export default function Yoga() {
             </div>
 
             {/* 1-on-1 Private Session Card */}
-            <div className="bg-gradient-to-br from-[#1E4D36] to-[#0F291C] text-white rounded-[2.5rem] p-8 lg:p-10 hover:shadow-xl hover:shadow-aakaa-green/10 transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+            <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-10 border border-white hover:border-aakaa-green/10 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-aakaa-gold/10 rounded-full blur-2xl"></div>
               
-              <div className="space-y-6">
+              <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
-                  <span className="px-5 py-1.5 bg-white/10 text-aakaa-gold rounded-full text-[10px] font-black uppercase tracking-wider border border-white/10">
+                  <span className="px-5 py-1.5 bg-aakaa-gold/10 text-aakaa-gold rounded-full text-[10px] font-bold uppercase tracking-wider">
                     Bespoke Somatics
                   </span>
-                  <span className="text-xs text-white/50 font-bold">1-on-1 Guidance</span>
+                  <span className="text-xs text-gray-400 font-bold">1-on-1 Guidance</span>
                 </div>
                 
                 <div>
-                  <h3 className="text-2xl font-black text-white font-heading">Private Somatic Session</h3>
-                  <p className="text-white/70 text-xs mt-2 leading-relaxed">
+                  <h3 className="text-2xl font-bold text-gray-900">Private Somatic Session</h3>
+                  <p className="text-gray-500 text-xs mt-2 leading-relaxed">
                     Book a dedicated 60 minute, 1-on-1 alignment session. Get custom physical posturing and breath mapping designed for your specific nervous system goals.
                   </p>
                 </div>
 
-                <div className="pt-4 flex items-baseline gap-1.5 border-t border-white/10">
-                  <span className="text-4xl font-black text-aakaa-gold">₹850</span>
-                  <span className="text-xs text-white/40 font-bold">/ Session</span>
+                <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
+                  <span className="text-4xl font-bold text-gray-900">₹850</span>
+                  <span className="text-xs text-gray-400 font-bold">/ Session</span>
                 </div>
 
-                <ul className="space-y-2.5 text-xs text-white/70 font-medium">
+                <ul className="space-y-2.5 text-xs text-gray-600 font-medium">
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-gold shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
                     Personalized attention to physical tension blocks
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-gold shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
                     Flexible timing based on your availability
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-gold shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
                     Choice of certified yoga therapist
                   </li>
                 </ul>
@@ -395,7 +398,7 @@ export default function Yoga() {
 
               <button
                 onClick={openPrivateBooking}
-                className="w-full mt-8 py-4 bg-white text-aakaa-green font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-white/95 transition-all shadow-md shadow-white/5"
+                className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
               >
                 Book Private Session
               </button>
