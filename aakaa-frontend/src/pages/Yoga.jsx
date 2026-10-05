@@ -10,6 +10,7 @@ export default function Yoga() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
+  const [pricingTier, setPricingTier] = useState("client"); // "client" or "therapist"
 
   // Booking Modal State
   const [bookingType, setBookingType] = useState("class"); // class, monthly, private
@@ -303,10 +304,28 @@ export default function Yoga() {
         >
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Flexible Somatic Programs</h2>
-            <p className="text-gray-500 text-sm">Choose between unlimited group access or individual custom alignment sessions.</p>
+            <p className="text-gray-500 text-sm">Choose between group access or individual custom alignment sessions.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {/* Pricing Toggle */}
+          <div className="flex justify-center mt-6">
+            <div className="bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white inline-flex items-center gap-2 shadow-sm">
+              <button 
+                onClick={() => setPricingTier("client")}
+                className={`px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${pricingTier === "client" ? "bg-aakaa-green text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                For Clients
+              </button>
+              <button 
+                onClick={() => setPricingTier("therapist")}
+                className={`px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${pricingTier === "therapist" ? "bg-aakaa-green text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                For Therapists
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto pt-4">
 
             {/* Monthly Pass Card */}
             <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 lg:p-10 border border-white hover:border-aakaa-green/10 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
@@ -314,21 +333,18 @@ export default function Yoga() {
 
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
-                  <span className="px-5 py-1.5 bg-aakaa-green/10 text-aakaa-green rounded-full text-[10px] font-bold uppercase tracking-wider">
-                    Unlimited Access
-                  </span>
-                  <span className="text-xs text-gray-400 font-bold">Group Classes</span>
+                  <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Group Classes</span>
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">Monthly Unlimited Pass</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">Monthly Access Pass</h3>
                   <p className="text-gray-500 text-xs mt-2 leading-relaxed">
                     Gain full access to all 6 scheduled weekly live classes. Perfect for maintaining a consistent, daily somatic routine to keep stress at bay.
                   </p>
                 </div>
 
                 <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
-                  <span className="text-4xl font-bold text-gray-900">₹2,499</span>
+                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "2,499" : "1,999"}</span>
                   <span className="text-xs text-gray-400 font-bold">/ Month</span>
                 </div>
 
@@ -376,7 +392,7 @@ export default function Yoga() {
                 </div>
 
                 <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
-                  <span className="text-4xl font-bold text-gray-900">₹850</span>
+                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "850" : "600"}</span>
                   <span className="text-xs text-gray-400 font-bold">/ Session</span>
                 </div>
 
@@ -817,8 +833,8 @@ export default function Yoga() {
                         : bookingType === "class"
                           ? `Confirm & Pay ₹${bookingClass?.price}`
                           : bookingType === "monthly"
-                            ? "Confirm & Pay ₹2,499"
-                            : "Confirm & Pay ₹850"}
+                            ? `Confirm & Pay ₹${pricingTier === "client" ? "2,499" : "1,999"}`
+                            : `Confirm & Pay ₹${pricingTier === "client" ? "850" : "600"}`}
                     </button>
                   </form>
                 )}
