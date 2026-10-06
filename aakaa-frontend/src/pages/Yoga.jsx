@@ -15,6 +15,7 @@ export default function Yoga() {
   // Booking Modal State
   const [bookingType, setBookingType] = useState("class"); // class, monthly, private
   const [bookingClass, setBookingClass] = useState(null);
+  const [classCount, setClassCount] = useState(1);
 
   // Private Session Form inputs
   const [privateInstructor, setPrivateInstructor] = useState("Elena Rostova");
@@ -337,15 +338,15 @@ export default function Yoga() {
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">Monthly Access Pass</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">Group Class Package</h3>
                   <p className="text-gray-500 text-xs mt-2 leading-relaxed">
-                    Gain full access to all 6 scheduled weekly live classes. Perfect for maintaining a consistent, daily somatic routine to keep stress at bay.
+                    Build your custom somatic routine. Purchase multiple classes to ensure a consistent wellness journey.
                   </p>
                 </div>
 
                 <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
-                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "2,499" : "1,999"}</span>
-                  <span className="text-xs text-gray-400 font-bold">/ Month</span>
+                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "300" : "250"}</span>
+                  <span className="text-xs text-gray-400 font-bold">/ Class</span>
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-gray-600 font-medium">
@@ -365,10 +366,14 @@ export default function Yoga() {
               </div>
 
               <button
-                onClick={openMonthlyBooking}
+                onClick={() => {
+                  setBookingType("monthly");
+                  setClassCount(1);
+                  setIsModalOpen(true);
+                }}
                 className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
               >
-                Purchase Monthly Pass
+                Purchase Classes
               </button>
             </div>
 
@@ -392,7 +397,7 @@ export default function Yoga() {
                 </div>
 
                 <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
-                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "850" : "600"}</span>
+                  <span className="text-4xl font-bold text-gray-900">₹1,850</span>
                   <span className="text-xs text-gray-400 font-bold">/ Session</span>
                 </div>
 
@@ -413,10 +418,14 @@ export default function Yoga() {
               </div>
 
               <button
-                onClick={openPrivateBooking}
+                onClick={() => {
+                  setBookingType("private");
+                  setClassCount(1);
+                  setIsModalOpen(true);
+                }}
                 className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
               >
-                Book Private Session
+                Book Private Sessions
               </button>
             </div>
 
@@ -726,15 +735,23 @@ export default function Yoga() {
                         <>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-400 font-semibold">Program:</span>
-                            <span className="font-bold text-gray-800">Monthly Unlimited Pass</span>
+                            <span className="font-bold text-gray-800">Group Class Package</span>
+                          </div>
+                          <div className="flex justify-between text-sm items-center">
+                            <span className="text-gray-400 font-semibold">Number of Classes:</span>
+                            <div className="flex items-center gap-3">
+                              <button type="button" onClick={() => setClassCount(Math.max(1, classCount - 1))} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">-</button>
+                              <span className="font-bold text-gray-800">{classCount}</span>
+                              <button type="button" onClick={() => setClassCount(classCount + 1)} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">+</button>
+                            </div>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-gray-400 font-semibold">Validity:</span>
-                            <span className="font-bold text-gray-800">30 Days (Group Sessions)</span>
+                            <span className="text-gray-400 font-semibold">Price per Class:</span>
+                            <span className="font-bold text-gray-800">₹{pricingTier === "client" ? "300" : "250"}</span>
                           </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-400 font-semibold">Amount Due:</span>
-                            <span className="font-extrabold text-aakaa-green text-lg">₹2,499</span>
+                          <div className="flex justify-between text-sm pt-2 border-t border-gray-200/50">
+                            <span className="text-gray-500 font-bold">Total Amount Due:</span>
+                            <span className="font-extrabold text-aakaa-green text-lg">₹{classCount * (pricingTier === "client" ? 300 : 250)}</span>
                           </div>
                         </>
                       )}
@@ -745,9 +762,17 @@ export default function Yoga() {
                             <span className="text-gray-400 font-semibold">Program:</span>
                             <span className="font-bold text-gray-800">1-on-1 Somatic Guidance</span>
                           </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-400 font-semibold">Amount Due:</span>
-                            <span className="font-extrabold text-aakaa-green text-lg">₹850</span>
+                          <div className="flex justify-between text-sm items-center">
+                            <span className="text-gray-400 font-semibold">Number of Sessions:</span>
+                            <div className="flex items-center gap-3">
+                              <button type="button" onClick={() => setClassCount(Math.max(1, classCount - 1))} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">-</button>
+                              <span className="font-bold text-gray-800">{classCount}</span>
+                              <button type="button" onClick={() => setClassCount(classCount + 1)} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">+</button>
+                            </div>
+                          </div>
+                          <div className="flex justify-between text-sm pt-2 border-t border-gray-200/50">
+                            <span className="text-gray-500 font-bold">Total Amount Due:</span>
+                            <span className="font-extrabold text-aakaa-green text-lg">₹{classCount * 1850}</span>
                           </div>
                         </>
                       )}
@@ -833,8 +858,8 @@ export default function Yoga() {
                         : bookingType === "class"
                           ? `Confirm & Pay ₹${bookingClass?.price}`
                           : bookingType === "monthly"
-                            ? `Confirm & Pay ₹${pricingTier === "client" ? "2,499" : "1,999"}`
-                            : `Confirm & Pay ₹${pricingTier === "client" ? "850" : "600"}`}
+                            ? `Confirm & Pay ₹${classCount * (pricingTier === "client" ? 300 : 250)}`
+                            : `Confirm & Pay ₹${classCount * 1850}`}
                     </button>
                   </form>
                 )}
