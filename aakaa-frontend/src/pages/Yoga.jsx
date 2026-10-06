@@ -15,7 +15,7 @@ export default function Yoga() {
   // Booking Modal State
   const [bookingType, setBookingType] = useState("class"); // class, monthly, private
   const [bookingClass, setBookingClass] = useState(null);
-  const [classCount, setClassCount] = useState(1);
+  const [classCount, setClassCount] = useState(8);
 
   // Private Session Form inputs
   const [privateInstructor, setPrivateInstructor] = useState("Elena Rostova");
@@ -368,7 +368,7 @@ export default function Yoga() {
               <button
                 onClick={() => {
                   setBookingType("monthly");
-                  setClassCount(1);
+                  setClassCount(8);
                   setIsModalOpen(true);
                 }}
                 className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
@@ -420,7 +420,7 @@ export default function Yoga() {
               <button
                 onClick={() => {
                   setBookingType("private");
-                  setClassCount(1);
+                  setClassCount(8);
                   setIsModalOpen(true);
                 }}
                 className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
@@ -739,11 +739,16 @@ export default function Yoga() {
                           </div>
                           <div className="flex justify-between text-sm items-center">
                             <span className="text-gray-400 font-semibold">Number of Classes:</span>
-                            <div className="flex items-center gap-3">
-                              <button type="button" onClick={() => setClassCount(Math.max(1, classCount - 1))} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">-</button>
-                              <span className="font-bold text-gray-800">{classCount}</span>
-                              <button type="button" onClick={() => setClassCount(classCount + 1)} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">+</button>
-                            </div>
+                            <select
+                              value={classCount}
+                              onChange={(e) => setClassCount(Number(e.target.value))}
+                              className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold outline-none focus:border-aakaa-green text-gray-800"
+                            >
+                              <option value={8}>8 Classes (Min)</option>
+                              <option value={12}>12 Classes (Monthly)</option>
+                              <option value={18}>18 Classes</option>
+                              <option value={24}>24 Classes (Max)</option>
+                            </select>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-400 font-semibold">Price per Class:</span>
@@ -764,11 +769,16 @@ export default function Yoga() {
                           </div>
                           <div className="flex justify-between text-sm items-center">
                             <span className="text-gray-400 font-semibold">Number of Sessions:</span>
-                            <div className="flex items-center gap-3">
-                              <button type="button" onClick={() => setClassCount(Math.max(1, classCount - 1))} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">-</button>
-                              <span className="font-bold text-gray-800">{classCount}</span>
-                              <button type="button" onClick={() => setClassCount(classCount + 1)} className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50">+</button>
-                            </div>
+                            <select
+                              value={classCount}
+                              onChange={(e) => setClassCount(Number(e.target.value))}
+                              className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold outline-none focus:border-aakaa-green text-gray-800"
+                            >
+                              <option value={8}>8 Sessions (Min)</option>
+                              <option value={12}>12 Sessions</option>
+                              <option value={18}>18 Sessions</option>
+                              <option value={24}>24 Sessions (Max)</option>
+                            </select>
                           </div>
                           <div className="flex justify-between text-sm pt-2 border-t border-gray-200/50">
                             <span className="text-gray-500 font-bold">Total Amount Due:</span>
