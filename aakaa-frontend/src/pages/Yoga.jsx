@@ -388,7 +388,7 @@ export default function Yoga() {
               <button
                 onClick={() => {
                   setBookingType("monthly");
-                  setClassCount(8);
+                  setClassCount(pricingTier === "client" ? 12 : 8);
                   setIsModalOpen(true);
                 }}
                 className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
@@ -776,10 +776,19 @@ export default function Yoga() {
                               onChange={(e) => setClassCount(Number(e.target.value))}
                               className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold outline-none focus:border-aakaa-green text-gray-800"
                             >
-                              <option value={8}>8 Classes (Min)</option>
-                              <option value={12}>12 Classes (Monthly)</option>
-                              <option value={18}>18 Classes</option>
-                              <option value={24}>24 Classes (Max)</option>
+                              {pricingTier === "client" ? (
+                                <>
+                                  <option value={12}>12 Classes (1 Month)</option>
+                                  <option value={24}>24 Classes (2 Months)</option>
+                                  <option value={36}>36 Classes (3 Months)</option>
+                                </>
+                              ) : (
+                                <>
+                                  <option value={8}>8 Classes (1 Month)</option>
+                                  <option value={16}>16 Classes (2 Months)</option>
+                                  <option value={24}>24 Classes (3 Months)</option>
+                                </>
+                              )}
                             </select>
                           </div>
                           <div className="flex justify-between text-sm">
