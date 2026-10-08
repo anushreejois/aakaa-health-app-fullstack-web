@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { User, Menu, X, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -71,8 +72,9 @@ const Navbar = () => {
         <ul className="hidden md:flex items-center gap-8 text-[14px] font-bold text-aakaa-green">
           {menuItems.map((item) => (
             <li key={item.name}>
-              <a
-                href={item.href}
+              <HashLink
+                to={item.href}
+                smooth
                 className={`
                   inline-flex items-center transition-all duration-200
                   ${item.highlight
@@ -82,7 +84,7 @@ const Navbar = () => {
                 `}
               >
                 {item.name}
-              </a>
+              </HashLink>
             </li>
           ))}
         </ul>
@@ -128,9 +130,10 @@ const Navbar = () => {
           >
             <div className="px-6 py-4 space-y-2">
               {menuItems.map((item) => (
-                <a
+                <HashLink
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
+                  smooth
                   className={`
                     block text-sm font-bold rounded-2xl px-4 py-3
                     text-aakaa-green
@@ -142,7 +145,7 @@ const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </HashLink>
               ))}
             </div>
           </motion.div>

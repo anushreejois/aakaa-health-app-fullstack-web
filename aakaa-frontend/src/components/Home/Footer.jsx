@@ -1,5 +1,6 @@
 import { Instagram, Twitter, Linkedin, Github, Mail, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 export default function Footer() {
   return (
@@ -40,10 +41,10 @@ export default function Footer() {
             <div>
               <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Explore</h4>
               <ul className="space-y-4 text-white/60 text-sm font-medium">
-                <li><a href="#therapy" className="hover:text-aakaa-gold transition-colors">Our Services</a></li>
-                <li><a href="/blogs" className="hover:text-aakaa-gold transition-colors">Journal & Insights</a></li>
-                <li><a href="#waitlist" className="hover:text-aakaa-gold transition-colors">Join Waitlist</a></li>
-                <li><a href="#faq" className="hover:text-aakaa-gold transition-colors">Common Questions</a></li>
+                <li><HashLink to="/#therapy" smooth className="hover:text-aakaa-gold transition-colors">Our Services</HashLink></li>
+                <li><HashLink to="/blogs" className="hover:text-aakaa-gold transition-colors">Journal & Insights</HashLink></li>
+                <li><HashLink to="/#waitlist" smooth className="hover:text-aakaa-gold transition-colors">Join Waitlist</HashLink></li>
+                <li><HashLink to="/#faq" smooth className="hover:text-aakaa-gold transition-colors">Common Questions</HashLink></li>
               </ul>
             </div>
 
