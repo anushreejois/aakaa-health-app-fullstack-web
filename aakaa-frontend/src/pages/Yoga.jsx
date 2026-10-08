@@ -353,17 +353,29 @@ export default function Yoga() {
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-gray-600 font-medium">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
-                    Access to all 6 live yoga classes weekly
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Priority booking for exclusive workshops and events</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
-                    Recording library of previous classes
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Direct Q&A and posture correction during live sessions</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
-                    Cancel or pause membership anytime
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Complimentary access to community support groups</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Personalized progress tracking & monthly wellness check-ins</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Specialized routines for stress relief, flexibility, and strength</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Cancel or pause membership anytime</span>
                   </li>
                 </ul>
               </div>
