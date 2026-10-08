@@ -50,13 +50,16 @@ export default function JourneySection() {
 
             {/* LEFT IMAGE */}
             <div className="flex justify-center lg:justify-start">
-              <div className="w-full max-w-md rounded-[2rem] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.18)]">
+              <motion.div 
+                whileHover={{ rotateY: 3, rotateX: -3, scale: 1.02 }}
+                className="group w-full max-w-md rounded-[2rem] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.18)] border border-white/50 transition-shadow duration-500 hover:shadow-[0_45px_100px_rgba(0,0,0,0.2)]"
+              >
                 <img
                   src={journeyImage}
                   alt="Mental wellness journey"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-              </div>
+              </motion.div>
             </div>
 
             {/* RIGHT CONTENT */}
