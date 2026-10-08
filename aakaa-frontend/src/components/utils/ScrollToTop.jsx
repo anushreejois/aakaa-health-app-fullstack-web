@@ -5,18 +5,18 @@ export default function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    // Add a slight delay to allow for framer-motion exit/enter animations
+    // Small timeout to allow DOM to paint the new route
     setTimeout(() => {
       if (hash) {
         const id = hash.replace('#', '');
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: 'auto' });
         }
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'auto' });
       }
-    }, 400); // Wait 400ms to ensure the page has mounted after route transition
+    }, 10);
   }, [pathname, hash]);
 
   return null;
