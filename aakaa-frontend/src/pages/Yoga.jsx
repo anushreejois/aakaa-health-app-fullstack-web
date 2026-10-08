@@ -55,7 +55,7 @@ export default function Yoga() {
 
   const getSelectedAmount = () => {
     if (bookingType === "class") return bookingClass?.price || 399;
-    if (bookingType === "monthly") return classCount * (pricingTier === "client" ? 300 : 250);
+    if (bookingType === "monthly") return classCount * (pricingTier === "client" ? 249 : 299);
     if (bookingType === "private") return classCount * 1850;
     return 0;
   };
@@ -348,7 +348,7 @@ export default function Yoga() {
                 </div>
 
                 <div className="pt-4 flex items-baseline gap-1.5 border-t border-gray-100">
-                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "300" : "250"}</span>
+                  <span className="text-4xl font-bold text-gray-900">₹{pricingTier === "client" ? "249" : "299"}</span>
                   <span className="text-xs text-gray-400 font-bold">/ Class</span>
                 </div>
 
@@ -755,11 +755,11 @@ export default function Yoga() {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-400 font-semibold">Price per Class:</span>
-                            <span className="font-bold text-gray-800">₹{pricingTier === "client" ? "300" : "250"}</span>
+                            <span className="font-bold text-gray-800">₹{pricingTier === "client" ? "249" : "299"}</span>
                           </div>
                           <div className="flex justify-between text-sm pt-2 border-t border-gray-200/50">
                             <span className="text-gray-500 font-bold">Total Amount Due:</span>
-                            <span className="font-extrabold text-aakaa-green text-lg">₹{classCount * (pricingTier === "client" ? 300 : 250)}</span>
+                            <span className="font-extrabold text-aakaa-green text-lg">₹{classCount * (pricingTier === "client" ? 249 : 299)}</span>
                           </div>
                         </>
                       )}
@@ -871,7 +871,7 @@ export default function Yoga() {
                         : bookingType === "class"
                           ? `Confirm & Pay ₹${bookingClass?.price}`
                           : bookingType === "monthly"
-                            ? `Confirm & Pay ₹${classCount * (pricingTier === "client" ? 300 : 250)}`
+                            ? `Confirm & Pay ₹${classCount * (pricingTier === "client" ? 249 : 299)}`
                             : `Confirm & Pay ₹${classCount * 1850}`}
                     </button>
                   </form>
