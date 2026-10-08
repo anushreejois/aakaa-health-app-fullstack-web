@@ -419,17 +419,29 @@ export default function Yoga() {
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-gray-600 font-medium">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
-                    Personalized attention to physical tension blocks
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Complimentary 30-minute initial consultation to understand your unique needs</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
-                    Flexible timing based on your availability
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>1-on-1 personalized guidance tailored to your specific wellness goals</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0" />
-                    Choice of certified yoga therapist
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Private and secure space for highly sensitive emotional or trauma processing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Direct, real-time feedback with customized progress tracking</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>VIP priority access to exclusive Aakaa workshops and retreats</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                    <span>Deep-dive into advanced postures, meditation, and breathwork techniques</span>
                   </li>
                 </ul>
               </div>
