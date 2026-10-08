@@ -358,6 +358,9 @@ export default function Yoga() {
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Group Classes</span>
+                  <span className="px-3 py-1 bg-aakaa-green/10 text-aakaa-green rounded-full text-[10px] font-bold uppercase tracking-wide">
+                    {pricingTier === "client" ? "3 Classes / Week" : "2 Classes / Week"}
+                  </span>
                 </div>
 
                 <div>
