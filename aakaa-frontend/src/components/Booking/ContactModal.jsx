@@ -2,11 +2,18 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, PhoneCall, MessageCircle, X } from 'lucide-react';
 
-const ContactModal = ({ isOpen, onClose, amount, orderId }) => {
+const ContactModal = ({ isOpen, onClose, amount, orderId, bookingType, classCount }) => {
   if (!isOpen) return null;
 
   const handleWhatsApp = () => {
-    const text = encodeURIComponent(`Hi! I'd like to confirm my booking. Amount: ₹${amount}`);
+    let packageInfo = "";
+    if (bookingType === "monthly") {
+      packageInfo = ` for ${classCount} Group Classes`;
+    } else if (bookingType === "private") {
+      packageInfo = ` for ${classCount} Private Sessions`;
+    }
+    
+    const text = encodeURIComponent(`Hi! I'd like to confirm my booking${packageInfo}. Amount: ₹${amount}`);
     window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
     onClose(); // Auto close the modal after they click
   };

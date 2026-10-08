@@ -55,8 +55,8 @@ export default function Yoga() {
 
   const getSelectedAmount = () => {
     if (bookingType === "class") return bookingClass?.price || 399;
-    if (bookingType === "monthly") return 2499;
-    if (bookingType === "private") return 850;
+    if (bookingType === "monthly") return classCount * (pricingTier === "client" ? 300 : 250);
+    if (bookingType === "private") return classCount * 1850;
     return 0;
   };
 
@@ -70,7 +70,10 @@ export default function Yoga() {
       userName: formData.name,
       userEmail: formData.email,
       bookingType: bookingType,
-      status: "Pending Verification"
+      amount: getSelectedAmount(),
+      status: "Pending Verification",
+      classCount: bookingType !== "class" ? classCount : 1,
+      pricingTier: pricingTier
     };
 
     if (bookingType === "class") {
@@ -884,6 +887,8 @@ export default function Yoga() {
         onClose={() => setIsMockPaymentOpen(false)}
         amount={getSelectedAmount()}
         orderId={currentOrder?.id}
+        bookingType={bookingType}
+        classCount={classCount}
         onPaymentSuccess={async (paymentResponse) => {
           setIsMockPaymentOpen(false);
           await handlePaymentSuccess(paymentResponse);
