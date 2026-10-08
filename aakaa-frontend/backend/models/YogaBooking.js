@@ -8,6 +8,7 @@ const yogaBookingSchema = new mongoose.Schema({
   instructorName: { type: String, default: "" },
   date: { type: String, default: "" },
   time: { type: String, default: "" },
+  amount: { type: Number, default: 0 },
   status: { type: String, default: 'confirmed', enum: ['confirmed', 'cancelled', 'Pending Payment', 'Pending Verification'] },
   transactionId: { type: String, default: "" },
   paymentId: { type: String, default: "" },
