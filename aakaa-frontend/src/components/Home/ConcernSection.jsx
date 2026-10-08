@@ -116,7 +116,7 @@ export default function ConcernSection() {
           scale: [1, 1.1, 1] 
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-0 left-10 w-80 h-80 bg-aakaa-green/10 rounded-full filter blur-3xl opacity-50"
+        className="absolute top-0 left-10 w-80 h-80 bg-aakaa-green/10 rounded-full filter blur-3xl opacity-50 pointer-events-none"
       ></motion.div>
       <motion.div 
         animate={{ 
@@ -125,7 +125,7 @@ export default function ConcernSection() {
           scale: [1, 1.2, 1] 
         }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-0 right-10 w-96 h-96 bg-aakaa-gold/15 rounded-full filter blur-3xl opacity-40"
+        className="absolute bottom-0 right-10 w-96 h-96 bg-aakaa-gold/15 rounded-full filter blur-3xl opacity-40 pointer-events-none"
       ></motion.div>
     </section>
   );
