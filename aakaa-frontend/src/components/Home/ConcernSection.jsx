@@ -28,8 +28,8 @@ export default function ConcernSection() {
   }, [selected]);
 
   return (
-    <section className={`py-32 transition-colors duration-700 relative overflow-hidden ${bgColor}`}>
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 text-center relative z-10">
+    <section className={`py-20 transition-colors duration-700 relative overflow-hidden ${bgColor}`}>
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 text-center relative z-10">
         <AnimatePresence mode="wait">
 
         {step === 1 && (
@@ -41,16 +41,16 @@ export default function ConcernSection() {
             transition={{ duration: 0.6 }}
           >
             {/* Heading */}
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
               What’s Your Primary Concern?
             </h2>
 
-            <p className="mt-5 text-gray-600 max-w-xl mx-auto text-lg">
+            <p className="mt-4 text-gray-500 max-w-xl mx-auto text-base">
               Choose what best describes how you’re feeling right now.
             </p>
 
             {/* Cards */}
-            <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
               {concerns.map((item, index) => {
                 const Icon = item.icon;
                 const isActive = selected === index;
@@ -58,26 +58,26 @@ export default function ConcernSection() {
                 return (
                   <motion.div
                     key={index}
-                    whileHover={{ y: -10, scale: 1.02 }}
+                    whileHover={{ y: -5, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setSelected(index)}
                     className={`
-                      cursor-pointer rounded-[2.5rem] p-10 text-center transition-all duration-500
-                      backdrop-blur-xl border
+                      cursor-pointer rounded-3xl p-6 text-center transition-all duration-500
+                      backdrop-blur-md border
                       ${
                         isActive
-                          ? "bg-white border-aakaa-green shadow-[0_30px_60px_rgba(30,77,54,0.15)] ring-4 ring-aakaa-green/5"
-                          : "bg-white/40 border-white/80 hover:border-aakaa-green/30 shadow-[0_15px_40px_rgba(0,0,0,0.04)]"
+                          ? "bg-white border-aakaa-green shadow-[0_15px_30px_rgba(30,77,54,0.1)] ring-2 ring-aakaa-green/10"
+                          : "bg-white/50 border-white/80 hover:border-aakaa-green/20 hover:bg-white/80 shadow-[0_10px_20px_rgba(0,0,0,0.03)]"
                       }
                     `}
                   >
-                    <div className={`mx-auto w-16 h-16 flex items-center justify-center rounded-2xl mb-8 transition-colors duration-500 ${
-                      isActive ? "bg-aakaa-green text-white" : "bg-aakaa-green/10 text-aakaa-green hover:bg-aakaa-green hover:text-white"
+                    <div className={`mx-auto w-12 h-12 flex items-center justify-center rounded-xl mb-6 transition-colors duration-500 ${
+                      isActive ? "bg-aakaa-green text-white" : "bg-aakaa-green/5 text-aakaa-green"
                     }`}>
-                      <Icon size={30} />
+                      <Icon size={24} />
                     </div>
 
-                    <h3 className={`font-bold text-lg transition-colors duration-500 ${isActive ? "text-aakaa-green" : "text-gray-800"}`}>
+                    <h3 className={`font-semibold text-sm transition-colors duration-500 ${isActive ? "text-aakaa-green" : "text-gray-800"}`}>
                       {item.label}
                     </h3>
                   </motion.div>
@@ -92,11 +92,11 @@ export default function ConcernSection() {
               }}
               disabled={selected === null}
               className={`
-                mt-20 px-12 py-4 rounded-full font-bold text-lg transition-all duration-500 transform
+                mt-12 px-10 py-3.5 rounded-full font-bold text-sm transition-all duration-500 transform
                 ${
                   selected !== null
-                    ? "bg-aakaa-green text-white hover:bg-aakaa-green/90 shadow-[0_20px_40px_rgba(30,77,54,0.35)] hover:-translate-y-1 active:scale-95"
-                    : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"
+                    ? "bg-aakaa-green text-white hover:bg-aakaa-green/90 shadow-[0_10px_20px_rgba(30,77,54,0.2)] hover:-translate-y-1 active:scale-95"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
                 }
               `}
             >
