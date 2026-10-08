@@ -53,6 +53,26 @@ export default function Yoga() {
     }
   };
 
+  const clientFeatures = [
+    "Priority booking for exclusive workshops and events",
+    "Direct Q&A and posture correction during live sessions",
+    "Complimentary access to community support groups",
+    "Personalized progress tracking & monthly wellness check-ins",
+    "Specialized routines for stress relief, flexibility, and strength",
+    "Cancel or pause membership anytime"
+  ];
+
+  const therapistFeatures = [
+    "Yoga routines tailored to prevent therapist burnout & fatigue",
+    "Specialized somatic practices to clear secondary trauma",
+    "Regular wellness check-ins designed specifically for caregivers",
+    "Exclusive networking & peer-support groups for practitioners",
+    "Advanced breathing techniques for regulating nervous systems between sessions",
+    "Cancel or pause membership anytime"
+  ];
+
+  const currentFeatures = pricingTier === "client" ? clientFeatures : therapistFeatures;
+
   const getSelectedAmount = () => {
     if (bookingType === "class") return bookingClass?.price || 399;
     if (bookingType === "monthly") return classCount * (pricingTier === "client" ? 249 : 299);
@@ -353,30 +373,12 @@ export default function Yoga() {
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-gray-600 font-medium">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
-                    <span>Priority booking for exclusive workshops and events</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
-                    <span>Direct Q&A and posture correction during live sessions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
-                    <span>Complimentary access to community support groups</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
-                    <span>Personalized progress tracking & monthly wellness check-ins</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
-                    <span>Specialized routines for stress relief, flexibility, and strength</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
-                    <span>Cancel or pause membership anytime</span>
-                  </li>
+                  {currentFeatures.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-aakaa-green shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
