@@ -111,7 +111,7 @@ router.get('/stats', auth, async (req, res) => {
       _id: b._id,
       userName: b.userName,
       userEmail: b.userEmail,
-      amount: b.amountPaid || 499,
+      amount: b.amount || b.amountPaid || 499,
       status: b.status,
       transactionId: b.transactionId,
       createdAt: b.createdAt
