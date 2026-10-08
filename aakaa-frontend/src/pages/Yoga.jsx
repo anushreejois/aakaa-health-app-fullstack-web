@@ -406,7 +406,9 @@ export default function Yoga() {
                   <span className="px-5 py-1.5 bg-aakaa-gold/10 text-aakaa-gold rounded-full text-[10px] font-bold uppercase tracking-wider">
                     Bespoke Somatics
                   </span>
-                  <span className="text-xs text-gray-400 font-bold">1-on-1 Guidance</span>
+                  <span className="px-3 py-1 bg-aakaa-green/10 text-aakaa-green rounded-full text-[10px] font-bold uppercase tracking-wide">
+                    3 Sessions / Week
+                  </span>
                 </div>
 
                 <div>
@@ -452,7 +454,7 @@ export default function Yoga() {
               <button
                 onClick={() => {
                   setBookingType("private");
-                  setClassCount(8);
+                  setClassCount(12);
                   setIsModalOpen(true);
                 }}
                 className="w-full mt-8 py-4 bg-aakaa-green/5 text-aakaa-green font-bold uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-aakaa-green hover:text-white transition-all duration-300"
@@ -815,10 +817,9 @@ export default function Yoga() {
                               onChange={(e) => setClassCount(Number(e.target.value))}
                               className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold outline-none focus:border-aakaa-green text-gray-800"
                             >
-                              <option value={8}>8 Sessions (Min)</option>
-                              <option value={12}>12 Sessions</option>
-                              <option value={18}>18 Sessions</option>
-                              <option value={24}>24 Sessions (Max)</option>
+                              <option value={12}>12 Sessions (1 Month)</option>
+                              <option value={24}>24 Sessions (2 Months)</option>
+                              <option value={36}>36 Sessions (3 Months)</option>
                             </select>
                           </div>
                           <div className="flex justify-between text-sm pt-2 border-t border-gray-200/50">
