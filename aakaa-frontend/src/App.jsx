@@ -11,6 +11,7 @@ import ScrollToTop from "./components/utils/ScrollToTop";
 import { AuthProvider } from "./context/AuthContext";
 import { BlogProvider } from "./context/BlogContext";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
+import { motion, AnimatePresence } from "framer-motion";
 
 import ProfessionalCare from "./pages/ProfessionalCare";
 
@@ -30,31 +31,42 @@ function AppContent() {
     <>
       <ScrollToTop />
       {!isAdminPath && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/blogs" element={<BlogList />} />
-        <Route path="/blogs/:slug" element={<BlogPost />} />
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/professional-care" element={<ProfessionalCare />} />
-        <Route path="/yoga" element={<Yoga />} />
-        
-        {/* Legal & Compliance Routes */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-        <Route path="/refund-cancellation" element={<RefundCancellation />} />
-        <Route path="/crisis-resources" element={<CrisisResources />} />
-        
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLoginPage />} />
-        <Route 
-          path="/admin/dashboard/*" 
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } 
-        />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -15 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex-1 w-full flex flex-col"
+        >
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home />} />
+            <Route path="/blogs" element={<BlogList />} />
+            <Route path="/blogs/:slug" element={<BlogPost />} />
+            <Route path="/booking" element={<Booking />} />
+            <Route path="/professional-care" element={<ProfessionalCare />} />
+            <Route path="/yoga" element={<Yoga />} />
+            
+            {/* Legal & Compliance Routes */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/refund-cancellation" element={<RefundCancellation />} />
+            <Route path="/crisis-resources" element={<CrisisResources />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLoginPage />} />
+            <Route 
+              path="/admin/dashboard/*" 
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }
