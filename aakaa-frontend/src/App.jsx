@@ -4,6 +4,7 @@ import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Booking from "./pages/Booking";
 import Yoga from "./pages/Yoga";
+import Academy from "./pages/Academy";
 import AdminDashboard from "./pages/admin";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import Navbar from "./components/layout/Navbar";
@@ -38,6 +39,7 @@ function AppContent() {
           <Route path="/booking" element={<Booking />} />
           <Route path="/professional-care" element={<ProfessionalCare />} />
           <Route path="/yoga" element={<Yoga />} />
+          <Route path="/academy" element={<Academy />} />
           
           {/* Legal & Compliance Routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
