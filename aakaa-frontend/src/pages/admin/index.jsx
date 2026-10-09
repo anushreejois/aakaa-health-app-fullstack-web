@@ -7,6 +7,7 @@ import BlogCMS from './BlogCMS';
 import BookingRescheduler from './BookingRescheduler';
 import RevenueManager from './RevenueManager';
 import YogaCMS from './YogaCMS';
+import AcademyCMS from './AcademyCMS';
 import TherapistVerifier from './TherapistVerifier';
 import PayoutSettler from './PayoutSettler';
 import { useAuth } from '../../context/AuthContext';
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
       case 'bookings': return <BookingRescheduler />;
       case 'payments': return <RevenueManager />;
       case 'yoga': return <YogaCMS />;
+      case 'academy': return <AcademyCMS />;
       case 'verifier': return <TherapistVerifier />;
       case 'payouts': return <PayoutSettler />;
       default: return <DashboardOverview />;

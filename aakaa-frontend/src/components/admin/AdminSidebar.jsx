@@ -8,7 +8,8 @@ import {
   ChevronRight,
   Layers,
   ShieldCheck,
-  Coins
+  Coins,
+  GraduationCap
 } from 'lucide-react';
 
 import { motion } from 'framer-motion';
@@ -24,6 +25,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }) => {
     { id: 'blogs', name: 'Blog CMS', icon: FileText },
     { id: 'bookings', name: 'Bookings', icon: Calendar },
     { id: 'yoga', name: 'Yoga Manager', icon: Layers },
+    { id: 'academy', name: 'Academy Manager', icon: GraduationCap },
   ];
 
   return (
