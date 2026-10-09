@@ -10,6 +10,8 @@ const AcademyCMS = () => {
     { id: 1, title: 'Mentorship Program', type: 'Intensive', students: 0, capacity: 20, status: 'Coming Soon' },
     { id: 2, title: 'Self-Paced Courses', type: 'Flexible', students: 0, capacity: 'Unlimited', status: 'Coming Soon' },
     { id: 3, title: 'Interactive Workshops', type: 'Live', students: 0, capacity: 50, status: 'Coming Soon' },
+    { id: 4, title: 'Expert Webinars', type: 'Digital', students: 0, capacity: 500, status: 'Coming Soon' },
+    { id: 5, title: 'Psychology Career Guidance', type: 'Professional', students: 0, capacity: 15, status: 'Coming Soon' },
   ];
 
   const waitlist = [
