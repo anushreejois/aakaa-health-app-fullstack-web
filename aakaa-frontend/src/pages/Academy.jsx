@@ -84,8 +84,8 @@ const Academy = () => {
               {programs[0].description}
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-3.5 bg-aakaa-green text-white font-bold rounded-full shadow-[0_10px_30px_rgba(30,77,54,0.2)] hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(30,77,54,0.3)] transition-all duration-300">
-                Apply for Mentorship
+              <button disabled className="px-8 py-3.5 bg-gray-300 text-gray-500 font-bold rounded-full cursor-not-allowed shadow-inner transition-all duration-300 flex items-center gap-2">
+                Coming Soon
               </button>
             </div>
           </div>
@@ -133,9 +133,9 @@ const Academy = () => {
                 <p className="text-aakaa-green/60 text-sm leading-relaxed mb-6">
                   {program.description}
                 </p>
-                <button className="flex items-center gap-2 text-sm font-bold text-aakaa-green group-hover:gap-3 transition-all duration-300">
-                  Explore <ArrowRight size={16} />
-                </button>
+                <div className="flex items-center gap-2 text-sm font-bold text-gray-400">
+                  Coming Soon <ArrowRight size={16} className="opacity-50" />
+                </div>
               </div>
             </motion.div>
           ))}
@@ -156,12 +156,12 @@ const Academy = () => {
             <p className="text-white/70 text-lg mb-10 leading-relaxed">
               Join thousands of students, professionals, and individuals who have elevated their understanding of mental wellness with Aakaa Academy.
             </p>
-            <HashLink 
-              to="/#contact"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-aakaa-gold text-aakaa-green font-black rounded-full shadow-[0_10px_30px_rgba(212,175,55,0.3)] hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(212,175,55,0.4)] transition-all duration-300"
+            <button 
+              disabled
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gray-300 text-gray-500 cursor-not-allowed font-black rounded-full shadow-inner transition-all duration-300"
             >
-              Contact Admissions
-            </HashLink>
+              Admissions Opening Soon
+            </button>
           </div>
         </motion.div>
 
