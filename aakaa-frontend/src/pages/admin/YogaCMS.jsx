@@ -237,16 +237,36 @@ const YogaCMS = () => {
                         <p className="text-sm font-bold text-gray-800">{booking.userName}</p>
                         <p className="text-xs text-gray-400 font-mono mt-0.5">{booking.userEmail}</p>
                       </div>
-                      <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase tracking-wider">
-                        Paid
-                      </span>
+                      <div className="flex flex-col items-end">
+                        <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase tracking-wider mb-1">
+                          ₹{booking.amountPaid || '0'}
+                        </span>
+                        <span className="text-[9px] font-black uppercase tracking-wider text-gray-400">
+                          {booking.bookingType === 'private' ? 'Private' : booking.bookingType === 'monthly' ? 'Package' : 'Single'}
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-2 flex items-center gap-1.5 text-xs text-aakaa-gold">
-                      <Layers size={11} />
-                      <span className="truncate max-w-[200px]" title={booking.classId?.title || "Deleted Class"}>
-                        {booking.classId?.title || "Deleted Class"}
-                      </span>
-                    </div>
+
+                    {booking.bookingType === "monthly" && (
+                      <div className="mt-2 flex items-center gap-1.5 text-xs text-aakaa-gold font-bold">
+                        <Layers size={11} />
+                        <span className="capitalize">{booking.classCount} Classes ({booking.pricingTier})</span>
+                      </div>
+                    )}
+                    {booking.bookingType === "private" && (
+                      <div className="mt-2 flex items-center gap-1.5 text-xs text-aakaa-gold font-bold">
+                        <Layers size={11} />
+                        <span>{booking.classCount} Private Sessions</span>
+                      </div>
+                    )}
+                    {booking.bookingType === "class" && (
+                      <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-500">
+                        <Layers size={11} />
+                        <span className="truncate max-w-[200px]" title={booking.classId?.title || "Deleted Class"}>
+                          {booking.classId?.title || "Deleted Class"}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ))
               ) : (

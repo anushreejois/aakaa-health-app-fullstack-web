@@ -200,6 +200,7 @@ const RevenueManager = () => {
                   <th className="px-8 py-5">Reference ID</th>
                   <th className="px-8 py-5">Beneficiary/Client</th>
                   {mode === 'app' && <th className="px-8 py-5">Assigned Caregiver</th>}
+                  {mode === 'website' && <th className="px-8 py-5">Booking Details</th>}
                   <th className="px-8 py-5">Gross Amount</th>
                   <th className="px-8 py-5">Payment Status</th>
                   <th className="px-8 py-5">Timestamp</th>
@@ -219,6 +220,13 @@ const RevenueManager = () => {
                     {mode === 'app' && (
                       <td className="px-8 py-5 text-sm font-bold text-aakaa-green">
                         {txn.therapistName || 'Caregiver'}
+                      </td>
+                    )}
+                    {mode === 'website' && (
+                      <td className="px-8 py-5 text-[11px] font-bold text-aakaa-green/80 uppercase tracking-wide">
+                        {txn.bookingType === 'private' ? `${txn.classCount} Private Sessions` : 
+                         txn.bookingType === 'monthly' ? `${txn.classCount} Classes Package (${txn.pricingTier})` : 
+                         'Single Class Booking'}
                       </td>
                     )}
                     <td className="px-8 py-5 text-sm font-black text-aakaa-green">
