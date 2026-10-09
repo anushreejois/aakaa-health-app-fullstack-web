@@ -39,7 +39,7 @@ const Navbar = () => {
       <div
         className={`
           pointer-events-auto
-          w-full max-w-6xl px-6 md:px-8
+          w-full max-w-4xl px-6 md:px-8
           flex items-center justify-between
           transition-all duration-500 ease-out
           ${scrolled 
@@ -152,7 +152,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden pointer-events-auto w-full max-w-6xl mt-3 bg-white/80 backdrop-blur-2xl border border-white/80 shadow-[0_12px_30px_rgba(0,0,0,0.10)] rounded-3xl overflow-hidden"
+            className="md:hidden pointer-events-auto w-full max-w-4xl mt-3 bg-white/80 backdrop-blur-2xl border border-white/80 shadow-[0_12px_30px_rgba(0,0,0,0.10)] rounded-3xl overflow-hidden"
           >
             <div className="px-6 py-4 space-y-2">
               {menuItems.map((item) => (
