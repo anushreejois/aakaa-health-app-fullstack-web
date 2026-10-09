@@ -5,6 +5,8 @@ const yogaBookingSchema = new mongoose.Schema({
   userEmail: { type: String, required: true },
   classId: { type: mongoose.Schema.Types.ObjectId, ref: 'YogaClass' },
   bookingType: { type: String, enum: ['class', 'monthly', 'private'], default: 'class' },
+  pricingTier: { type: String, enum: ['client', 'therapist', null], default: null },
+  classCount: { type: Number, default: 1 },
   instructorName: { type: String, default: "" },
   date: { type: String, default: "" },
   time: { type: String, default: "" },

@@ -77,7 +77,7 @@ router.delete('/classes/:id', auth, async (req, res) => {
 // @route   POST /api/yoga/bookings
 // @desc    Book a yoga class, monthly pass, or private session (Public for Concierge Flow)
 router.post('/bookings', async (req, res) => {
-  const { userName, userEmail, classId, bookingType, instructorName, date, time, amount } = req.body;
+  const { userName, userEmail, classId, bookingType, instructorName, date, time, amount, classCount, pricingTier } = req.body;
 
   try {
     const type = bookingType || 'class';
@@ -121,6 +121,8 @@ router.post('/bookings', async (req, res) => {
         userEmail,
         bookingType: 'monthly',
         amount: amount || 0,
+        classCount: classCount || 1,
+        pricingTier: pricingTier || null,
         meetLink: 'https://meet.google.com/mock-yoga-monthly-pass'
       });
 
@@ -137,6 +139,7 @@ router.post('/bookings', async (req, res) => {
         date,
         time,
         amount: amount || 0,
+        classCount: classCount || 1,
         meetLink: 'https://meet.google.com/mock-yoga-private-session'
       });
 
