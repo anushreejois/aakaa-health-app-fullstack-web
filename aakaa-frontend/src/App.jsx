@@ -30,7 +30,7 @@ function AppContent() {
     <>
       <ScrollToTop />
       {!isAdminPath && <Navbar />}
-      <div className="flex-1 w-full flex flex-col">
+      <div className="flex-1 w-full flex flex-col overflow-x-hidden">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/blogs" element={<BlogList />} />

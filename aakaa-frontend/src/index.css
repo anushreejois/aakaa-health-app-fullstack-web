@@ -5,9 +5,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
+    overflow-x: hidden;
     background-color: #F6F3E6 !important;
     color: #1E4D36 !important;
     font-family: 'Inter', sans-serif !important;
