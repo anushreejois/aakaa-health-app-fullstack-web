@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, Menu, X, LayoutDashboard } from "lucide-react";
+import { User, Menu, X, LayoutDashboard, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { useAuth } from "../../context/AuthContext";
@@ -21,10 +21,14 @@ const Navbar = () => {
 
   const menuItems = [
     { name: "About Aakaa", href: "/#about" },
-    { name: "Our Services", href: "/#services" },
-    { name: "Yoga Classes", href: "/yoga" },
-    { name: "Testimonials", href: "/#testimonials" },
-    { name: "FAQ’s", href: "/#faq" },
+    { 
+      name: "Services",
+      dropdown: [
+        { name: "Professional Therapy", href: "/professional-care" },
+        { name: "Yoga & Somatics", href: "/yoga" },
+        { name: "Aakaa Academy", href: "/academy" },
+      ]
+    },
     { name: "Blogs", href: "/blogs" },
     { name: "Book Session", href: "/booking", highlight: true },
   ];
@@ -71,20 +75,42 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <ul className="hidden md:flex items-center gap-8 text-[14px] font-bold text-aakaa-green">
           {menuItems.map((item) => (
-            <li key={item.name}>
-              <HashLink
-                to={item.href}
-                smooth
-                className={`
-                  inline-flex items-center transition-all duration-200
-                  ${item.highlight
-                    ? "text-white bg-aakaa-green px-5 py-2 rounded-full shadow-[0_10px_25px_rgba(30,77,54,0.2)] hover:shadow-[0_15px_30px_rgba(30,77,54,0.3)] hover:-translate-y-0.5 transition-all"
-                    : "px-1 py-1 hover:text-aakaa-green hover:bg-white/40 hover:backdrop-blur-xl hover:rounded-full"
-                  }
-                `}
-              >
-                {item.name}
-              </HashLink>
+            <li key={item.name} className="relative group">
+              {item.dropdown ? (
+                <>
+                  <div className="inline-flex items-center gap-1 px-2 py-1 cursor-pointer hover:text-aakaa-green hover:bg-white/40 hover:backdrop-blur-xl hover:rounded-full transition-all duration-200">
+                    {item.name}
+                    <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-200" />
+                  </div>
+                  <div className="absolute top-full left-0 mt-4 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top translate-y-2 group-hover:translate-y-0">
+                    <div className="bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] p-2 flex flex-col gap-1">
+                      {item.dropdown.map((dropItem) => (
+                        <HashLink
+                          key={dropItem.name}
+                          to={dropItem.href}
+                          className="px-4 py-2.5 text-xs font-bold rounded-xl hover:bg-aakaa-green/5 hover:text-aakaa-green transition-colors"
+                        >
+                          {dropItem.name}
+                        </HashLink>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <HashLink
+                  to={item.href}
+                  smooth
+                  className={`
+                    inline-flex items-center transition-all duration-200
+                    ${item.highlight
+                      ? "text-white bg-aakaa-green px-5 py-2 rounded-full shadow-[0_10px_25px_rgba(30,77,54,0.2)] hover:shadow-[0_15px_30px_rgba(30,77,54,0.3)] hover:-translate-y-0.5 transition-all"
+                      : "px-2 py-1 hover:text-aakaa-green hover:bg-white/40 hover:backdrop-blur-xl hover:rounded-full"
+                    }
+                  `}
+                >
+                  {item.name}
+                </HashLink>
+              )}
             </li>
           ))}
         </ul>
@@ -130,22 +156,42 @@ const Navbar = () => {
           >
             <div className="px-6 py-4 space-y-2">
               {menuItems.map((item) => (
-                <HashLink
-                  key={item.name}
-                  to={item.href}
-                  smooth
-                  className={`
-                    block text-sm font-bold rounded-2xl px-4 py-3
-                    text-aakaa-green
-                    ${item.highlight
-                      ? "bg-aakaa-green text-white text-center shadow-[0_10px_25px_rgba(30,77,54,0.35)]"
-                      : "bg-white/40 hover:bg-white/70"
-                    }
-                  `}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </HashLink>
+                <React.Fragment key={item.name}>
+                  {item.dropdown ? (
+                    <div className="space-y-1">
+                      <div className="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        {item.name}
+                      </div>
+                      {item.dropdown.map((dropItem) => (
+                        <HashLink
+                          key={dropItem.name}
+                          to={dropItem.href}
+                          smooth
+                          className="block text-sm font-bold rounded-2xl px-6 py-3 text-aakaa-green bg-white/40 hover:bg-white/70"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {dropItem.name}
+                        </HashLink>
+                      ))}
+                    </div>
+                  ) : (
+                    <HashLink
+                      to={item.href}
+                      smooth
+                      className={`
+                        block text-sm font-bold rounded-2xl px-4 py-3
+                        text-aakaa-green
+                        ${item.highlight
+                          ? "bg-aakaa-green text-white text-center shadow-[0_10px_25px_rgba(30,77,54,0.35)] mt-4"
+                          : "bg-white/40 hover:bg-white/70"
+                        }
+                      `}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                    </HashLink>
+                  )}
+                </React.Fragment>
               ))}
             </div>
           </motion.div>
