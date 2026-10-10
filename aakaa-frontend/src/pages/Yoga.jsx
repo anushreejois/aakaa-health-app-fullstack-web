@@ -683,7 +683,7 @@ export default function Yoga() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white w-full max-w-lg rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-gray-100"
+              className="bg-white w-full max-w-lg rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-gray-100 flex flex-col max-h-[90vh]"
             >
               {/* Header */}
               <div className="bg-aakaa-green text-white px-8 py-6 flex items-center justify-between">
@@ -704,7 +704,7 @@ export default function Yoga() {
               </div>
 
               {/* Body */}
-              <div className="p-8 text-sm text-gray-700">
+              <div className="p-8 text-sm text-gray-700 overflow-y-auto">
                 {bookingSuccess ? (
                   <div className="text-center py-6">
                     <div className="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
