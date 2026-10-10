@@ -945,7 +945,7 @@ export default function Yoga() {
                             ? `Confirm & Pay ₹${bookingClass?.price}`
                             : bookingType === "monthly"
                               ? `Confirm & Pay ₹${classCount * (pricingTier === "client" ? 249 : 299)}`
-                              : `Confirm & Pay ₹${classCount * 1849}`}
+                              : `Request Planning Call`}
                       </button>
                     )}
                   </form>
