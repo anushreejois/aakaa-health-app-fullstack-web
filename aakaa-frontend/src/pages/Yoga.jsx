@@ -11,6 +11,7 @@ export default function Yoga() {
   const [error, setError] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [pricingTier, setPricingTier] = useState("client"); // "client" or "therapist"
+  const [showPrivateWarning, setShowPrivateWarning] = useState(false);
 
   // Booking Modal State
   const [bookingType, setBookingType] = useState("class"); // class, monthly, private
@@ -81,7 +82,13 @@ export default function Yoga() {
   };
 
   const handleBookingSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+
+    if (bookingType === "private" && !showPrivateWarning) {
+      setShowPrivateWarning(true);
+      return;
+    }
+
     setBookingLoading(true);
     setBookingError("");
     setBookingSuccess(null);
@@ -220,6 +227,7 @@ export default function Yoga() {
     setBookingClass(null);
     setBookingSuccess(null);
     setBookingError("");
+    setShowPrivateWarning(false);
     setIsModalOpen(true);
   };
 
@@ -900,19 +908,46 @@ export default function Yoga() {
                       </div>
                     )}
 
-                    <button
-                      type="submit"
-                      disabled={bookingLoading}
-                      className="w-full py-4 bg-aakaa-green text-white font-bold rounded-2xl shadow-lg shadow-aakaa-green/20 hover:bg-aakaa-green/95 transition-all text-center text-xs uppercase tracking-widest"
-                    >
-                      {bookingLoading
-                        ? "Processing Booking..."
-                        : bookingType === "class"
-                          ? `Confirm & Pay ₹${bookingClass?.price}`
-                          : bookingType === "monthly"
-                            ? `Confirm & Pay ₹${classCount * (pricingTier === "client" ? 249 : 299)}`
-                            : `Confirm & Pay ₹${classCount * 1849}`}
-                    </button>
+                    {showPrivateWarning && bookingType === "private" ? (
+                      <div className="bg-yellow-50 p-5 rounded-2xl border border-yellow-200 shadow-sm mt-4">
+                        <h4 className="text-yellow-800 font-bold mb-2 flex items-center gap-2">
+                          <Info className="w-5 h-5" /> Wait! Before you pay...
+                        </h4>
+                        <p className="text-yellow-700 text-sm mb-5 font-medium leading-relaxed">
+                          By continuing, you acknowledge that your first step will be a personalized planning call with your selected expert to tailor the program to your needs. Ready to proceed?
+                        </p>
+                        <div className="flex gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setShowPrivateWarning(false)}
+                            className="flex-1 py-3 bg-white text-gray-700 font-bold rounded-xl border border-gray-300 hover:bg-gray-50 transition-all text-xs uppercase tracking-widest"
+                          >
+                            Go Back
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={bookingLoading}
+                            className="flex-1 py-3 bg-aakaa-green text-white font-bold rounded-xl shadow-lg shadow-aakaa-green/20 hover:bg-aakaa-green/95 transition-all text-xs uppercase tracking-widest"
+                          >
+                            {bookingLoading ? "Processing..." : "Yes, Proceed"}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={bookingLoading}
+                        className="w-full py-4 bg-aakaa-green text-white font-bold rounded-2xl shadow-lg shadow-aakaa-green/20 hover:bg-aakaa-green/95 transition-all text-center text-xs uppercase tracking-widest"
+                      >
+                        {bookingLoading
+                          ? "Processing Booking..."
+                          : bookingType === "class"
+                            ? `Confirm & Pay ₹${bookingClass?.price}`
+                            : bookingType === "monthly"
+                              ? `Confirm & Pay ₹${classCount * (pricingTier === "client" ? 249 : 299)}`
+                              : `Confirm & Pay ₹${classCount * 1849}`}
+                      </button>
+                    )}
                   </form>
                 )}
               </div>
