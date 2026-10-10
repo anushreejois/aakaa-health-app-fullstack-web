@@ -7,13 +7,18 @@ const ContactModal = ({ isOpen, onClose, amount, orderId, bookingType, classCoun
 
   const handleWhatsApp = () => {
     let packageInfo = "";
+    let text = "";
+    
     if (bookingType === "monthly") {
       packageInfo = ` for ${classCount} Group Classes`;
+      text = encodeURIComponent(`Hi! I'd like to confirm my booking${packageInfo}. Amount: ₹${amount}`);
     } else if (bookingType === "private") {
       packageInfo = ` for ${classCount} Private Sessions`;
+      text = encodeURIComponent(`Hi! I'd like to schedule my planning call${packageInfo}.`);
+    } else {
+      text = encodeURIComponent(`Hi! I'd like to confirm my booking. Amount: ₹${amount}`);
     }
     
-    const text = encodeURIComponent(`Hi! I'd like to confirm my booking${packageInfo}. Amount: ₹${amount}`);
     window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
     onClose(); // Auto close the modal after they click
   };
@@ -43,7 +48,9 @@ const ContactModal = ({ isOpen, onClose, amount, orderId, bookingType, classCoun
           </div>
           <h3 className="text-2xl font-black mb-2 tracking-tight">Booking Saved!</h3>
           <p className="text-gray-400 text-sm font-medium px-4">
-            Your slot is temporarily reserved. We are in early access, so please contact us directly to confirm your payment and booking.
+            {bookingType === "private"
+              ? "Your request is registered. Please contact us directly via WhatsApp or Call to schedule your planning call before proceeding with the payment."
+              : "Your slot is temporarily reserved. We are in early access, so please contact us directly to confirm your payment and booking."}
           </p>
         </div>
 
@@ -54,7 +61,7 @@ const ContactModal = ({ isOpen, onClose, amount, orderId, bookingType, classCoun
               className="w-full p-5 rounded-2xl bg-[#25D366] text-white flex items-center justify-center gap-3 font-bold hover:bg-[#20bd5a] transition-all hover:-translate-y-1 shadow-lg shadow-green-200"
             >
               <MessageCircle size={22} />
-              Confirm via WhatsApp
+              {bookingType === 'private' ? 'Schedule via WhatsApp' : 'Confirm via WhatsApp'}
             </button>
             
             <button 

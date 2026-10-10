@@ -121,21 +121,7 @@ export default function Yoga() {
       if (response.ok) {
         const data = await response.json();
         setCurrentOrder(data);
-        
-        // For private sessions, bypass automatic payment mock so it stays as "Pending Verification"
-        if (bookingType === "private") {
-          setBookingSuccess({ 
-            userEmail: formData.email, 
-            instructorName: privateInstructor, 
-            date: privateDate, 
-            time: privateTime, 
-            meetLink: "Will be shared after planning call" 
-          });
-          fetchClasses();
-          setFormData({ name: "", email: "" });
-        } else {
-          setIsMockPaymentOpen(true);
-        }
+        setIsMockPaymentOpen(true);
       } else {
         const errorData = await response.json();
         setBookingError(errorData.msg || "Failed to save booking. Please try again.");
