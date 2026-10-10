@@ -60,6 +60,27 @@ const YogaCMS = () => {
     fetchData();
   }, []);
 
+  const handleApprovePayment = async (bookingId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/payments/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ bookingId, category: 'yoga' })
+      });
+      if (response.ok) {
+        showToast("Payment received and confirmed!");
+        fetchData();
+      } else {
+        alert("Failed to approve payment");
+      }
+    } catch (err) {
+      console.error("Failed to approve payment", err);
+    }
+  };
+
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
@@ -237,13 +258,28 @@ const YogaCMS = () => {
                         <p className="text-sm font-bold text-gray-800">{booking.userName}</p>
                         <p className="text-xs text-gray-400 font-mono mt-0.5">{booking.userEmail}</p>
                       </div>
-                      <div className="flex flex-col items-end">
-                        <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase tracking-wider mb-1">
-                          ₹{booking.amountPaid || '0'}
+                      <div className="flex flex-col items-end gap-1">
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                          booking.status === 'confirmed' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'
+                        }`}>
+                          {booking.status === 'confirmed' ? 'Paid / Confirmed' : 'Pending Payment'}
                         </span>
-                        <span className="text-[9px] font-black uppercase tracking-wider text-gray-400">
-                          {booking.bookingType === 'private' ? 'Private' : booking.bookingType === 'monthly' ? 'Package' : 'Single'}
-                        </span>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[9px] font-black uppercase tracking-wider text-gray-400 mb-1">
+                            {booking.bookingType === 'private' ? 'Private' : booking.bookingType === 'monthly' ? 'Package' : 'Single'}
+                          </span>
+                          <span className="px-2 py-0.5 bg-gray-50 text-gray-500 rounded-full text-[9px] font-black uppercase tracking-wider font-mono">
+                            ₹{booking.amountPaid || booking.amount || '0'}
+                          </span>
+                        </div>
+                        {booking.status === 'Pending Verification' && (
+                          <button 
+                            onClick={() => handleApprovePayment(booking._id)}
+                            className="px-3 py-1.5 mt-1 bg-aakaa-green text-white text-[9px] rounded-lg font-bold hover:bg-aakaa-green/90 transition-colors uppercase tracking-widest shadow-sm"
+                          >
+                            Mark as Received
+                          </button>
+                        )}
                       </div>
                     </div>
 
