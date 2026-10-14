@@ -23,8 +23,14 @@ export default function TherapistProfileView({ therapist, onClose, onBook }) {
         className="relative w-full max-w-2xl h-full bg-[#fdfdfc] shadow-2xl overflow-y-auto scrollbar-hide"
       >
         {/* Header Image */}
-        <div className="relative h-[450px]">
-          <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover" />
+        <div className="relative h-[450px] bg-gradient-to-br from-aakaa-green/15 via-aakaa-cream/60 to-aakaa-gold/20 flex items-center justify-center">
+          {therapist.image ? (
+            <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-36 h-36 rounded-full bg-white/70 shadow-lg flex items-center justify-center text-aakaa-green font-black text-5xl border-4 border-white mb-10">
+              {therapist.name?.charAt(0) || "P"}
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#fdfdfc] via-transparent to-black/20" />
           
           <button 

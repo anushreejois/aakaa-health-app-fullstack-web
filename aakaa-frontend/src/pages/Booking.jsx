@@ -528,8 +528,14 @@ export default function Booking() {
                         className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_20px_50px_rgba(30,77,54,0.06)] hover:border-aakaa-green/10 transition-all duration-500 flex flex-col justify-between"
                       >
                         <div>
-                          <div className="relative h-60 overflow-hidden">
-                            <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                          <div className="relative h-60 overflow-hidden bg-gradient-to-br from-aakaa-green/10 via-aakaa-cream/40 to-aakaa-gold/10 flex items-center justify-center">
+                            {therapist.image ? (
+                              <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            ) : (
+                              <div className="w-24 h-24 rounded-full bg-white/80 shadow-inner flex items-center justify-center text-aakaa-green font-black text-3xl">
+                                {therapist.name?.charAt(0) || "P"}
+                              </div>
+                            )}
                             <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl flex items-center gap-1 shadow-sm border border-gray-50">
                               <Star size={14} className="text-amber-500 fill-amber-500" />
                               <span className="text-sm font-black text-gray-900">{therapist.rating}</span>
@@ -582,7 +588,13 @@ export default function Booking() {
               <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-2xl">
                 {selectedTherapist ? (
                   <div className="flex items-center gap-6 mb-12 pb-8 border-b border-gray-50">
-                    <img src={selectedTherapist.image} alt={selectedTherapist.name} className="w-20 h-20 rounded-3xl object-cover shadow-lg" />
+                    {selectedTherapist.image ? (
+                      <img src={selectedTherapist.image} alt={selectedTherapist.name} className="w-20 h-20 rounded-3xl object-cover shadow-lg" />
+                    ) : (
+                      <div className="w-20 h-20 rounded-3xl bg-aakaa-cream flex items-center justify-center text-aakaa-green font-black text-2xl shadow-lg border-2 border-white">
+                        {selectedTherapist.name?.charAt(0) || "P"}
+                      </div>
+                    )}
                     <div>
                       <p className="text-sm font-bold text-aakaa-green uppercase tracking-widest mb-1">Your selection</p>
                       <h3 className="text-3xl font-black text-gray-900">{selectedTherapist.name}</h3>

@@ -117,9 +117,11 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
               </div>
 
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Email Address</label>
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Email Address</label>
+                  <span className="text-[10px] text-gray-400 font-bold">(Optional)</span>
+                </div>
                 <input
-                  required
                   type="email"
                   value={formData.email || ''}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}

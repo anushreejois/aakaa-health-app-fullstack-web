@@ -203,7 +203,11 @@ const TherapistLeaderboard = () => {
               </div>
               
               <div className="w-24 h-24 rounded-[2rem] bg-aakaa-cream mx-auto flex items-center justify-center text-aakaa-green border-4 border-white shadow-xl overflow-hidden mb-6 group-hover:rotate-3 transition-transform">
-                <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover" />
+                {therapist.image ? (
+                  <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-3xl font-black text-aakaa-green">{therapist.name?.charAt(0) || "P"}</span>
+                )}
               </div>
               
               <h3 className="text-xl font-black text-aakaa-green">{therapist.name}</h3>
@@ -253,7 +257,13 @@ const TherapistLeaderboard = () => {
                     <tr key={therapist._id} className="hover:bg-aakaa-cream/10 transition-colors group">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                          <img src={therapist.image} alt="" className="w-10 h-10 rounded-2xl object-cover shadow-inner" />
+                          {therapist.image ? (
+                            <img src={therapist.image} alt="" className="w-10 h-10 rounded-2xl object-cover shadow-inner" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-2xl bg-aakaa-cream flex items-center justify-center text-aakaa-green font-black text-sm shadow-inner">
+                              {therapist.name?.charAt(0) || "P"}
+                            </div>
+                          )}
                           <span className="text-sm font-bold text-aakaa-green group-hover:translate-x-1 transition-transform">{therapist.name}</span>
                         </div>
                       </td>
