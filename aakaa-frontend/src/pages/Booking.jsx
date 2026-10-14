@@ -303,7 +303,7 @@ export default function Booking() {
 
     // 2. Specialties filter (if any are selected)
     if (selectedSpecialties.length > 0) {
-      const hasMatchingSpecialty = therapist.specialties.some((s) =>
+      const hasMatchingSpecialty = therapist.specialties?.some((s) =>
         selectedSpecialties.includes(s)
       );
       if (!hasMatchingSpecialty) return false;
@@ -311,7 +311,7 @@ export default function Booking() {
 
     // 3. Availability filter (if any are selected)
     if (selectedAvailability.length > 0) {
-      const hasMatchingDay = therapist.availability.some((day) =>
+      const hasMatchingDay = therapist.availability?.some((day) =>
         selectedAvailability.includes(day)
       );
       if (!hasMatchingDay) return false;
@@ -521,7 +521,7 @@ export default function Booking() {
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {filteredTherapists.map((therapist, index) => (
                       <motion.div 
-                        key={therapist.id}
+                        key={therapist._id || therapist.id || index}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
@@ -543,11 +543,11 @@ export default function Booking() {
                             </div>
                             
                             <div className="flex flex-wrap gap-1.5 mb-6">
-                              {therapist.specialties.slice(0, 2).map(s => (
+                              {(therapist.specialties || []).slice(0, 2).map(s => (
                                 <span key={s} className="px-2.5 py-1 bg-gray-50 text-gray-500 text-[10px] font-bold rounded-lg border border-gray-100">{s}</span>
                               ))}
-                              {therapist.specialties.length > 2 && (
-                                <span className="px-2.5 py-1 bg-gray-50 text-gray-400 text-[10px] font-bold rounded-lg border border-gray-100">+{therapist.specialties.length - 2} more</span>
+                              {(therapist.specialties || []).length > 2 && (
+                                <span className="px-2.5 py-1 bg-gray-50 text-gray-400 text-[10px] font-bold rounded-lg border border-gray-100">+{(therapist.specialties || []).length - 2} more</span>
                               )}
                             </div>
                           </div>

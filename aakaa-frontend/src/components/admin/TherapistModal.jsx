@@ -12,16 +12,21 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
     price: '₹850',
     image: '',
     bio: '',
-    rating: 4.5,
+    rating: 4.8,
     bookings: 0,
-    views: 0
+    views: 0,
+    availability: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    status: 'approved'
   });
 
   useEffect(() => {
     if (therapist) {
       setFormData({
         ...therapist,
-        specialties: therapist.specialties ? therapist.specialties.join(', ') : ''
+        specialties: therapist.specialties ? therapist.specialties.join(', ') : '',
+        availability: therapist.availability && therapist.availability.length > 0 
+          ? therapist.availability 
+          : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
       });
     } else {
       setFormData({
@@ -32,9 +37,11 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
         price: '₹850',
         image: '',
         bio: '',
-        rating: 4.5,
+        rating: 4.8,
         bookings: 0,
-        views: 0
+        views: 0,
+        availability: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        status: 'approved'
       });
     }
   }, [therapist, isOpen]);
@@ -43,7 +50,13 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
     e.preventDefault();
     const processedData = {
       ...formData,
-      specialties: formData.specialties.split(',').map(s => s.trim()).filter(s => s !== '')
+      specialties: typeof formData.specialties === 'string'
+        ? formData.specialties.split(',').map(s => s.trim()).filter(s => s !== '')
+        : formData.specialties,
+      availability: formData.availability && formData.availability.length > 0
+        ? formData.availability
+        : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      status: formData.status || 'approved'
     };
     onSave(processedData);
   };
@@ -125,6 +138,33 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
                   className="w-full px-6 py-4 bg-aakaa-cream/10 border border-aakaa-green/5 rounded-2xl focus:ring-4 focus:ring-aakaa-green/5 focus:outline-none transition-all font-bold text-aakaa-green"
                   placeholder="Anxiety, Depression, Trauma"
                 />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Available Days</label>
+                <div className="flex flex-wrap gap-2">
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(day => {
+                    const isSelected = (formData.availability || []).includes(day);
+                    return (
+                      <button
+                        type="button"
+                        key={day}
+                        onClick={() => {
+                          const current = formData.availability || [];
+                          const updated = isSelected ? current.filter(d => d !== day) : [...current, day];
+                          setFormData({ ...formData, availability: updated });
+                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                          isSelected 
+                            ? "bg-aakaa-green text-white shadow-md shadow-aakaa-green/20" 
+                            : "bg-aakaa-cream/30 text-aakaa-green/70 hover:bg-aakaa-cream/60 border border-aakaa-green/10"
+                        }`}
+                      >
+                        {day.slice(0, 3)}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 

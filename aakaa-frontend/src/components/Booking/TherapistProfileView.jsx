@@ -80,7 +80,7 @@ export default function TherapistProfileView({ therapist, onClose, onBook }) {
             <section>
               <h4 className="text-[10px] font-black text-aakaa-gold uppercase tracking-[0.3em] mb-6">Clinical Focus</h4>
               <div className="flex flex-wrap gap-2">
-                {therapist.specialties.map(spec => (
+                {(therapist.specialties || []).map(spec => (
                   <span key={spec} className="px-6 py-3 bg-white text-gray-600 rounded-2xl text-sm font-bold border border-gray-100 shadow-sm hover:border-aakaa-green/30 transition-colors">
                     {spec}
                   </span>
