@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   TrendingUp, 
   Users, 
@@ -48,7 +48,7 @@ const DashboardOverview = ({ onNavigate }) => {
   const [realWaitlist, setRealWaitlist] = useState([]);
   const [realBookings, setRealBookings] = useState([]);
   const [realTherapists, setRealTherapists] = useState([]);
-  const [realStats, setRealStats] = useState({ revenue: 0, revenueChange: "+0%", sessions: 0, sessionsChange: "+0%" });
+  const [rawStatsData, setRawStatsData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const ranges = ['Today', '7D', '30D', 'All Time'];
@@ -75,16 +75,7 @@ const DashboardOverview = ({ onNavigate }) => {
         setRealWaitlist(Array.isArray(waitlistData) ? waitlistData : []);
         setRealBookings(Array.isArray(bookingsData) ? bookingsData : []);
         setRealTherapists(Array.isArray(therapistsData) ? therapistsData : []);
-        
-        // Calculate Total Revenue from Therapy (app) and Yoga (website)
-        const totalRevenue = (statsData.app?.revenue || 0) + (statsData.website?.revenue || 0);
-        // Average Growth (simplistic logic)
-        setRealStats({
-          revenue: totalRevenue,
-          revenueChange: statsData.app?.revenueChange || "+0%",
-          sessions: (statsData.app?.growth || 0) + (statsData.website?.growth || 0),
-          sessionsChange: statsData.app?.growthChange || "+0%"
-        });
+        setRawStatsData(statsData);
 
         setLoading(false);
       } catch (error) {
@@ -97,6 +88,126 @@ const DashboardOverview = ({ onNavigate }) => {
     return () => clearInterval(interval);
   }, [token]);
 
+  // Dynamically compute metrics based on selected timeRange
+  const filteredMetrics = useMemo(() => {
+    const allTxns = [
+      ...(rawStatsData?.app?.transactions || []),
+      ...(rawStatsData?.website?.transactions || [])
+    ];
+
+    const allBookings = Array.isArray(realBookings) ? realBookings : [];
+    const allWaitlist = Array.isArray(realWaitlist) ? realWaitlist : [];
+
+    const now = new Date();
+    let rangeStart = null;
+    let rangePrevStart = null;
+    let rangePrevEnd = null;
+
+    if (timeRange === 'Today') {
+      rangeStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      rangePrevStart = new Date(rangeStart.getTime() - 24 * 60 * 60 * 1000);
+      rangePrevEnd = rangeStart;
+    } else if (timeRange === '7D') {
+      rangeStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      rangePrevStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+      rangePrevEnd = rangeStart;
+    } else if (timeRange === '30D') {
+      rangeStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      rangePrevStart = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+      rangePrevEnd = rangeStart;
+    } else {
+      // All Time
+      rangeStart = new Date(0);
+      rangePrevStart = null;
+      rangePrevEnd = null;
+    }
+
+    const isConfirmed = (t) => {
+      const s = (t.status || '').toLowerCase();
+      return s === 'confirmed' || s === 'completed' || s === 'active' || s === 'settled';
+    };
+
+    // Filter transactions for current range
+    const currentTxns = allTxns.filter((t) => {
+      if (!isConfirmed(t)) return false;
+      const d = new Date(t.createdAt);
+      return isNaN(d.getTime()) || d >= rangeStart;
+    });
+
+    // Filter transactions for previous range (for growth %)
+    const prevTxns = rangePrevStart ? allTxns.filter((t) => {
+      if (!isConfirmed(t)) return false;
+      const d = new Date(t.createdAt);
+      return d >= rangePrevStart && d < rangePrevEnd;
+    }) : [];
+
+    // Calculate revenue
+    const currentRevenue = currentTxns.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+    const prevRevenue = prevTxns.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+    let revenueChange = "+0%";
+    if (prevRevenue > 0) {
+      const pct = ((currentRevenue - prevRevenue) / prevRevenue) * 100;
+      revenueChange = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+    } else if (currentRevenue > 0) {
+      revenueChange = "+100%";
+    }
+
+    // Filter sessions / bookings
+    const currentSessionsList = allBookings.filter((b) => {
+      const d = new Date(b.createdAt);
+      return isNaN(d.getTime()) || d >= rangeStart;
+    });
+    const prevSessionsList = rangePrevStart ? allBookings.filter((b) => {
+      const d = new Date(b.createdAt);
+      return d >= rangePrevStart && d < rangePrevEnd;
+    }) : [];
+
+    const currentSessionsCount = currentSessionsList.length;
+    const prevSessionsCount = prevSessionsList.length;
+
+    let sessionsChange = "+0%";
+    if (prevSessionsCount > 0) {
+      const pct = ((currentSessionsCount - prevSessionsCount) / prevSessionsCount) * 100;
+      sessionsChange = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+    } else if (currentSessionsCount > 0) {
+      sessionsChange = "+100%";
+    }
+
+    // Filter waitlist
+    const currentWaitlistCount = timeRange === 'All Time'
+      ? allWaitlist.length
+      : allWaitlist.filter((w) => {
+          const d = new Date(w.createdAt || w.date);
+          return isNaN(d.getTime()) || d >= rangeStart;
+        }).length;
+
+    const prevWaitlistCount = rangePrevStart ? allWaitlist.filter((w) => {
+      const d = new Date(w.createdAt || w.date);
+      return d >= rangePrevStart && d < rangePrevEnd;
+    }).length : 0;
+
+    let waitlistChange = "+0%";
+    if (prevWaitlistCount > 0) {
+      const pct = ((currentWaitlistCount - prevWaitlistCount) / prevWaitlistCount) * 100;
+      waitlistChange = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+    } else if (currentWaitlistCount > 0) {
+      waitlistChange = "+100%";
+    }
+
+    return {
+      revenue: currentRevenue,
+      revenueChange,
+      sessions: currentSessionsCount,
+      sessionsChange,
+      waitlist: currentWaitlistCount,
+      waitlistChange,
+      growth: sessionsChange,
+      growthChange: sessionsChange,
+      filteredBookings: currentSessionsList
+    };
+  }, [rawStatsData, realBookings, realWaitlist, timeRange]);
+
   // Live pulse simulation
   useEffect(() => {
     const interval = setInterval(() => {
@@ -106,10 +217,43 @@ const DashboardOverview = ({ onNavigate }) => {
   }, []);
 
   const stats = [
-    { label: 'Total Revenue', value: `₹${realStats.revenue.toLocaleString()}`, change: realStats.revenueChange, icon: ShoppingBag, color: 'text-blue-600', bgColor: 'bg-blue-50', stroke: '#2563eb', isRevenue: true },
-    { label: 'Growth', value: `${realStats.sessionsChange}`, change: realStats.sessionsChange, icon: TrendingUp, color: 'text-emerald-600', bgColor: 'bg-emerald-50', stroke: '#10b981' },
-    { label: 'Sessions', value: realStats.sessions || (Array.isArray(realBookings) ? realBookings.length : 0), change: "+0%", icon: Calendar, color: 'text-purple-600', bgColor: 'bg-purple-50', stroke: '#8b5cf6' },
-    { label: 'Waitlist', value: Array.isArray(realWaitlist) ? realWaitlist.length : 0, change: "+0%", icon: Users, color: 'text-orange-600', bgColor: 'bg-orange-50', stroke: '#f97316' },
+    { 
+      label: 'Total Revenue', 
+      value: `₹${filteredMetrics.revenue.toLocaleString()}`, 
+      change: filteredMetrics.revenueChange, 
+      icon: ShoppingBag, 
+      color: 'text-blue-600', 
+      bgColor: 'bg-blue-50', 
+      stroke: '#2563eb', 
+      isRevenue: true 
+    },
+    { 
+      label: 'Growth', 
+      value: filteredMetrics.growth, 
+      change: filteredMetrics.growthChange, 
+      icon: TrendingUp, 
+      color: 'text-emerald-600', 
+      bgColor: 'bg-emerald-50', 
+      stroke: '#10b981' 
+    },
+    { 
+      label: 'Sessions', 
+      value: filteredMetrics.sessions, 
+      change: filteredMetrics.sessionsChange, 
+      icon: Calendar, 
+      color: 'text-purple-600', 
+      bgColor: 'bg-purple-50', 
+      stroke: '#8b5cf6' 
+    },
+    { 
+      label: 'Waitlist', 
+      value: filteredMetrics.waitlist, 
+      change: filteredMetrics.waitlistChange, 
+      icon: Users, 
+      color: 'text-orange-600', 
+      bgColor: 'bg-orange-50', 
+      stroke: '#f97316' 
+    },
   ];
 
   return (
@@ -151,7 +295,7 @@ const DashboardOverview = ({ onNavigate }) => {
             ))}
           </div>
           <button 
-            onClick={() => exportToCSV(realBookings, 'payment_history.csv')}
+            onClick={() => exportToCSV(filteredMetrics.filteredBookings, `bookings_${timeRange.toLowerCase().replace(' ', '_')}.csv`)}
             className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-black transition-all shadow-xl"
           >
             <Download size={18} />
