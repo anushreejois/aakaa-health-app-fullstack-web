@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Upload, User, Award, DollarSign, Image as ImageIcon } from 'lucide-react';
+import { X, Save, Upload, User, Award, DollarSign, Image as ImageIcon, Crop } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import ImageCropperModal from './ImageCropperModal';
 
 const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
   const [isCompressing, setIsCompressing] = useState(false);
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [cropTargetSrc, setCropTargetSrc] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     title: '',
@@ -24,45 +27,14 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
-    setIsCompressing(true);
     const reader = new FileReader();
     reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        const maxDimension = 800; // Optimal 800x800 profile photo size
-
-        if (width > maxDimension || height > maxDimension) {
-          if (width > height) {
-            height = Math.round((height * maxDimension) / width);
-            width = maxDimension;
-          } else {
-            width = Math.round((width * maxDimension) / height);
-            height = maxDimension;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // Compress to high quality JPEG
-        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        setFormData((prev) => ({ ...prev, image: compressedDataUrl }));
-        setIsCompressing(false);
-      };
-      img.onerror = () => {
-        alert("Unable to process the image file. Please try another image.");
-        setIsCompressing(false);
-      };
-      img.src = event.target.result;
+      setCropTargetSrc(event.target.result);
+      setIsCropModalOpen(true);
+      e.target.value = '';
     };
     reader.onerror = () => {
       alert("Failed to read image file.");
-      setIsCompressing(false);
     };
     reader.readAsDataURL(file);
   };
@@ -238,28 +210,39 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
                 </div>
                 <div className="flex flex-col gap-4">
                   {formData.image && (
-                    <div className="flex items-center gap-4">
-                      <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-aakaa-green/10 shadow-lg">
+                    <div className="flex items-center gap-4 p-3 bg-aakaa-cream/20 rounded-2xl border border-aakaa-green/10">
+                      <div className="w-20 h-24 rounded-xl overflow-hidden border border-aakaa-green/20 shadow-md bg-white flex-shrink-0">
                         <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setFormData({ ...formData, image: '' })}
-                        className="text-xs font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all"
-                      >
-                        Remove Photo
-                      </button>
+                      <div className="flex flex-col gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCropTargetSrc(formData.image);
+                            setIsCropModalOpen(true);
+                          }}
+                          className="text-xs font-bold text-aakaa-green hover:text-white bg-aakaa-green/10 hover:bg-aakaa-green px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-sm"
+                        >
+                          <Crop size={14} /> Re-frame / Crop Photo
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: '' })}
+                          className="text-xs font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3.5 py-1.5 rounded-xl transition-all text-left"
+                        >
+                          Remove Photo
+                        </button>
+                      </div>
                     </div>
                   )}
                   <div className="flex gap-2">
                     <label className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-aakaa-green text-white rounded-2xl cursor-pointer hover:bg-aakaa-green/90 transition-all font-bold text-sm shadow-xl shadow-aakaa-green/10">
                       <Upload size={18} />
-                      {isCompressing ? 'Processing...' : 'Upload File'}
+                      Upload & Frame Photo
                       <input 
                         type="file" 
                         className="hidden" 
                         accept="image/*"
-                        disabled={isCompressing}
                         onChange={handleImageFileChange}
                       />
                     </label>
@@ -273,9 +256,20 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
                       />
                     </div>
                   </div>
-                  <p className="text-[9px] text-aakaa-gold/60 font-medium">Automatic optimization: Any image will be automatically resized and optimized for fast loading.</p>
+                  <p className="text-[9px] text-aakaa-gold/80 font-semibold">Interactive framing: When you select a photo, you can pan and zoom to perfectly center the practitioner's face.</p>
                 </div>
               </div>
+
+              {/* Interactive Cropper Modal */}
+              <ImageCropperModal
+                isOpen={isCropModalOpen}
+                imageSrc={cropTargetSrc}
+                onClose={() => setIsCropModalOpen(false)}
+                onCropComplete={(croppedDataUrl) => {
+                  setFormData((prev) => ({ ...prev, image: croppedDataUrl }));
+                  setIsCropModalOpen(false);
+                }}
+              />
 
               <div className="space-y-4">
                 <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Session Fee (Display text)</label>

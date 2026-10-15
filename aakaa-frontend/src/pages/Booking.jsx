@@ -529,56 +529,59 @@ export default function Booking() {
                         className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_25px_60px_rgba(30,77,54,0.08)] hover:border-aakaa-green/20 transition-all duration-500 flex flex-col justify-between cursor-pointer"
                       >
                         <div>
-                          <div className="relative h-64 sm:h-72 overflow-hidden bg-[#122218] flex items-center justify-center">
+                          <div className="relative h-72 sm:h-80 overflow-hidden bg-gradient-to-b from-[#f4f7f4] to-[#e8efe9] flex items-center justify-center">
                             {therapist.image ? (
-                              <>
-                                <img 
-                                  src={therapist.image} 
-                                  alt="" 
-                                  className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none" 
-                                />
-                                <img 
-                                  src={therapist.image} 
-                                  alt={therapist.name} 
-                                  className="relative z-10 h-full w-auto max-w-full object-contain p-2 rounded-2xl group-hover:scale-105 transition-transform duration-500 drop-shadow-md" 
-                                />
-                              </>
+                              <img 
+                                src={therapist.image} 
+                                alt={therapist.name} 
+                                className="w-full h-full object-cover object-top sm:object-center group-hover:scale-105 transition-transform duration-700 ease-out" 
+                              />
                             ) : (
-                              <div className="w-24 h-24 rounded-full bg-white/80 shadow-inner flex items-center justify-center text-aakaa-green font-black text-3xl">
+                              <div className="w-24 h-24 rounded-full bg-aakaa-green/10 flex items-center justify-center text-aakaa-green font-black text-4xl shadow-inner">
                                 {therapist.name?.charAt(0) || "P"}
                               </div>
                             )}
-                            <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl flex items-center gap-1 shadow-md border border-gray-100 z-20">
+                            
+                            {/* Top Left Verified Badge */}
+                            <div className="absolute top-4 left-4 z-20">
+                              <span className="px-3 py-1 bg-white/95 backdrop-blur-md text-aakaa-green text-[10px] font-black uppercase tracking-wider rounded-full shadow-sm border border-aakaa-green/10 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-aakaa-green" />
+                                Verified
+                              </span>
+                            </div>
+
+                            {/* Top Right Rating Badge */}
+                            <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-md border border-gray-100 z-20">
                               <Star size={13} className="text-amber-500 fill-amber-500" />
                               <span className="text-xs font-black text-gray-900">{therapist.rating}</span>
                             </div>
                           </div>
                           
-                          <div className="p-8">
+                          <div className="p-7">
                             <div className="mb-4">
                               <h3 className="text-xl font-bold text-gray-900 group-hover:text-aakaa-green transition-colors font-heading leading-tight tracking-tight">{therapist.name}</h3>
-                              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">{therapist.title}</p>
+                              <p className="text-xs font-bold text-aakaa-gold uppercase tracking-widest mt-1">{therapist.title}</p>
                               {therapist.availability && therapist.availability.length > 0 && (
-                                <p className="text-[11px] font-bold text-aakaa-green flex items-center gap-1.5 mt-2.5">
-                                  <Clock size={12} />
+                                <p className="text-[11px] font-bold text-emerald-800 bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-100/60 inline-flex items-center gap-1.5 mt-2.5">
+                                  <Clock size={12} className="text-emerald-600" />
                                   <span>{therapist.availability.slice(0, 3).map(d => d.slice(0, 3)).join(', ')}{therapist.availability.length > 3 ? '...' : ''}</span>
                                 </p>
                               )}
                             </div>
                             
-                            <div className="flex flex-wrap gap-1.5 mb-6">
+                            <div className="flex flex-wrap gap-1.5 mb-2">
                               {(therapist.specialties || []).slice(0, 2).map(s => (
-                                <span key={s} className="px-2.5 py-1 bg-gray-50 text-gray-500 text-[10px] font-bold rounded-lg border border-gray-100">{s}</span>
+                                <span key={s} className="px-2.5 py-1 bg-gray-50 text-gray-600 text-[11px] font-semibold rounded-lg border border-gray-100">{s}</span>
                               ))}
                               {(therapist.specialties || []).length > 2 && (
-                                <span className="px-2.5 py-1 bg-gray-50 text-gray-400 text-[10px] font-bold rounded-lg border border-gray-100">+{(therapist.specialties || []).length - 2} more</span>
+                                <span className="px-2.5 py-1 bg-gray-50 text-gray-400 text-[11px] font-semibold rounded-lg border border-gray-100">+{(therapist.specialties || []).length - 2} more</span>
                               )}
                             </div>
                           </div>
                         </div>
 
-                        <div className="px-8 pb-8">
-                          <div className="flex items-center justify-between pt-5 border-t border-gray-50">
+                        <div className="px-7 pb-7">
+                          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                             <div>
                               <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Session Fee</p>
                               <p className="text-xl font-black text-gray-900 mt-0.5">{therapist.price}</p>
@@ -588,9 +591,10 @@ export default function Booking() {
                                 e.stopPropagation();
                                 setViewingProfile(therapist);
                               }}
-                              className="w-12 h-12 flex items-center justify-center bg-gray-900 group-hover:bg-aakaa-green text-white rounded-2xl transition-all shadow-md group-hover:scale-105"
+                              className="px-4 py-2.5 bg-gray-900 group-hover:bg-aakaa-green text-white text-xs font-bold rounded-xl transition-all shadow-md group-hover:scale-105 flex items-center gap-1.5"
                             >
-                              <ChevronRight size={20} />
+                              <span>View Profile</span>
+                              <ChevronRight size={15} />
                             </button>
                           </div>
                         </div>

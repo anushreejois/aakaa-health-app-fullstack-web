@@ -22,39 +22,30 @@ export default function TherapistProfileView({ therapist, onClose, onBook }) {
         transition={{ type: "spring", damping: 30, stiffness: 200 }}
         className="relative w-full max-w-2xl h-full bg-[#fdfdfc] shadow-2xl overflow-y-auto scrollbar-hide"
       >
-        {/* Header Image with Ambient Glow Frame */}
-        <div className="relative h-[380px] sm:h-[430px] bg-[#122218] flex items-center justify-center overflow-hidden">
-          {/* Ambient Glow using the same photo */}
-          {therapist.image && (
-            <img 
-              src={therapist.image} 
-              alt="" 
-              className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-40 scale-125 pointer-events-none" 
-            />
-          )}
-
-          {/* Fully visible, uncropped practitioner photo */}
+        {/* Header Portrait Hero */}
+        <div className="relative h-[400px] sm:h-[460px] bg-gradient-to-b from-[#eaf1ec] to-[#f8faf8] flex items-center justify-center overflow-hidden">
           {therapist.image ? (
             <img 
               src={therapist.image} 
               alt={therapist.name} 
-              className="relative z-10 h-full w-auto max-w-full object-contain p-2 sm:p-4 rounded-[2rem] shadow-2xl drop-shadow-2xl" 
+              className="w-full h-full object-cover object-top sm:object-center" 
             />
           ) : (
-            <div className="w-36 h-36 rounded-full bg-white/70 shadow-lg flex items-center justify-center text-aakaa-green font-black text-5xl border-4 border-white mb-10 relative z-10">
+            <div className="w-32 h-32 rounded-full bg-aakaa-green/10 flex items-center justify-center text-aakaa-green font-black text-5xl shadow-inner border border-aakaa-green/10">
               {therapist.name?.charAt(0) || "P"}
             </div>
           )}
           
-          {/* Subtle top shade for contrast */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
+          {/* Soft Bottom Fade into Content Area */}
+          <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#fdfdfc] via-[#fdfdfc]/40 to-transparent pointer-events-none z-10" />
           
           {/* Top Left Badges */}
           <div className="absolute top-6 left-6 z-20 flex items-center gap-2">
-            <span className="px-4 py-1.5 bg-aakaa-green text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-aakaa-green/30 backdrop-blur-md">
+            <span className="px-4 py-1.5 bg-white/95 backdrop-blur-md text-aakaa-green text-[10px] font-black uppercase tracking-widest rounded-full shadow-md border border-aakaa-green/10 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-aakaa-green animate-pulse" />
               Verified Practitioner
             </span>
-            <div className="flex items-center gap-1 px-3 py-1.5 bg-black/50 backdrop-blur-md border border-white/20 rounded-full text-white text-xs font-black shadow-md">
+            <div className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/95 backdrop-blur-md border border-gray-100 rounded-full text-gray-900 text-xs font-black shadow-md">
               <Star size={13} className="fill-amber-400 text-amber-400" />
               <span>{therapist.rating}</span>
             </div>
@@ -63,7 +54,7 @@ export default function TherapistProfileView({ therapist, onClose, onBook }) {
           {/* Close button */}
           <button 
             onClick={onClose}
-            className="absolute top-6 right-6 w-11 h-11 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 shadow-xl hover:bg-white hover:text-gray-900 transition-all active:scale-90 z-20"
+            className="absolute top-6 right-6 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-800 border border-gray-200/60 shadow-lg hover:bg-white hover:scale-105 transition-all active:scale-95 z-20"
           >
             <X size={20} />
           </button>
