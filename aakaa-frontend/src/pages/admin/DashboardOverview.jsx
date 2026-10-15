@@ -11,7 +11,9 @@ import {
   Activity, 
   Clock, 
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { mockRevenueData, mockWaitlist, mockBookings, mockTherapists } from '../../data/mockAdminData';
 import { exportToCSV } from '../../utils/csvUtils';
@@ -39,6 +41,7 @@ const DashboardOverview = ({ onNavigate }) => {
   const [timeRange, setTimeRange] = useState('30D');
   const [isChanging, setIsChanging] = useState(false);
   const [liveUsers, setLiveUsers] = useState(42);
+  const [showRevenue, setShowRevenue] = useState(false);
   const { token } = useAuth();
   
   // Real Data States
@@ -103,7 +106,7 @@ const DashboardOverview = ({ onNavigate }) => {
   }, []);
 
   const stats = [
-    { label: 'Total Revenue', value: `₹${realStats.revenue.toLocaleString()}`, change: realStats.revenueChange, icon: ShoppingBag, color: 'text-blue-600', bgColor: 'bg-blue-50', stroke: '#2563eb' },
+    { label: 'Total Revenue', value: `₹${realStats.revenue.toLocaleString()}`, change: realStats.revenueChange, icon: ShoppingBag, color: 'text-blue-600', bgColor: 'bg-blue-50', stroke: '#2563eb', isRevenue: true },
     { label: 'Growth', value: `${realStats.sessionsChange}`, change: realStats.sessionsChange, icon: TrendingUp, color: 'text-emerald-600', bgColor: 'bg-emerald-50', stroke: '#10b981' },
     { label: 'Sessions', value: realStats.sessions || (Array.isArray(realBookings) ? realBookings.length : 0), change: "+0%", icon: Calendar, color: 'text-purple-600', bgColor: 'bg-purple-50', stroke: '#8b5cf6' },
     { label: 'Waitlist', value: Array.isArray(realWaitlist) ? realWaitlist.length : 0, change: "+0%", icon: Users, color: 'text-orange-600', bgColor: 'bg-orange-50', stroke: '#f97316' },
@@ -165,7 +168,12 @@ const DashboardOverview = ({ onNavigate }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
+            onClick={() => {
+              if (stat.isRevenue) setShowRevenue(!showRevenue);
+            }}
             className={`relative bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden group ${
+              stat.isRevenue ? 'cursor-pointer select-none' : ''
+            } ${
               isChanging ? 'opacity-50 scale-[0.98]' : 'opacity-100'
             }`}
           >
@@ -176,17 +184,48 @@ const DashboardOverview = ({ onNavigate }) => {
                 <div className={`p-4 rounded-2xl ${stat.bgColor} ${stat.color} group-hover:rotate-6 transition-transform`}>
                   <stat.icon size={24} />
                 </div>
-                <div className={`flex items-center gap-1 text-[11px] font-black px-3 py-1.5 rounded-full ${
-                  stat.change?.startsWith('+') ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'
-                }`}>
-                  {stat.change?.startsWith('+') ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                  {stat.change}
+                <div className="flex items-center gap-2">
+                  {stat.isRevenue && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowRevenue(!showRevenue);
+                      }}
+                      className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-aakaa-green transition-all shadow-sm"
+                      title={showRevenue ? "Hide revenue" : "Show revenue"}
+                    >
+                      {showRevenue ? <Eye size={15} /> : <EyeOff size={15} />}
+                    </button>
+                  )}
+                  <div className={`flex items-center gap-1 text-[11px] font-black px-3 py-1.5 rounded-full ${
+                    stat.change?.startsWith('+') ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'
+                  }`}>
+                    {stat.change?.startsWith('+') ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                    {stat.change}
+                  </div>
                 </div>
               </div>
               
-              <p className="text-gray-400 text-xs font-bold uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-[0.2em]">{stat.label}</p>
+                {stat.isRevenue && (
+                  <span className="text-[10px] font-bold text-gray-400 group-hover:text-aakaa-green transition-colors">
+                    {showRevenue ? "Click to hide" : "Click to view"}
+                  </span>
+                )}
+              </div>
+
               <h3 className="text-4xl font-black text-gray-900 tracking-tighter">
-                {stat.value}
+                {stat.isRevenue ? (
+                  showRevenue ? (
+                    stat.value
+                  ) : (
+                    <span className="tracking-[0.2em] text-gray-400 font-mono text-3xl">₹••••••</span>
+                  )
+                ) : (
+                  stat.value
+                )}
               </h3>
             </div>
           </motion.div>

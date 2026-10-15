@@ -173,12 +173,19 @@ const BookingRescheduler = () => {
                           {booking.time}
                         </div>
                       </td>
-                      <td className="px-8 py-6">
-                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                          booking.status === 'confirmed' ? 'bg-green-50 text-green-600 border-green-100' : 
-                          booking.status === 'cancelled' ? 'bg-red-50 text-red-600 border-red-100' :
-                          'bg-orange-50 text-orange-600 border-orange-100'
+                      <td className="px-8 py-6 whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap border ${
+                          booking.status === 'confirmed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                          booking.status === 'cancelled' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                          booking.status.toLowerCase() === 'pending verification' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                          'bg-orange-50 text-orange-700 border-orange-200'
                         }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${
+                            booking.status === 'confirmed' ? 'bg-emerald-500' :
+                            booking.status === 'cancelled' ? 'bg-rose-500' :
+                            booking.status.toLowerCase() === 'pending verification' ? 'bg-amber-500 animate-pulse' :
+                            'bg-orange-500'
+                          }`} />
                           {booking.status}
                         </span>
                       </td>

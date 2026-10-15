@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, ShoppingBag, Download, Landmark, CreditCard, Sparkles } from 'lucide-react';
+import { TrendingUp, ShoppingBag, Download, Landmark, CreditCard, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { exportToCSV } from '../../utils/csvUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -13,6 +13,7 @@ const RevenueManager = () => {
   const [loading, setLoading] = useState(true);
   const [statsData, setStatsData] = useState(null);
   const [isChanging, setIsChanging] = useState(false);
+  const [showRevenue, setShowRevenue] = useState(false);
   const { token } = useAuth();
 
   const fetchStats = async (showLoader = true) => {
@@ -77,7 +78,8 @@ const RevenueManager = () => {
       change: currentModeData.revenueChange, 
       icon: ShoppingBag, 
       color: 'text-emerald-600', 
-      bgColor: 'bg-emerald-50' 
+      bgColor: 'bg-emerald-50',
+      isRevenue: true
     },
     { 
       label: `${mode === 'app' ? 'Therapy Sessions' : 'Yoga Sessions'}`, 
@@ -151,7 +153,12 @@ const RevenueManager = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               key={i} 
+              onClick={() => {
+                if (stat.isRevenue) setShowRevenue(!showRevenue);
+              }}
               className={`bg-white p-8 rounded-[2.5rem] border border-aakaa-green/5 premium-shadow hover:scale-[1.01] transition-all duration-300 ${
+                stat.isRevenue ? 'cursor-pointer select-none' : ''
+              } ${
                 isChanging ? 'opacity-50 scale-[0.98]' : 'opacity-100'
               }`}
             >
@@ -159,16 +166,46 @@ const RevenueManager = () => {
                 <div className={`p-5 rounded-[1.5rem] ${stat.bgColor} ${stat.color} shadow-sm`}>
                   <stat.icon size={28} />
                 </div>
-                <div className={`text-[10px] font-black px-3.5 py-1.5 rounded-full uppercase tracking-widest ${
-                  stat.change.startsWith('+') ? 'text-green-600 bg-green-50 border border-green-100' : 'text-red-600 bg-red-50 border border-red-100'
-                }`}>
-                  {stat.change} (m-o-m)
+                <div className="flex items-center gap-2">
+                  {stat.isRevenue && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowRevenue(!showRevenue);
+                      }}
+                      className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-aakaa-green transition-all shadow-sm"
+                      title={showRevenue ? "Hide revenue" : "Show revenue"}
+                    >
+                      {showRevenue ? <Eye size={15} /> : <EyeOff size={15} />}
+                    </button>
+                  )}
+                  <div className={`text-[10px] font-black px-3.5 py-1.5 rounded-full uppercase tracking-widest ${
+                    stat.change.startsWith('+') ? 'text-green-600 bg-green-50 border border-green-100' : 'text-red-600 bg-red-50 border border-red-100'
+                  }`}>
+                    {stat.change} (m-o-m)
+                  </div>
                 </div>
               </div>
               <div className="mt-8">
-                <p className="text-aakaa-gold text-xs font-black uppercase tracking-[0.2em]">{stat.label}</p>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-aakaa-gold text-xs font-black uppercase tracking-[0.2em]">{stat.label}</p>
+                  {stat.isRevenue && (
+                    <span className="text-[10px] font-bold text-gray-400 group-hover:text-aakaa-green transition-colors">
+                      {showRevenue ? "Click to hide" : "Click to view"}
+                    </span>
+                  )}
+                </div>
                 <h3 className="text-4xl font-black text-aakaa-green mt-2 tabular-nums tracking-tight">
-                  {stat.value}
+                  {stat.isRevenue ? (
+                    showRevenue ? (
+                      stat.value
+                    ) : (
+                      <span className="tracking-[0.2em] text-gray-400 font-mono text-3xl">₹••••••</span>
+                    )
+                  ) : (
+                    stat.value
+                  )}
                 </h3>
               </div>
             </motion.div>
@@ -197,58 +234,64 @@ const RevenueManager = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-aakaa-cream/25 text-aakaa-gold text-[10px] uppercase tracking-[0.2em] font-black border-b border-aakaa-green/5">
-                  <th className="px-8 py-5">Reference ID</th>
-                  <th className="px-8 py-5">Beneficiary/Client</th>
-                  {mode === 'app' && <th className="px-8 py-5">Assigned Caregiver</th>}
-                  {mode === 'website' && <th className="px-8 py-5">Booking Details</th>}
-                  <th className="px-8 py-5">Gross Amount</th>
-                  <th className="px-8 py-5">Payment Status</th>
-                  <th className="px-8 py-5">Timestamp</th>
-                  <th className="px-8 py-5">Actions</th>
+                  <th className="px-8 py-5 whitespace-nowrap">Reference ID</th>
+                  <th className="px-8 py-5 whitespace-nowrap">Beneficiary/Client</th>
+                  {mode === 'app' && <th className="px-8 py-5 whitespace-nowrap">Assigned Caregiver</th>}
+                  {mode === 'website' && <th className="px-8 py-5 whitespace-nowrap">Booking Details</th>}
+                  <th className="px-8 py-5 whitespace-nowrap">Gross Amount</th>
+                  <th className="px-8 py-5 whitespace-nowrap min-w-[180px]">Payment Status</th>
+                  <th className="px-8 py-5 whitespace-nowrap">Timestamp</th>
+                  <th className="px-8 py-5 whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-aakaa-green/5">
                 {currentModeData.transactions.map((txn) => (
                   <tr key={txn._id} className="hover:bg-aakaa-cream/10 transition-colors group">
-                    <td className="px-8 py-5 text-[11px] font-black text-aakaa-gold/60 font-mono tracking-tighter">
+                    <td className="px-8 py-5 text-[11px] font-black text-aakaa-gold/60 font-mono tracking-tighter whitespace-nowrap">
                       #{txn._id.toString().substring(0, 8).toUpperCase()}
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-8 py-5 whitespace-nowrap">
                       <div className="font-bold text-sm text-aakaa-green">{txn.userName}</div>
                       <div className="text-[10px] text-aakaa-gold font-semibold">{txn.userEmail}</div>
                     </td>
                     {mode === 'app' && (
-                      <td className="px-8 py-5 text-sm font-bold text-aakaa-green">
+                      <td className="px-8 py-5 text-sm font-bold text-aakaa-green whitespace-nowrap">
                         {txn.therapistName || 'Caregiver'}
                       </td>
                     )}
                     {mode === 'website' && (
-                      <td className="px-8 py-5 text-[11px] font-bold text-aakaa-green/80 uppercase tracking-wide">
+                      <td className="px-8 py-5 text-[11px] font-bold text-aakaa-green/80 uppercase tracking-wide whitespace-nowrap">
                         {txn.bookingType === 'private' ? `${txn.classCount} Private Sessions` : 
                          txn.bookingType === 'monthly' ? `${txn.classCount} Classes Package (${txn.pricingTier})` : 
                          'Single Class Booking'}
                       </td>
                     )}
-                    <td className="px-8 py-5 text-sm font-black text-aakaa-green">
+                    <td className="px-8 py-5 text-sm font-black text-aakaa-green whitespace-nowrap">
                       ₹{txn.amount.toLocaleString()}
                     </td>
-                    <td className="px-8 py-5">
-                      <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                        txn.status === 'confirmed' ? 'bg-green-50 text-green-600 border-green-100' :
-                        txn.status === 'Pending Verification' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                        txn.status === 'rescheduled' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                        'bg-red-50 text-red-600 border-red-100'
+                    <td className="px-8 py-5 whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap border ${
+                        txn.status === 'confirmed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        txn.status === 'Pending Verification' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                        txn.status === 'rescheduled' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                        'bg-rose-50 text-rose-700 border-rose-200'
                       }`}>
-                        {txn.status === 'confirmed' ? 'settled' : txn.status}
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          txn.status === 'confirmed' ? 'bg-emerald-500' :
+                          txn.status === 'Pending Verification' ? 'bg-amber-500 animate-pulse' :
+                          txn.status === 'rescheduled' ? 'bg-orange-500' :
+                          'bg-rose-500'
+                        }`} />
+                        {txn.status === 'confirmed' ? 'Settled' : txn.status}
                       </span>
                       {txn.transactionId && (
-                        <div className="text-[9px] font-mono mt-1 text-gray-500">UTR: {txn.transactionId}</div>
+                        <div className="text-[10px] font-mono mt-1 text-gray-500">UTR: {txn.transactionId}</div>
                       )}
                     </td>
-                    <td className="px-8 py-5 text-xs font-bold text-aakaa-gold/60">
+                    <td className="px-8 py-5 text-xs font-bold text-aakaa-gold/60 whitespace-nowrap">
                       {new Date(txn.createdAt).toLocaleString()}
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-8 py-5 whitespace-nowrap">
                       {txn.status === 'Pending Verification' && (
                         <button 
                           onClick={() => handleApprovePayment(txn._id, mode === 'app' ? 'therapy' : 'yoga')}
