@@ -215,7 +215,7 @@ const TherapistLeaderboard = () => {
               
               <div className="w-24 h-24 rounded-[2rem] bg-aakaa-cream mx-auto flex items-center justify-center text-aakaa-green border-4 border-white shadow-xl overflow-hidden mb-6 group-hover:rotate-3 transition-transform">
                 {therapist.image ? (
-                  <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover" />
+                  <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover object-top" />
                 ) : (
                   <span className="text-3xl font-black text-aakaa-green">{therapist.name?.charAt(0) || "P"}</span>
                 )}
@@ -269,7 +269,7 @@ const TherapistLeaderboard = () => {
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
                           {therapist.image ? (
-                            <img src={therapist.image} alt="" className="w-10 h-10 rounded-2xl object-cover shadow-inner" />
+                            <img src={therapist.image} alt="" className="w-10 h-10 rounded-2xl object-cover object-top shadow-inner" />
                           ) : (
                             <div className="w-10 h-10 rounded-2xl bg-aakaa-cream flex items-center justify-center text-aakaa-green font-black text-sm shadow-inner">
                               {therapist.name?.charAt(0) || "P"}

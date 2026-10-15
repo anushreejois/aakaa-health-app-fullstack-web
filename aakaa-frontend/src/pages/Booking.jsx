@@ -525,12 +525,17 @@ export default function Booking() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
-                        className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_20px_50px_rgba(30,77,54,0.06)] hover:border-aakaa-green/10 transition-all duration-500 flex flex-col justify-between"
+                        onClick={() => setViewingProfile(therapist)}
+                        className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_25px_60px_rgba(30,77,54,0.08)] hover:border-aakaa-green/20 transition-all duration-500 flex flex-col justify-between cursor-pointer"
                       >
                         <div>
-                          <div className="relative h-60 overflow-hidden bg-gradient-to-br from-aakaa-green/10 via-aakaa-cream/40 to-aakaa-gold/10 flex items-center justify-center">
+                          <div className="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-aakaa-green/10 via-aakaa-cream/40 to-aakaa-gold/10 flex items-center justify-center">
                             {therapist.image ? (
-                              <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                              <img 
+                                src={therapist.image} 
+                                alt={therapist.name} 
+                                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" 
+                              />
                             ) : (
                               <div className="w-24 h-24 rounded-full bg-white/80 shadow-inner flex items-center justify-center text-aakaa-green font-black text-3xl">
                                 {therapist.name?.charAt(0) || "P"}
@@ -543,9 +548,15 @@ export default function Booking() {
                           </div>
                           
                           <div className="p-8">
-                            <div className="mb-5">
+                            <div className="mb-4">
                               <h3 className="text-xl font-bold text-gray-900 group-hover:text-aakaa-green transition-colors font-heading leading-tight tracking-tight">{therapist.name}</h3>
                               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">{therapist.title}</p>
+                              {therapist.availability && therapist.availability.length > 0 && (
+                                <p className="text-[11px] font-bold text-aakaa-green flex items-center gap-1.5 mt-2.5">
+                                  <Clock size={12} />
+                                  <span>{therapist.availability.slice(0, 3).map(d => d.slice(0, 3)).join(', ')}{therapist.availability.length > 3 ? '...' : ''}</span>
+                                </p>
+                              )}
                             </div>
                             
                             <div className="flex flex-wrap gap-1.5 mb-6">
@@ -566,8 +577,11 @@ export default function Booking() {
                               <p className="text-xl font-black text-gray-900 mt-0.5">{therapist.price}</p>
                             </div>
                             <button 
-                              onClick={() => setViewingProfile(therapist)}
-                              className="w-12 h-12 flex items-center justify-center bg-gray-900 hover:bg-aakaa-green text-white rounded-2xl transition-all shadow-md hover:-translate-y-0.5"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setViewingProfile(therapist);
+                              }}
+                              className="w-12 h-12 flex items-center justify-center bg-gray-900 group-hover:bg-aakaa-green text-white rounded-2xl transition-all shadow-md group-hover:scale-105"
                             >
                               <ChevronRight size={20} />
                             </button>
@@ -589,7 +603,7 @@ export default function Booking() {
                 {selectedTherapist ? (
                   <div className="flex items-center gap-6 mb-12 pb-8 border-b border-gray-50">
                     {selectedTherapist.image ? (
-                      <img src={selectedTherapist.image} alt={selectedTherapist.name} className="w-20 h-20 rounded-3xl object-cover shadow-lg" />
+                      <img src={selectedTherapist.image} alt={selectedTherapist.name} className="w-20 h-20 rounded-3xl object-cover object-top shadow-lg" />
                     ) : (
                       <div className="w-20 h-20 rounded-3xl bg-aakaa-cream flex items-center justify-center text-aakaa-green font-black text-2xl shadow-lg border-2 border-white">
                         {selectedTherapist.name?.charAt(0) || "P"}

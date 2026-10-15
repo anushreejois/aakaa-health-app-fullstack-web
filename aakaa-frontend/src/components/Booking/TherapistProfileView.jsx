@@ -23,46 +23,59 @@ export default function TherapistProfileView({ therapist, onClose, onBook }) {
         className="relative w-full max-w-2xl h-full bg-[#fdfdfc] shadow-2xl overflow-y-auto scrollbar-hide"
       >
         {/* Header Image */}
-        <div className="relative h-[450px] bg-gradient-to-br from-aakaa-green/15 via-aakaa-cream/60 to-aakaa-gold/20 flex items-center justify-center">
+        <div className="relative h-[380px] sm:h-[440px] bg-gradient-to-br from-aakaa-green/15 via-aakaa-cream/60 to-aakaa-gold/20 flex items-center justify-center overflow-hidden">
           {therapist.image ? (
-            <img src={therapist.image} alt={therapist.name} className="w-full h-full object-cover" />
+            <img 
+              src={therapist.image} 
+              alt={therapist.name} 
+              className="w-full h-full object-cover object-top" 
+            />
           ) : (
             <div className="w-36 h-36 rounded-full bg-white/70 shadow-lg flex items-center justify-center text-aakaa-green font-black text-5xl border-4 border-white mb-10">
               {therapist.name?.charAt(0) || "P"}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#fdfdfc] via-transparent to-black/20" />
           
+          {/* Subtle top shade for buttons */}
+          <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-black/50 via-black/10 to-transparent pointer-events-none" />
+          
+          {/* Top Left Badges */}
+          <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
+            <span className="px-4 py-1.5 bg-aakaa-green text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-aakaa-green/30 backdrop-blur-md">
+              Verified Practitioner
+            </span>
+            <div className="flex items-center gap-1 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/20 rounded-full text-white text-xs font-black shadow-md">
+              <Star size={13} className="fill-amber-400 text-amber-400" />
+              <span>{therapist.rating}</span>
+            </div>
+          </div>
+          
+          {/* Close button */}
           <button 
             onClick={onClose}
-            className="absolute top-8 right-8 w-12 h-12 bg-white/10 backdrop-blur-2xl rounded-full flex items-center justify-center text-white border border-white/20 shadow-2xl hover:bg-white hover:text-gray-900 transition-all active:scale-90"
+            className="absolute top-6 right-6 w-11 h-11 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 shadow-xl hover:bg-white hover:text-gray-900 transition-all active:scale-90 z-10"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
-
-          <div className="absolute bottom-12 left-12 right-12">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="px-4 py-1.5 bg-aakaa-green text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-aakaa-green/20">
-                  Verified Practitioner
-                </span>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white">
-                  <Star size={14} className="fill-amber-400 text-amber-400" />
-                  <span className="text-sm font-black">{therapist.rating}</span>
-                </div>
-              </div>
-              <h2 className="text-5xl font-black text-gray-900 tracking-tight leading-tight mb-2">{therapist.name}</h2>
-              <p className="text-xl font-bold text-aakaa-green uppercase tracking-widest">{therapist.title}</p>
-            </motion.div>
-          </div>
         </div>
 
         {/* Content Section */}
-        <div className="px-12 pb-40">
+        <div className="px-8 sm:px-12 pt-8 pb-40">
+          {/* Name & Role Header */}
+          <div className="mb-10 pb-8 border-b border-gray-100">
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight leading-tight mb-2">
+              {therapist.name}
+            </h2>
+            <p className="text-sm sm:text-base font-bold text-aakaa-green uppercase tracking-widest">
+              {therapist.title}
+            </p>
+            {therapist.availability && therapist.availability.length > 0 && (
+              <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 bg-aakaa-green/5 text-aakaa-green text-xs font-bold rounded-xl border border-aakaa-green/10">
+                <Calendar size={13} />
+                <span>Available: {therapist.availability.join(', ')}</span>
+              </div>
+            )}
+          </div>
           <div className="space-y-16">
             
             {/* Quick Stats */}
