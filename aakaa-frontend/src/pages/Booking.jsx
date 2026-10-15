@@ -529,21 +529,28 @@ export default function Booking() {
                         className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_25px_60px_rgba(30,77,54,0.08)] hover:border-aakaa-green/20 transition-all duration-500 flex flex-col justify-between cursor-pointer"
                       >
                         <div>
-                          <div className="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-aakaa-green/10 via-aakaa-cream/40 to-aakaa-gold/10 flex items-center justify-center">
+                          <div className="relative h-64 sm:h-72 overflow-hidden bg-[#122218] flex items-center justify-center">
                             {therapist.image ? (
-                              <img 
-                                src={therapist.image} 
-                                alt={therapist.name} 
-                                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" 
-                              />
+                              <>
+                                <img 
+                                  src={therapist.image} 
+                                  alt="" 
+                                  className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none" 
+                                />
+                                <img 
+                                  src={therapist.image} 
+                                  alt={therapist.name} 
+                                  className="relative z-10 h-full w-auto max-w-full object-contain p-2 rounded-2xl group-hover:scale-105 transition-transform duration-500 drop-shadow-md" 
+                                />
+                              </>
                             ) : (
                               <div className="w-24 h-24 rounded-full bg-white/80 shadow-inner flex items-center justify-center text-aakaa-green font-black text-3xl">
                                 {therapist.name?.charAt(0) || "P"}
                               </div>
                             )}
-                            <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl flex items-center gap-1 shadow-sm border border-gray-50">
-                              <Star size={14} className="text-amber-500 fill-amber-500" />
-                              <span className="text-sm font-black text-gray-900">{therapist.rating}</span>
+                            <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl flex items-center gap-1 shadow-md border border-gray-100 z-20">
+                              <Star size={13} className="text-amber-500 fill-amber-500" />
+                              <span className="text-xs font-black text-gray-900">{therapist.rating}</span>
                             </div>
                           </div>
                           
