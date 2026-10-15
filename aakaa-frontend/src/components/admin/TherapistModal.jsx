@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
 const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
+  const [isCompressing, setIsCompressing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     title: '',
@@ -18,6 +19,53 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
     availability: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     status: 'approved'
   });
+
+  const handleImageFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    setIsCompressing(true);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const maxDimension = 800; // Optimal 800x800 profile photo size
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress to high quality JPEG
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        setFormData((prev) => ({ ...prev, image: compressedDataUrl }));
+        setIsCompressing(false);
+      };
+      img.onerror = () => {
+        alert("Unable to process the image file. Please try another image.");
+        setIsCompressing(false);
+      };
+      img.src = event.target.result;
+    };
+    reader.onerror = () => {
+      alert("Failed to read image file.");
+      setIsCompressing(false);
+    };
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     if (therapist) {
@@ -48,6 +96,10 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isCompressing) {
+      alert("Please wait while your image is being processed.");
+      return;
+    }
     const processedData = {
       ...formData,
       specialties: typeof formData.specialties === 'string'
@@ -178,31 +230,37 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
               </div>
 
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Profile Photo</label>
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest">Profile Photo</label>
+                  {isCompressing && (
+                    <span className="text-[10px] text-aakaa-green font-bold animate-pulse">Optimizing photo...</span>
+                  )}
+                </div>
                 <div className="flex flex-col gap-4">
                   {formData.image && (
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-aakaa-green/10 shadow-lg">
-                      <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-aakaa-green/10 shadow-lg">
+                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, image: '' })}
+                        className="text-xs font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all"
+                      >
+                        Remove Photo
+                      </button>
                     </div>
                   )}
                   <div className="flex gap-2">
                     <label className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-aakaa-green text-white rounded-2xl cursor-pointer hover:bg-aakaa-green/90 transition-all font-bold text-sm shadow-xl shadow-aakaa-green/10">
                       <Upload size={18} />
-                      Upload File
+                      {isCompressing ? 'Processing...' : 'Upload File'}
                       <input 
                         type="file" 
                         className="hidden" 
                         accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setFormData({ ...formData, image: reader.result });
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }}
+                        disabled={isCompressing}
+                        onChange={handleImageFileChange}
                       />
                     </label>
                     <div className="flex-[2]">
@@ -215,7 +273,7 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
                       />
                     </div>
                   </div>
-                  <p className="text-[9px] text-aakaa-gold/60 font-medium">Tip: Use small JPG/PNG files to keep the database efficient.</p>
+                  <p className="text-[9px] text-aakaa-gold/60 font-medium">Automatic optimization: Any image will be automatically resized and optimized for fast loading.</p>
                 </div>
               </div>
 
@@ -278,10 +336,11 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
             </button>
             <button 
               type="submit" 
-              className="flex-1 px-12 py-5 bg-aakaa-green text-white rounded-2xl text-lg font-black hover:bg-aakaa-green/90 transition-all shadow-2xl shadow-aakaa-green/20 uppercase tracking-widest flex items-center justify-center gap-3"
+              disabled={isCompressing}
+              className="flex-1 px-12 py-5 bg-aakaa-green text-white rounded-2xl text-lg font-black hover:bg-aakaa-green/90 transition-all shadow-2xl shadow-aakaa-green/20 uppercase tracking-widest flex items-center justify-center gap-3 disabled:opacity-50"
             >
               <Save size={20} />
-              {therapist ? 'Update Practitioner' : 'Onboard Practitioner'}
+              {isCompressing ? 'Optimizing Image...' : therapist ? 'Update Practitioner' : 'Onboard Practitioner'}
             </button>
           </div>
         </form>

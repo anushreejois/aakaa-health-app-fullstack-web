@@ -94,9 +94,20 @@ const TherapistLeaderboard = () => {
         }
         setIsModalOpen(false);
         setEditingTherapist(null);
+      } else {
+        const errorText = await response.text();
+        let errMsg = `Failed to save (${response.status}: ${response.statusText})`;
+        try {
+          const parsed = JSON.parse(errorText);
+          errMsg = parsed.message || parsed.msg || errMsg;
+        } catch (e) {
+          if (errorText && errorText.length < 200) errMsg = errorText;
+        }
+        alert(errMsg);
       }
     } catch (error) {
       console.error("Error saving therapist:", error);
+      alert(`Connection error: ${error.message}`);
     }
   };
 
