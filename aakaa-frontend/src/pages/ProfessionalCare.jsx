@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Brain, 
@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import ScrollReveal from "../components/ui/ScrollReveal";
 import Footer from "../components/Home/Footer";
+import ModalityMatchQuizModal from "../components/ProfessionalCare/ModalityMatchQuizModal";
 
 const therapyTypes = [
   {
@@ -139,6 +140,15 @@ const therapyTypes = [
 
 export default function ProfessionalCare() {
   const [selectedTherapy, setSelectedTherapy] = useState(null);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("quiz") === "true") {
+      setIsQuizOpen(true);
+    }
+  }, [location.search]);
 
   return (
     <div className="pt-24 min-h-screen flex flex-col">
@@ -241,18 +251,27 @@ export default function ProfessionalCare() {
                 </div>
 
                 {/* 2. Unsure Where to Start Quiz Box */}
-                <div className="mt-4 p-5 rounded-[2rem] bg-gradient-to-br from-aakaa-cream/50 to-white border border-aakaa-green/10 flex items-center justify-between gap-4 shadow-sm">
+                <div 
+                  onClick={() => setIsQuizOpen(true)}
+                  className="mt-4 p-5 rounded-[2rem] bg-gradient-to-br from-aakaa-cream/50 to-white border border-aakaa-green/10 flex items-center justify-between gap-4 shadow-sm cursor-pointer hover:border-aakaa-green/30 hover:shadow-md transition-all group"
+                >
                   <div>
-                    <p className="text-xs font-bold text-gray-900">Unsure which therapy fits you?</p>
-                    <p className="text-[11px] text-gray-500 mt-0.5">Take our 60-second quiz to get matched with your ideal modality.</p>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-aakaa-green animate-pulse" />
+                      <p className="text-xs font-bold text-gray-900 group-hover:text-aakaa-green transition-colors">Unsure which therapy fits you?</p>
+                    </div>
+                    <p className="text-[11px] text-gray-500">Take our 60-second quiz to get matched with your ideal modality.</p>
                   </div>
-                  <Link 
-                    to="/booking"
-                    className="px-4 py-2.5 bg-gray-900 hover:bg-aakaa-green text-white text-[11px] font-black uppercase tracking-wider rounded-xl transition-all shadow-sm shrink-0 flex items-center gap-1.5"
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsQuizOpen(true);
+                    }}
+                    className="px-4 py-2.5 bg-gray-900 group-hover:bg-aakaa-green text-white text-[11px] font-black uppercase tracking-wider rounded-xl transition-all shadow-sm shrink-0 flex items-center gap-1.5"
                   >
                     <span>Take Quiz</span>
-                    <ArrowRight size={13} />
-                  </Link>
+                    <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                  </button>
                 </div>
 
                 {/* 3. Crisis Support Reassurance */}
@@ -362,6 +381,18 @@ export default function ProfessionalCare() {
                 </div>
               </motion.div>
             </div>
+          )}
+        </AnimatePresence>
+
+        {/* 60-Second Modality Match Assessment Quiz */}
+        <AnimatePresence>
+          {isQuizOpen && (
+            <ModalityMatchQuizModal
+              isOpen={isQuizOpen}
+              onClose={() => setIsQuizOpen(false)}
+              therapyTypes={therapyTypes}
+              onSelectModality={(modality) => setSelectedTherapy(modality)}
+            />
           )}
         </AnimatePresence>
       </section>
