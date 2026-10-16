@@ -8,10 +8,12 @@ import { API_BASE_URL } from "../../config";
 export default function WaitlistSection() {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email) {
+      setLoading(true);
       try {
         const response = await fetch(`${API_BASE_URL}/api/waitlist`, {
           method: "POST",
@@ -19,9 +21,9 @@ export default function WaitlistSection() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: "New User", // Default for now, we can add a name field later
-            email: email,
-            concern: "General Mental Wellness", // Default for waitlist
+            name: email.split("@")[0] || "New Member",
+            email: email.trim(),
+            concern: "General Mental Wellness App",
           }),
         });
 
@@ -29,11 +31,17 @@ export default function WaitlistSection() {
           setIsSubmitted(true);
         } else {
           const data = await response.json();
-          alert(data.message || "Something went wrong. Please try again.");
+          if (data.message && data.message.toLowerCase().includes("already")) {
+            setIsSubmitted(true);
+          } else {
+            alert(data.message || "Something went wrong. Please try again.");
+          }
         }
       } catch (error) {
         console.error("Error joining waitlist:", error);
         alert("Server is not responding. Please check your connection.");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -116,9 +124,14 @@ export default function WaitlistSection() {
                       </div>
                       <button
                         type="submit"
-                        className="w-full sm:w-auto shrink-0 bg-aakaa-green text-white px-8 py-4 rounded-full font-bold shadow-[0_12px_25px_rgba(30,77,54,0.3)] hover:shadow-[0_15px_35px_rgba(30,77,54,0.4)] transition-all hover:-translate-y-0.5"
+                        disabled={loading}
+                        className="w-full sm:w-auto shrink-0 bg-aakaa-green text-white px-8 py-4 rounded-full font-bold shadow-[0_12px_25px_rgba(30,77,54,0.3)] hover:shadow-[0_15px_35px_rgba(30,77,54,0.4)] transition-all hover:-translate-y-0.5 disabled:opacity-75 flex items-center justify-center gap-2"
                       >
-                        Join Now
+                        {loading ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          "Join Now"
+                        )}
                       </button>
                     </motion.form>
                   ) : (

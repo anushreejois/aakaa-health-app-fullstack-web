@@ -6,8 +6,23 @@ import ContactModal from "../components/Booking/ContactModal";
 import { API_BASE_URL } from "../config";
 
 export default function Yoga() {
-  const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [classes, setClasses] = useState(() => {
+    try {
+      const cached = localStorage.getItem("aakaa_yoga_classes_cache");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = localStorage.getItem("aakaa_yoga_classes_cache");
+      if (cached && JSON.parse(cached).length > 0) return false;
+    } catch (e) {}
+    return true;
+  });
   const [error, setError] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [pricingTier, setPricingTier] = useState("client"); // "client" or "therapist"
@@ -42,13 +57,20 @@ export default function Yoga() {
       const res = await fetch(`${API_BASE_URL}/api/yoga/classes`);
       if (res.ok) {
         const data = await res.json();
-        setClasses(data);
-      } else {
+        if (Array.isArray(data)) {
+          setClasses(data);
+          try {
+            localStorage.setItem("aakaa_yoga_classes_cache", JSON.stringify(data));
+          } catch (e) {}
+        }
+      } else if (classes.length === 0) {
         setError("Failed to load yoga classes. Please try again later.");
       }
     } catch (err) {
       console.error(err);
-      setError("Unable to connect to the server.");
+      if (classes.length === 0) {
+        setError("Unable to connect to the server.");
+      }
     } finally {
       setLoading(false);
     }
@@ -554,10 +576,16 @@ export default function Yoga() {
             </div>
           </div>
 
-          {loading ? (
-            <div className="py-20 text-center">
-              <div className="animate-spin w-10 h-10 border-4 border-aakaa-green border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-500 font-bold">Gathering our schedules...</p>
+          {loading && classes.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-[2rem] overflow-hidden p-6 border border-gray-100 animate-pulse">
+                  <div className="h-56 bg-gray-100 rounded-2xl mb-6" />
+                  <div className="h-5 bg-gray-200 rounded-full w-3/4 mb-3" />
+                  <div className="h-3 bg-gray-100 rounded-full w-1/2 mb-6" />
+                  <div className="h-10 bg-gray-100 rounded-full w-full" />
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="py-16 text-center max-w-md mx-auto">
@@ -960,9 +988,16 @@ export default function Yoga() {
         isOpen={isMockPaymentOpen}
         onClose={() => setIsMockPaymentOpen(false)}
         amount={getSelectedAmount()}
-        orderId={currentOrder?.id}
+        orderId={currentOrder?._id || currentOrder?.id}
         bookingType={bookingType}
         classCount={classCount}
+        pricingTier={pricingTier}
+        className={bookingClass?.title}
+        instructorName={bookingType === "private" ? privateInstructor : (bookingClass?.instructorName || bookingClass?.instructor)}
+        date={bookingType === "private" ? privateDate : bookingClass?.date}
+        time={bookingType === "private" ? privateTime : bookingClass?.time}
+        userName={formData?.name}
+        userEmail={formData?.email}
         onPaymentSuccess={async (paymentResponse) => {
           setIsMockPaymentOpen(false);
           await handlePaymentSuccess(paymentResponse);

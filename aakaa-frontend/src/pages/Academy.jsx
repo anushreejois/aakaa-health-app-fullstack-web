@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Users, Presentation, Video, Briefcase, ArrowRight, Star } from "lucide-react";
+import { BookOpen, Users, Presentation, Video, Briefcase, ArrowRight, Star, Sparkles } from "lucide-react";
 import Footer from "../components/Home/Footer";
 import { HashLink } from "react-router-hash-link";
+import AcademyInterestModal from "../components/Academy/AcademyInterestModal";
 
 const Academy = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState("Mentorship Program");
+
   const programs = [
     {
       title: "Mentorship Program",
@@ -42,6 +46,11 @@ const Academy = () => {
       image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2940&auto=format&fit=crop"
     }
   ];
+
+  const handleOpenModal = (programTitle) => {
+    setSelectedProgram(programTitle);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#F6F3E6] font-sans selection:bg-aakaa-green selection:text-white pt-32 pb-16">
@@ -84,8 +93,12 @@ const Academy = () => {
               {programs[0].description}
             </p>
             <div className="flex flex-wrap gap-4">
-              <button disabled className="px-8 py-3.5 bg-gray-300 text-gray-500 font-bold rounded-full cursor-not-allowed shadow-inner transition-all duration-300 flex items-center gap-2">
-                Coming Soon
+              <button 
+                onClick={() => handleOpenModal(programs[0].title)}
+                className="px-8 py-3.5 bg-aakaa-green hover:bg-aakaa-green/90 text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+              >
+                <span>Join Priority Cohort</span>
+                <ArrowRight size={18} />
               </button>
             </div>
           </div>
@@ -108,34 +121,42 @@ const Academy = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group bg-white/50 backdrop-blur-xl border border-white rounded-[2rem] overflow-hidden shadow-[0_10px_40px_rgba(30,77,54,0.03)] hover:shadow-[0_20px_50px_rgba(30,77,54,0.08)] transition-all duration-500"
+              className="group bg-white/50 backdrop-blur-xl border border-white rounded-[2rem] overflow-hidden shadow-[0_10px_40px_rgba(30,77,54,0.03)] hover:shadow-[0_20px_50px_rgba(30,77,54,0.08)] transition-all duration-500 flex flex-col justify-between"
             >
-              <div className="h-48 relative overflow-hidden">
-                <div className="absolute inset-0 bg-aakaa-green/10 mix-blend-multiply z-10 transition-opacity duration-300 group-hover:opacity-0"></div>
-                <img 
-                  src={program.image} 
-                  alt={program.title}
-                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-aakaa-green">
-                    {program.tag}
-                  </span>
+              <div>
+                <div className="h-48 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-aakaa-green/10 mix-blend-multiply z-10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                  <img 
+                    src={program.image} 
+                    alt={program.title}
+                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-aakaa-green">
+                      {program.tag}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-8 pb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-aakaa-green/5 flex items-center justify-center mb-6">
+                    <program.icon className="w-6 h-6 text-aakaa-green" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-aakaa-green mb-3 font-josefin group-hover:text-aakaa-gold transition-colors duration-300">
+                    {program.title}
+                  </h3>
+                  <p className="text-aakaa-green/60 text-sm leading-relaxed mb-4">
+                    {program.description}
+                  </p>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="w-12 h-12 rounded-2xl bg-aakaa-green/5 flex items-center justify-center mb-6">
-                  <program.icon className="w-6 h-6 text-aakaa-green" />
-                </div>
-                <h3 className="text-2xl font-bold text-aakaa-green mb-3 font-josefin group-hover:text-aakaa-gold transition-colors duration-300">
-                  {program.title}
-                </h3>
-                <p className="text-aakaa-green/60 text-sm leading-relaxed mb-6">
-                  {program.description}
-                </p>
-                <div className="flex items-center gap-2 text-sm font-bold text-gray-400">
-                  Coming Soon <ArrowRight size={16} className="opacity-50" />
-                </div>
+              <div className="p-8 pt-0">
+                <button 
+                  onClick={() => handleOpenModal(program.title)}
+                  className="inline-flex items-center gap-2 text-sm font-bold text-aakaa-green hover:text-aakaa-gold bg-aakaa-green/5 hover:bg-aakaa-green hover:text-white px-5 py-2.5 rounded-full transition-all duration-300 group/btn"
+                >
+                  <span>Express Interest</span>
+                  <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                </button>
               </div>
             </motion.div>
           ))}
@@ -157,15 +178,25 @@ const Academy = () => {
               Join thousands of students, professionals, and individuals who have elevated their understanding of mental wellness with Aakaa Academy.
             </p>
             <button 
-              disabled
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gray-300 text-gray-500 cursor-not-allowed font-black rounded-full shadow-inner transition-all duration-300"
+              onClick={() => handleOpenModal("Mentorship Program")}
+              className="inline-flex items-center gap-3 px-10 py-5 bg-aakaa-gold hover:bg-[#b59870] text-aakaa-green font-black rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
             >
-              Admissions Opening Soon
+              <Sparkles size={20} />
+              <span>Join Priority Waitlist</span>
             </button>
           </div>
         </motion.div>
 
       </div>
+
+      {/* Academy Interest / Priority Waitlist Modal */}
+      <AcademyInterestModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialProgram={selectedProgram}
+        allPrograms={programs.map((p) => p.title)}
+      />
+
       <Footer />
     </div>
   );

@@ -12,7 +12,10 @@ import {
   ArrowRight,
   Sparkles,
   X,
-  CheckCircle
+  CheckCircle,
+  HeartHandshake,
+  Palette,
+  Lightbulb
 } from "lucide-react";
 import ScrollReveal from "../ui/ScrollReveal";
 
@@ -25,6 +28,33 @@ const therapyTypes = [
     icon: Target,
     color: "bg-blue-50 text-blue-600",
     glow: "group-hover:shadow-blue-500/20"
+  },
+  {
+    title: "EFT (Emotion-Focused)",
+    desc: "Transform distressing emotions into healthy coping and heal deeper relational bonds.",
+    fullDesc: "Emotion-Focused Therapy (EFT) centers on understanding, processing, and regulating deep-seated emotions. Rather than suppressing feelings, EFT helps you transform distressing emotions into clarity, self-compassion, and secure connection.",
+    benefits: ["Transform painful feelings", "Deep emotional regulation", "Heal attachment wounds", "Stronger relational bonds"],
+    icon: HeartHandshake,
+    color: "bg-teal-50 text-teal-600",
+    glow: "group-hover:shadow-teal-500/20"
+  },
+  {
+    title: "Art Therapy",
+    desc: "Use creative expression to unpack complex emotions and heal trauma without words.",
+    fullDesc: "Art Therapy integrates psychotherapy with expressive artistic processes to help you explore difficult emotions, process trauma, and improve mental well-being in a safe, non-judgmental space.",
+    benefits: ["Non-verbal emotional release", "Trauma & grief processing", "Stress reduction & focus", "Enhanced self-discovery"],
+    icon: Palette,
+    color: "bg-fuchsia-50 text-fuchsia-600",
+    glow: "group-hover:shadow-fuchsia-500/20"
+  },
+  {
+    title: "REBT (Rational Emotive)",
+    desc: "Active, practical therapy to challenge irrational beliefs and build lasting resilience.",
+    fullDesc: "Rational Emotive Behavior Therapy (REBT) is an action-oriented approach that helps you challenge irrational core beliefs and automatic negative habits, replacing them with rational, productive alternatives.",
+    benefits: ["Challenge irrational beliefs", "Build emotional resilience", "Action-oriented coping", "Proactive self-acceptance"],
+    icon: Lightbulb,
+    color: "bg-indigo-50 text-indigo-600",
+    glow: "group-hover:shadow-indigo-500/20"
   },
   {
     title: "Counseling & Talk Therapy",
@@ -161,7 +191,7 @@ export default function TherapyPreviewSection() {
             {/* View All Card - Premium Style */}
             <ScrollReveal delay={400}>
               <Link 
-                to="/booking" 
+                to="/booking?browse=true" 
                 className="group relative bg-aakaa-green p-10 rounded-[2.5rem] flex flex-col justify-between items-start text-white hover:shadow-[0_25px_60px_rgba(30,77,54,0.4)] hover:-translate-y-2 transition-all duration-500 h-full overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-125 group-hover:rotate-12 transition-all duration-700">
@@ -238,7 +268,16 @@ export default function TherapyPreviewSection() {
                     Close
                   </button>
                   <Link 
-                    to="/booking"
+                    to={`/booking?browse=true&specialty=${encodeURIComponent(
+                      selectedTherapy.title.includes("Art Therapy") ? "Art Therapy" :
+                      selectedTherapy.title.includes("EFT") ? "EFT" :
+                      selectedTherapy.title.includes("REBT") ? "REBT" :
+                      selectedTherapy.title.includes("CBT") ? "CBT" :
+                      selectedTherapy.title.includes("DBT") ? "DBT" :
+                      selectedTherapy.title.includes("Student") ? "Student Support" :
+                      selectedTherapy.title.includes("Trauma") ? "Trauma" :
+                      selectedTherapy.title
+                    )}`}
                     className="px-8 py-3 bg-aakaa-green text-white rounded-xl font-bold shadow-[0_10px_20px_rgba(30,77,54,0.2)] hover:shadow-[0_15px_30px_rgba(30,77,54,0.3)] transition-all text-center"
                   >
                     Find a Specialist

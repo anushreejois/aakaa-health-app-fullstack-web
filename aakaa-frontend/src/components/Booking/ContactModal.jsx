@@ -9,6 +9,9 @@ const ContactModal = ({
   orderId, 
   bookingType, 
   classCount,
+  pricingTier,
+  className: yogaClassName,
+  instructorName,
   therapistName,
   therapistTitle,
   date,
@@ -21,18 +24,31 @@ const ContactModal = ({
   const handleWhatsApp = () => {
     let message = "";
     
-    if (bookingType === "monthly") {
-      const packageInfo = classCount ? ` for ${classCount} Group Classes` : " for Monthly Group Classes";
-      message = `Hi AakaA Team! I'd like to confirm my Yoga booking${packageInfo}.\n\n`;
-      if (userName && userName !== "Anonymous") message += `• Name: ${userName}\n`;
-      message += `• Amount: ₹${amount || 499}\n`;
+    if (bookingType === "class") {
+      message = `Hi AakaA Team! I'd like to confirm my Yoga class booking.\n\n`;
+      if (yogaClassName) message += `• Class: ${yogaClassName}\n`;
+      if (instructorName) message += `• Instructor: ${instructorName}\n`;
+      if (date) message += `• Date: ${date}\n`;
+      if (time) message += `• Time: ${time}\n`;
+      if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
+      message += `• Fee: ₹${amount || 399}\n`;
       if (orderId) message += `• Booking Ref: ${orderId}\n`;
-      message += `\nPlease confirm my batch details. Thank you!`;
+      message += `\nPlease confirm my class spot. Thank you!`;
+    } else if (bookingType === "monthly") {
+      const packageInfo = classCount ? ` for ${classCount} Group Classes / Month` : " for Monthly Group Classes";
+      message = `Hi AakaA Team! I'd like to confirm my Yoga Monthly Membership${packageInfo}.\n\n`;
+      if (pricingTier) message += `• Tier: ${pricingTier === "therapist" ? "Practitioner / Caregiver Self-Care" : "Client General"}\n`;
+      if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
+      message += `• Monthly Fee: ₹${amount}\n`;
+      if (orderId) message += `• Booking Ref: ${orderId}\n`;
+      message += `\nPlease confirm my batch registration. Thank you!`;
     } else if (bookingType === "private") {
-      const packageInfo = classCount ? ` for ${classCount} Private Sessions` : " for Private Yoga Sessions";
-      message = `Hi AakaA Team! I'd like to schedule my planning call${packageInfo}.\n\n`;
-      if (userName && userName !== "Anonymous") message += `• Name: ${userName}\n`;
-      message += `• Amount: ₹${amount || 999}\n`;
+      const packageInfo = classCount ? ` for ${classCount} 1-on-1 Private Sessions` : " for Private Yoga Sessions";
+      message = `Hi AakaA Team! I'd like to schedule my Private Yoga Sessions${packageInfo}.\n\n`;
+      if (instructorName) message += `• Preferred Instructor: ${instructorName}\n`;
+      if (time) message += `• Preferred Time: ${time}\n`;
+      if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
+      message += `• Package Fee: ₹${amount}\n`;
       if (orderId) message += `• Booking Ref: ${orderId}\n`;
       message += `\nPlease let me know your available times for the planning call. Thank you!`;
     } else {
@@ -89,9 +105,13 @@ const ContactModal = ({
           <p className="text-gray-400 text-sm font-medium px-4">
             {bookingType === "private"
               ? "Your request is registered. Please contact us directly via WhatsApp or Call to schedule your planning call before proceeding with the payment."
-              : therapistName 
-                ? `Your slot with ${therapistName} is reserved. Please connect on WhatsApp to confirm your appointment.`
-                : "Your slot is reserved. Please connect on WhatsApp to get matched with an expert and confirm your appointment."}
+              : bookingType === "class"
+                ? `Your spot in ${yogaClassName || 'Yoga Class'} is reserved. Please connect on WhatsApp to confirm your class.`
+                : bookingType === "monthly"
+                  ? "Your monthly membership request is registered. Please connect on WhatsApp to confirm your batch registration."
+                  : therapistName 
+                    ? `Your slot with ${therapistName} is reserved. Please connect on WhatsApp to confirm your appointment.`
+                    : "Your slot is reserved. Please connect on WhatsApp to get matched with an expert and confirm your appointment."}
           </p>
         </div>
 

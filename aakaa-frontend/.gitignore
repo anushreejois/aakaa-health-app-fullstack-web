@@ -25,3 +25,8 @@ dist-ssr
 
 .env
 backend/.env
+backend/*.docx
+backend/check*.js
+backend/delete*.js
+backend/check*.py
+requirements.txt

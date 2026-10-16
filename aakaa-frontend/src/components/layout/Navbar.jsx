@@ -132,7 +132,8 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/50 border border-white/70 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur-md"
+            aria-label="Toggle Navigation Menu"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-white/50 border border-white/70 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur-md active:scale-95 transition-transform"
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
           >
             {isMobileMenuOpen ? (
@@ -193,6 +194,23 @@ const Navbar = () => {
                   )}
                 </React.Fragment>
               ))}
+
+              {/* Mobile Admin Portal Link */}
+              <div className="pt-2 border-t border-aakaa-green/10 mt-2">
+                <Link
+                  to={isAuthenticated ? "/admin/dashboard" : "/admin"}
+                  className="flex items-center justify-between text-xs font-bold rounded-2xl px-4 py-3 text-aakaa-green bg-white/40 hover:bg-white/70"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center gap-2">
+                    {isAuthenticated ? <LayoutDashboard size={15} /> : <User size={15} />}
+                    {isAuthenticated ? "Admin Portal" : "Admin Sign In"}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-aakaa-gold font-black">
+                    {isAuthenticated ? "Active" : "Staff"}
+                  </span>
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

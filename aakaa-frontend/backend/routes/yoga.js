@@ -4,11 +4,28 @@ const auth = require('../middleware/auth');
 const YogaClass = require('../models/YogaClass');
 const YogaBooking = require('../models/YogaBooking');
 
+let yogaClassesCache = null;
+let lastYogaCacheTime = 0;
+const YOGA_CACHE_TTL = 60 * 1000;
+
+const invalidateYogaCache = () => {
+  yogaClassesCache = null;
+  lastYogaCacheTime = 0;
+};
+
 // @route   GET /api/yoga/classes
 // @desc    Get all upcoming yoga classes
 router.get('/classes', async (req, res) => {
   try {
-    const classes = await YogaClass.find().sort({ createdAt: -1 });
+    const now = Date.now();
+    if (yogaClassesCache && (now - lastYogaCacheTime < YOGA_CACHE_TTL)) {
+      res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
+      return res.json(yogaClassesCache);
+    }
+    const classes = await YogaClass.find().sort({ createdAt: -1 }).lean();
+    yogaClassesCache = classes;
+    lastYogaCacheTime = now;
+    res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     res.json(classes);
   } catch (err) {
     console.error(err.message);
@@ -37,6 +54,7 @@ router.post('/classes', auth, async (req, res) => {
     });
 
     const yogaClass = await newClass.save();
+    invalidateYogaCache();
     res.status(201).json(yogaClass);
   } catch (err) {
     console.error(err.message);
@@ -54,6 +72,7 @@ router.patch('/classes/:id', auth, async (req, res) => {
       { new: true }
     );
     if (!yogaClass) return res.status(404).json({ msg: 'Class not found' });
+    invalidateYogaCache();
     res.json(yogaClass);
   } catch (err) {
     console.error(err.message);
@@ -67,6 +86,7 @@ router.delete('/classes/:id', auth, async (req, res) => {
   try {
     const yogaClass = await YogaClass.findByIdAndDelete(req.params.id);
     if (!yogaClass) return res.status(404).json({ msg: 'Class not found' });
+    invalidateYogaCache();
     res.json({ msg: 'Yoga class removed' });
   } catch (err) {
     console.error(err.message);
