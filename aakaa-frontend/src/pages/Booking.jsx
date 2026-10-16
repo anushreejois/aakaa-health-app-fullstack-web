@@ -304,8 +304,18 @@ export default function Booking() {
     // 2. Specialties filter (if any are selected)
     if (selectedSpecialties.length > 0) {
       const hasMatchingSpecialty = therapist.specialties?.some((s) =>
-        selectedSpecialties.includes(s)
-      );
+        selectedSpecialties.some((sel) => {
+          const sLower = s.toLowerCase();
+          const selLower = sel.toLowerCase();
+          return sLower.includes(selLower) || selLower.includes(sLower);
+        })
+      ) || selectedSpecialties.some((sel) => {
+        const bioLower = (therapist.bio || "").toLowerCase();
+        if (sel === "Art Therapy") return bioLower.includes("art") || bioLower.includes("creative");
+        if (sel === "EFT") return bioLower.includes("eft") || bioLower.includes("emotion-focused");
+        if (sel === "REBT") return bioLower.includes("rebt");
+        return false;
+      });
       if (!hasMatchingSpecialty) return false;
     }
 
@@ -447,7 +457,7 @@ export default function Booking() {
                 <div className="space-y-4 pt-6 border-t border-gray-50">
                   <h4 className="text-sm font-black text-gray-900 uppercase tracking-wider">Specialties</h4>
                   <div className="space-y-2.5">
-                    {["Anxiety", "Depression", "Relationships", "Work Stress", "Trauma", "Self Confidence", "Child Therapy"].map((spec) => {
+                    {["Anxiety", "Depression", "Relationships", "Trauma", "Art Therapy", "EFT", "REBT", "Work Stress", "Self Confidence", "Child Therapy"].map((spec) => {
                       const isChecked = selectedSpecialties.includes(spec);
                       return (
                         <label key={spec} className="flex items-center gap-3 cursor-pointer group text-xs text-gray-500 font-medium hover:text-aakaa-green transition-colors">
