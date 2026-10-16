@@ -2,23 +2,62 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, PhoneCall, MessageCircle, X } from 'lucide-react';
 
-const ContactModal = ({ isOpen, onClose, amount, orderId, bookingType, classCount }) => {
+const ContactModal = ({ 
+  isOpen, 
+  onClose, 
+  amount, 
+  orderId, 
+  bookingType, 
+  classCount,
+  therapistName,
+  therapistTitle,
+  date,
+  time,
+  userName,
+  userEmail 
+}) => {
   if (!isOpen) return null;
 
   const handleWhatsApp = () => {
-    let packageInfo = "";
-    let text = "";
+    let message = "";
     
     if (bookingType === "monthly") {
-      packageInfo = ` for ${classCount} Group Classes`;
-      text = encodeURIComponent(`Hi! I'd like to confirm my booking${packageInfo}. Amount: ₹${amount}`);
+      const packageInfo = classCount ? ` for ${classCount} Group Classes` : " for Monthly Group Classes";
+      message = `Hi AakaA Team! I'd like to confirm my Yoga booking${packageInfo}.\n\n`;
+      if (userName && userName !== "Anonymous") message += `• Name: ${userName}\n`;
+      message += `• Amount: ₹${amount || 499}\n`;
+      if (orderId) message += `• Booking Ref: ${orderId}\n`;
+      message += `\nPlease confirm my batch details. Thank you!`;
     } else if (bookingType === "private") {
-      packageInfo = ` for ${classCount} Private Sessions`;
-      text = encodeURIComponent(`Hi! I'd like to schedule my planning call${packageInfo}.`);
+      const packageInfo = classCount ? ` for ${classCount} Private Sessions` : " for Private Yoga Sessions";
+      message = `Hi AakaA Team! I'd like to schedule my planning call${packageInfo}.\n\n`;
+      if (userName && userName !== "Anonymous") message += `• Name: ${userName}\n`;
+      message += `• Amount: ₹${amount || 999}\n`;
+      if (orderId) message += `• Booking Ref: ${orderId}\n`;
+      message += `\nPlease let me know your available times for the planning call. Thank you!`;
     } else {
-      text = encodeURIComponent(`Hi! I'd like to confirm my booking. Amount: ₹${amount}`);
+      // Professional Therapy Booking
+      message = `Hi AakaA Team! I'd like to confirm my therapy session booking.\n\n`;
+      
+      // If a therapist was selected, mention the therapist!
+      // If NO therapist was selected, DO NOT mention any therapist name!
+      if (therapistName && therapistName.trim() !== "") {
+        message += `• Therapist: ${therapistName}${therapistTitle ? ` (${therapistTitle})` : ''}\n`;
+      } else {
+        message += `• Session Type: Therapy Consultation (Match me with an expert)\n`;
+      }
+
+      if (date) message += `• Date: ${date}\n`;
+      if (time) message += `• Time: ${time}\n`;
+      if (userName && userName.trim() !== "" && userName !== "Anonymous") {
+        message += `• Client Name: ${userName}\n`;
+      }
+      message += `• Session Fee: ₹${amount || 850}\n`;
+      if (orderId) message += `• Ref ID: ${orderId}\n`;
+      message += `\nPlease confirm my appointment slot. Thank you!`;
     }
     
+    const text = encodeURIComponent(message);
     window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
     onClose(); // Auto close the modal after they click
   };
@@ -50,7 +89,9 @@ const ContactModal = ({ isOpen, onClose, amount, orderId, bookingType, classCoun
           <p className="text-gray-400 text-sm font-medium px-4">
             {bookingType === "private"
               ? "Your request is registered. Please contact us directly via WhatsApp or Call to schedule your planning call before proceeding with the payment."
-              : "Your slot is temporarily reserved. We are in early access, so please contact us directly to confirm your payment and booking."}
+              : therapistName 
+                ? `Your slot with ${therapistName} is reserved. Please connect on WhatsApp to confirm your appointment.`
+                : "Your slot is reserved. Please connect on WhatsApp to get matched with an expert and confirm your appointment."}
           </p>
         </div>
 

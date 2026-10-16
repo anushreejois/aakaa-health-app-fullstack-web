@@ -236,6 +236,10 @@ export default function Booking() {
       });
 
       if (response.ok) {
+        try {
+          const savedData = await response.json();
+          setCurrentOrder(savedData);
+        } catch (e) {}
         setIsMockPaymentOpen(true);
         setStep(STEPS.CHECKOUT); // keep them on the checkout screen underneath the modal
       } else {
@@ -1042,8 +1046,15 @@ export default function Booking() {
         <ContactModal 
           isOpen={isMockPaymentOpen}
           onClose={() => setIsMockPaymentOpen(false)}
-          amount={selectedTherapist ? selectedTherapist.price.replace(/[^0-9]/g, '') : '850'}
-          orderId={currentOrder?.id}
+          amount={selectedTherapist ? (selectedTherapist.price.replace(/[^0-9]/g, '') || '850') : '850'}
+          orderId={currentOrder?._id || currentOrder?.id}
+          bookingType="therapy"
+          therapistName={selectedTherapist?.name}
+          therapistTitle={selectedTherapist?.title}
+          date={bookingDetails?.date}
+          time={bookingDetails?.time}
+          userName={userData?.name}
+          userEmail={userData?.email}
           onPaymentSuccess={async (paymentResponse) => {
             setIsMockPaymentOpen(false);
             setStep(STEPS.PROCESSING);
