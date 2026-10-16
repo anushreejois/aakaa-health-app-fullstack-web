@@ -394,7 +394,7 @@ export default function ModalityMatchQuizModal({ isOpen, onClose, therapyTypes, 
 
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <Link
-                      to="/booking"
+                      to={`/booking?browse=true&specialty=${encodeURIComponent(matchResult.primary.title.split(' ')[0])}`}
                       onClick={onClose}
                       className="w-full sm:w-auto px-6 py-3.5 bg-aakaa-green hover:bg-[#153826] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-[0_10px_20px_rgba(30,77,54,0.2)] text-center flex items-center justify-center gap-2"
                     >

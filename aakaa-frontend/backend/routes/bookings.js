@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 const Booking = require('../models/Booking');
 
@@ -131,11 +132,30 @@ router.get('/stats', auth, async (req, res) => {
 });
 
 // @route   GET /api/bookings
-// @desc    Get all bookings
-router.get('/', auth, async (req, res) => {
+// @desc    Get all bookings (full for admin, anonymized slots for guests)
+router.get('/', async (req, res) => {
   try {
-    const bookings = await Booking.find().populate('therapistId', ['name', 'title']);
-    res.json(bookings);
+    const token = req.header('x-auth-token');
+    let isAuthed = false;
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded && decoded.user) isAuthed = true;
+      } catch (e) {}
+    }
+
+    if (isAuthed) {
+      const bookings = await Booking.find().populate('therapistId', ['name', 'title']).lean();
+      return res.json(bookings);
+    } else {
+      // Public safe slots (only date, time, therapistId)
+      const slots = await Booking.find(
+        { status: { $ne: 'cancelled' } },
+        { date: 1, time: 1, therapistId: 1, _id: 1 }
+      ).lean();
+      res.set('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+      return res.json(slots);
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

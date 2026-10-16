@@ -206,7 +206,7 @@ export default function ProfessionalCare() {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Link 
-                    to="/booking" 
+                    to="/booking?browse=true" 
                     className="inline-flex items-center gap-4 bg-aakaa-green text-white px-10 py-5 rounded-full font-bold shadow-[0_15px_40px_rgba(30,77,54,0.3)] hover:shadow-[0_20px_50px_rgba(30,77,54,0.4)] transition-all"
                   >
                     Find Your Match <ArrowRight size={20} />
@@ -372,7 +372,7 @@ export default function ProfessionalCare() {
                       Close
                     </button>
                     <Link 
-                      to="/booking"
+                      to={`/booking?browse=true&specialty=${encodeURIComponent(selectedTherapy.title.split(' ')[0])}`}
                       className="px-8 py-3.5 bg-aakaa-green text-white rounded-xl font-bold shadow-[0_10px_20px_rgba(30,77,54,0.2)] hover:shadow-[0_15px_30px_rgba(30,77,54,0.3)] transition-all text-center flex items-center justify-center gap-2"
                     >
                       Find a Specialist <ArrowRight size={16} />

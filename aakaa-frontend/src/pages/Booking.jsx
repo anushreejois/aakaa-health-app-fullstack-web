@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Calendar, 
@@ -36,17 +37,46 @@ const STEPS = {
 };
 
 export default function Booking() {
-  const [step, setStep] = useState(STEPS.CHOICE);
+  const location = useLocation();
+
+  // Instant cached initialization (0ms initial delay)
+  const [therapists, setTherapists] = useState(() => {
+    try {
+      const cached = localStorage.getItem("aakaa_therapists_cache");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  });
+
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = localStorage.getItem("aakaa_therapists_cache");
+      if (cached && JSON.parse(cached).length > 0) return false;
+    } catch (e) {}
+    return true;
+  });
+
+  // Step state: support direct browse from query params
+  const [step, setStep] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("browse") === "true" || params.get("step") === "results" || params.get("specialty")) {
+      return STEPS.RESULTS;
+    }
+    return STEPS.CHOICE;
+  });
+
   const [quizAnswers, setQuizAnswers] = useState(null);
   const [selectedTherapist, setSelectedTherapist] = useState(null);
   const [viewingProfile, setViewingProfile] = useState(null);
   const [bookingDetails, setBookingDetails] = useState({ date: null, time: null });
-  const [therapists, setTherapists] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedPayment, setSelectedPayment] = useState("upi");
   
-  // Availability states
+  // Availability & cache states
   const [occupiedSlots, setOccupiedSlots] = useState([]);
+  const [cachedBookings, setCachedBookings] = useState([]);
 
   // Payment states
   const [currentOrder, setCurrentOrder] = useState(null);
@@ -54,57 +84,108 @@ export default function Booking() {
   const [isMockPaymentOpen, setIsMockPaymentOpen] = useState(false);
 
   // Filter states
-
-  const [selectedSpecialties, setSelectedSpecialties] = useState([]);
+  const [selectedSpecialties, setSelectedSpecialties] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const spec = params.get("specialty");
+    return spec ? [spec] : [];
+  });
   const [selectedAvailability, setSelectedAvailability] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch real therapists from backend
+  // Sync URL query params whenever location changes
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("browse") === "true" || params.get("step") === "results") {
+      setStep(STEPS.RESULTS);
+    }
+    const spec = params.get("specialty");
+    if (spec) {
+      setStep(STEPS.RESULTS);
+      setSelectedSpecialties((prev) => (prev.includes(spec) ? prev : [spec]));
+    }
+  }, [location.search]);
+
+  // Fetch real therapists from backend with background revalidation
+  useEffect(() => {
+    let isMounted = true;
     const fetchTherapists = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/api/therapists`);
-        const data = await response.json();
-        setTherapists(data);
-        setLoading(false);
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && isMounted) {
+            setTherapists(data);
+            try {
+              localStorage.setItem("aakaa_therapists_cache", JSON.stringify(data));
+            } catch (e) {}
+          }
+        }
       } catch (error) {
         console.error("Error fetching therapists:", error);
-        setLoading(false);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
     fetchTherapists();
+    return () => { isMounted = false; };
+  }, []);
+
+  // Prefetch bookings immediately on page mount to eliminate calendar delay
+  useEffect(() => {
+    const prefetchBookings = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/bookings`);
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) setCachedBookings(data);
+        }
+      } catch (e) {
+        console.warn("Pre-fetch bookings error:", e);
+      }
+    };
+    prefetchBookings();
   }, []);
 
   // Fetch occupied slots when therapist is selected (or when entering scheduling for Path A)
+  // Compute occupied slots instantly when entering scheduling
   useEffect(() => {
     if (step === STEPS.SCHEDULING) {
       setBookingDetails({ date: null, time: null });
-      
+
+      const calculateSlots = (rawBookings) => {
+        const list = Array.isArray(rawBookings) ? rawBookings : [];
+        if (selectedTherapist) {
+          const therapistBookings = list.filter(b => {
+            const bId = b.therapistId?._id || b.therapistId;
+            return bId === selectedTherapist._id;
+          });
+          return therapistBookings.map(b => `${b.date}|${b.time}`);
+        } else {
+          const bookingCounts = {};
+          list.forEach(b => {
+            const key = `${b.date}|${b.time}`;
+            bookingCounts[key] = (bookingCounts[key] || 0) + 1;
+          });
+          return Object.keys(bookingCounts).filter(key => bookingCounts[key] >= 3);
+        }
+      };
+
+      // 1. Instant calculation if already prefetched (0ms delay)
+      if (cachedBookings.length > 0) {
+        setOccupiedSlots(calculateSlots(cachedBookings));
+      }
+
+      // 2. Background revalidation
       const fetchOccupiedSlots = async () => {
         try {
           const response = await fetch(`${API_BASE_URL}/api/bookings`);
-          const allBookings = await response.json();
-          
-          let slots = [];
-          if (selectedTherapist) {
-            // Path B: Filter for the selected therapist
-            const therapistBookings = allBookings.filter(b => {
-              const bId = b.therapistId?._id || b.therapistId;
-              return bId === selectedTherapist._id;
-            });
-            slots = therapistBookings.map(b => `${b.date}|${b.time}`);
-          } else {
-            // Path A: Mark slot as occupied if all therapists are booked at that time
-            const bookingCounts = {};
-            allBookings.forEach(b => {
-              const key = `${b.date}|${b.time}`;
-              bookingCounts[key] = (bookingCounts[key] || 0) + 1;
-            });
-            // Assuming max 3 therapists for demo
-            slots = Object.keys(bookingCounts).filter(key => bookingCounts[key] >= 3);
+          if (response.ok) {
+            const allBookings = await response.json();
+            if (Array.isArray(allBookings)) {
+              setCachedBookings(allBookings);
+              setOccupiedSlots(calculateSlots(allBookings));
+            }
           }
-          
-          setOccupiedSlots(slots);
         } catch (error) {
           console.error("Error fetching occupied slots:", error);
         }
@@ -230,18 +311,25 @@ export default function Booking() {
 
   const checkAvailabilityBeforePayment = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/bookings`);
-      const allBookings = await response.json();
-      
+      let bookingsList = cachedBookings;
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/bookings`);
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) bookingsList = data;
+        }
+      } catch (e) {}
+
+      const safeList = Array.isArray(bookingsList) ? bookingsList : [];
       let currentOccupied = [];
       if (selectedTherapist) {
-        const therapistBookings = allBookings.filter(b => 
+        const therapistBookings = safeList.filter(b => 
           (b.therapistId?._id || b.therapistId) === selectedTherapist._id
         );
         currentOccupied = therapistBookings.map(b => `${b.date}|${b.time}`);
       } else {
         const bookingCounts = {};
-        allBookings.forEach(b => {
+        safeList.forEach(b => {
           const key = `${b.date}|${b.time}`;
           bookingCounts[key] = (bookingCounts[key] || 0) + 1;
         });
@@ -292,11 +380,11 @@ export default function Booking() {
     }
   };
 
-  // Framer Motion Variants
+  // Framer Motion Variants (optimized for zero perceived transition lag)
   const pageVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.18, ease: "easeOut" } },
+    exit: { opacity: 0, y: -8, transition: { duration: 0.12, ease: "easeIn" } }
   };
 
   const filteredTherapists = therapists.filter((therapist) => {
@@ -522,7 +610,23 @@ export default function Booking() {
 
               {/* Right Column: Therapist Grid */}
               <div className="lg:col-span-9">
-                {filteredTherapists.length === 0 ? (
+                {loading && therapists.length === 0 ? (
+                  /* Shimmer Skeleton Loader (Eliminates perceived lag on first visit) */
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div key={i} className="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 p-6 animate-pulse">
+                        <div className="h-64 bg-gray-100 rounded-3xl mb-6" />
+                        <div className="h-5 bg-gray-200 rounded-full w-3/4 mb-3" />
+                        <div className="h-3 bg-gray-100 rounded-full w-1/2 mb-6" />
+                        <div className="flex gap-2 mb-6">
+                          <div className="h-6 bg-gray-100 rounded-lg w-16" />
+                          <div className="h-6 bg-gray-100 rounded-lg w-20" />
+                        </div>
+                        <div className="h-10 bg-gray-100 rounded-2xl w-full" />
+                      </div>
+                    ))}
+                  </div>
+                ) : filteredTherapists.length === 0 ? (
                   <div className="py-24 text-center bg-white rounded-[2rem] border border-gray-100 shadow-sm">
                     <p className="text-aakaa-gold text-lg font-bold">No specialists match your criteria.</p>
                     <p className="text-gray-400 text-xs mt-2">Try widening your price range or clearing some filters.</p>
@@ -532,11 +636,11 @@ export default function Booking() {
                     {filteredTherapists.map((therapist, index) => (
                       <motion.div 
                         key={therapist._id || therapist.id || index}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
+                        transition={{ duration: 0.2 }}
                         onClick={() => setViewingProfile(therapist)}
-                        className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_25px_60px_rgba(30,77,54,0.08)] hover:border-aakaa-green/20 transition-all duration-500 flex flex-col justify-between cursor-pointer"
+                        className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100/60 hover:shadow-[0_25px_60px_rgba(30,77,54,0.08)] hover:border-aakaa-green/20 transition-all duration-300 flex flex-col justify-between cursor-pointer"
                       >
                         <div>
                           <div className="relative h-72 sm:h-80 overflow-hidden bg-gradient-to-b from-[#f4f7f4] to-[#e8efe9] flex items-center justify-center">
