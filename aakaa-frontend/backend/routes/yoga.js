@@ -97,7 +97,7 @@ router.delete('/classes/:id', auth, async (req, res) => {
 // @route   POST /api/yoga/bookings
 // @desc    Book a yoga class, monthly pass, or private session (Public for Concierge Flow)
 router.post('/bookings', async (req, res) => {
-  const { userName, userEmail, classId, bookingType, instructorName, date, time, amount, classCount, pricingTier } = req.body;
+  const { userName, userEmail, userPhone, classId, bookingType, instructorName, date, time, amount, classCount, pricingTier } = req.body;
 
   try {
     const type = bookingType || 'class';
@@ -121,6 +121,7 @@ router.post('/bookings', async (req, res) => {
       const newBooking = new YogaBooking({
         userName,
         userEmail,
+        userPhone: userPhone || '',
         classId,
         bookingType: 'class',
         amount: amount || 0
@@ -139,6 +140,7 @@ router.post('/bookings', async (req, res) => {
       const newBooking = new YogaBooking({
         userName,
         userEmail,
+        userPhone: userPhone || '',
         bookingType: 'monthly',
         amount: amount || 0,
         classCount: classCount || 1,
@@ -154,6 +156,7 @@ router.post('/bookings', async (req, res) => {
       const newBooking = new YogaBooking({
         userName,
         userEmail,
+        userPhone: userPhone || '',
         bookingType: 'private',
         instructorName,
         date,

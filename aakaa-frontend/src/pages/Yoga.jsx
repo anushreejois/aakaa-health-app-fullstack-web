@@ -38,7 +38,7 @@ export default function Yoga() {
   const [privateDate, setPrivateDate] = useState("");
   const [privateTime, setPrivateTime] = useState("10:00 AM");
 
-  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [bookingError, setBookingError] = useState("");
@@ -118,6 +118,7 @@ export default function Yoga() {
     const bookingData = {
       userName: formData.name,
       userEmail: formData.email,
+      userPhone: formData.phone || "",
       bookingType: bookingType,
       amount: getSelectedAmount(),
       status: "Pending Verification",
@@ -891,6 +892,19 @@ export default function Yoga() {
                       />
                     </div>
 
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">
+                        WhatsApp / Phone <span className="text-gray-400 font-normal lowercase">(for session link & batch details)</span>
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl outline-none focus:border-aakaa-green transition-all text-sm text-gray-800 font-medium"
+                        placeholder="+91 98765 43210"
+                      />
+                    </div>
+
                     {/* Extra fields for Private Sessions */}
                     {bookingType === "private" && (
                       <div className="space-y-4 border-t border-gray-100 pt-4">
@@ -986,7 +1000,14 @@ export default function Yoga() {
 
       <ContactModal
         isOpen={isMockPaymentOpen}
-        onClose={() => setIsMockPaymentOpen(false)}
+        onClose={() => {
+          setIsMockPaymentOpen(false);
+          if (currentOrder) setBookingSuccess(currentOrder);
+        }}
+        onComplete={() => {
+          setIsMockPaymentOpen(false);
+          if (currentOrder) setBookingSuccess(currentOrder);
+        }}
         amount={getSelectedAmount()}
         orderId={currentOrder?._id || currentOrder?.id}
         bookingType={bookingType}
@@ -998,6 +1019,7 @@ export default function Yoga() {
         time={bookingType === "private" ? privateTime : bookingClass?.time}
         userName={formData?.name}
         userEmail={formData?.email}
+        userPhone={formData?.phone}
         onPaymentSuccess={async (paymentResponse) => {
           setIsMockPaymentOpen(false);
           await handlePaymentSuccess(paymentResponse);

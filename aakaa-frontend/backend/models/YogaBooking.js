@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const yogaBookingSchema = new mongoose.Schema({
   userName: { type: String, required: true },
   userEmail: { type: String, required: true },
+  userPhone: { type: String, default: "" },
   classId: { type: mongoose.Schema.Types.ObjectId, ref: 'YogaClass' },
   bookingType: { type: String, enum: ['class', 'monthly', 'private'], default: 'class' },
   pricingTier: { type: String, enum: ['client', 'therapist', null], default: null },

@@ -7,7 +7,7 @@ const Booking = require('../models/Booking');
 // @route   POST /api/bookings
 // @desc    Create a new booking (Public for Concierge Flow)
 router.post('/', async (req, res) => {
-  const { userName, userEmail, therapistId, date, time, status } = req.body;
+  const { userName, userEmail, userPhone, therapistId, date, time, status, amount, paymentMethod } = req.body;
 
   try {
     // Prevent double booking - cast therapistId to handle different formats
@@ -16,7 +16,8 @@ router.post('/', async (req, res) => {
       existingBooking = await Booking.findOne({ 
         therapistId: therapistId.toString(), 
         date: date.trim(), 
-        time: time.trim() 
+        time: time.trim(),
+        status: { $ne: 'cancelled' }
       });
     }
     
@@ -29,9 +30,12 @@ router.post('/', async (req, res) => {
     const newBooking = new Booking({
       userName,
       userEmail,
+      userPhone: userPhone || '',
       therapistId: therapistId || undefined,
       date,
       time,
+      amount: amount || 850,
+      paymentMethod: paymentMethod || 'upi',
       status: status || 'confirmed'
     });
 
@@ -100,8 +104,9 @@ router.get('/stats', auth, async (req, res) => {
       _id: b._id,
       userName: b.userName,
       userEmail: b.userEmail,
+      userPhone: b.userPhone || '',
       therapistName: b.therapistId ? b.therapistId.name : 'Unassigned',
-      amount: 850, // default consultation price
+      amount: b.amount || 850,
       status: b.status,
       transactionId: b.transactionId,
       createdAt: b.createdAt

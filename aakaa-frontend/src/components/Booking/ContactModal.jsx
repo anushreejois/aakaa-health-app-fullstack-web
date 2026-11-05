@@ -17,9 +17,16 @@ const ContactModal = ({
   date,
   time,
   userName,
-  userEmail 
+  userEmail,
+  userPhone,
+  onComplete
 }) => {
   if (!isOpen) return null;
+
+  const handleClose = () => {
+    if (onComplete) onComplete();
+    onClose();
+  };
 
   const handleWhatsApp = () => {
     let message = "";
@@ -31,6 +38,7 @@ const ContactModal = ({
       if (date) message += `• Date: ${date}\n`;
       if (time) message += `• Time: ${time}\n`;
       if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
+      if (userPhone) message += `• Phone: ${userPhone}\n`;
       message += `• Fee: ₹${amount || 399}\n`;
       if (orderId) message += `• Booking Ref: ${orderId}\n`;
       message += `\nPlease confirm my class spot. Thank you!`;
@@ -39,6 +47,7 @@ const ContactModal = ({
       message = `Hi AakaA Team! I'd like to confirm my Yoga Monthly Membership${packageInfo}.\n\n`;
       if (pricingTier) message += `• Tier: ${pricingTier === "therapist" ? "Practitioner / Caregiver Self-Care" : "Client General"}\n`;
       if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
+      if (userPhone) message += `• Phone: ${userPhone}\n`;
       message += `• Monthly Fee: ₹${amount}\n`;
       if (orderId) message += `• Booking Ref: ${orderId}\n`;
       message += `\nPlease confirm my batch registration. Thank you!`;
@@ -48,6 +57,7 @@ const ContactModal = ({
       if (instructorName) message += `• Preferred Instructor: ${instructorName}\n`;
       if (time) message += `• Preferred Time: ${time}\n`;
       if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
+      if (userPhone) message += `• Phone: ${userPhone}\n`;
       message += `• Package Fee: ₹${amount}\n`;
       if (orderId) message += `• Booking Ref: ${orderId}\n`;
       message += `\nPlease let me know your available times for the planning call. Thank you!`;
@@ -68,6 +78,9 @@ const ContactModal = ({
       if (userName && userName.trim() !== "" && userName !== "Anonymous") {
         message += `• Client Name: ${userName}\n`;
       }
+      if (userPhone && userPhone.trim() !== "") {
+        message += `• Phone: ${userPhone}\n`;
+      }
       message += `• Session Fee: ₹${amount || 850}\n`;
       if (orderId) message += `• Ref ID: ${orderId}\n`;
       message += `\nPlease confirm my appointment slot. Thank you!`;
@@ -75,11 +88,12 @@ const ContactModal = ({
     
     const text = encodeURIComponent(message);
     window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
-    onClose(); // Auto close the modal after they click
+    handleClose();
   };
 
   const handleCall = () => {
     window.open('tel:+919380879586', '_self');
+    handleClose();
   };
 
   return (
@@ -90,7 +104,7 @@ const ContactModal = ({
         className="bg-white rounded-[3rem] w-full max-w-md overflow-hidden shadow-2xl border border-white/20 my-auto relative"
       >
         <button 
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-6 right-6 w-10 h-10 bg-gray-50 text-gray-500 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors z-10"
         >
           <X size={20} />
@@ -134,7 +148,7 @@ const ContactModal = ({
             </button>
 
             <button 
-              onClick={onClose}
+              onClick={handleClose}
               className="w-full p-4 mt-2 text-gray-400 font-bold hover:text-gray-600 transition-colors text-sm"
             >
               I'll do this later

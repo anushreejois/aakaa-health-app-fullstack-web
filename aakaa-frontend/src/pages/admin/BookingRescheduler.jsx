@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, User, CheckCircle, XCircle, Download, X, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, User, CheckCircle, XCircle, Download, X, AlertCircle, MessageSquare, Phone, Mail } from 'lucide-react';
 import { exportToCSV } from '../../utils/csvUtils';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -63,6 +63,20 @@ const BookingRescheduler = () => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    }
+  };
+
+  const handleWhatsAppContact = (booking) => {
+    const phone = (booking.userPhone || '').replace(/[^0-9]/g, '');
+    const practitioner = booking.therapistId?.name ? `with ${booking.therapistId.name}` : `with an assigned specialist`;
+    const text = encodeURIComponent(
+      `Hi ${booking.userName}! Reaching out from AakaA regarding your therapy booking ${practitioner} for ${booking.date} at ${booking.time}. ` +
+      `We're here to confirm your appointment details and share your session link!`
+    );
+    if (phone) {
+      window.open(`https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${text}`, '_blank');
+    } else {
+      window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
     }
   };
 
@@ -160,10 +174,16 @@ const BookingRescheduler = () => {
                       <td className="px-8 py-6 text-[10px] font-black text-aakaa-gold/60 font-mono tracking-tighter">{booking._id.substring(0, 8)}...</td>
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-aakaa-green/10 flex items-center justify-center text-aakaa-green">
-                            <User size={14} />
+                          <div className="w-9 h-9 rounded-full bg-aakaa-green/10 flex items-center justify-center text-aakaa-green font-bold text-xs shrink-0">
+                            {booking.userName ? booking.userName.charAt(0).toUpperCase() : <User size={14} />}
                           </div>
-                          <span className="text-sm font-bold text-aakaa-green">{booking.userName}</span>
+                          <div>
+                            <span className="text-sm font-bold text-aakaa-green block">{booking.userName}</span>
+                            <span className="text-[11px] text-gray-500 block">{booking.userEmail}</span>
+                            {booking.userPhone && (
+                              <span className="text-[11px] text-aakaa-gold font-bold block">{booking.userPhone}</span>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-8 py-6 text-sm font-medium text-aakaa-gold/80">{booking.therapistId?.name || "Unassigned"}</td>
@@ -192,6 +212,14 @@ const BookingRescheduler = () => {
                       <td className="px-8 py-6 text-right space-x-2">
                         {booking.status !== 'cancelled' && (
                           <div className="flex items-center justify-end gap-3">
+                            <button
+                              onClick={() => handleWhatsAppContact(booking)}
+                              className="p-1.5 text-[#25D366] hover:bg-emerald-50 rounded-xl transition-all cursor-pointer hover:scale-110"
+                              title="Message on WhatsApp"
+                            >
+                              <MessageSquare size={16} />
+                            </button>
+                            <div className="h-4 w-px bg-aakaa-green/10" />
                             {booking.status.toLowerCase() === 'pending verification' && (
                               <>
                                 <button 

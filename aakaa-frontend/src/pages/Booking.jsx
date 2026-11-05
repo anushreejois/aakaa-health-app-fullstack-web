@@ -80,7 +80,7 @@ export default function Booking() {
 
   // Payment states
   const [currentOrder, setCurrentOrder] = useState(null);
-  const [userData, setUserData] = useState({ name: "", email: "" });
+  const [userData, setUserData] = useState({ name: "", email: "", phone: "" });
   const [isMockPaymentOpen, setIsMockPaymentOpen] = useState(false);
 
   // Filter states
@@ -218,12 +218,19 @@ export default function Booking() {
     try {
       setStep(STEPS.PROCESSING);
       
+      const numAmount = selectedTherapist 
+        ? (parseInt(selectedTherapist.price?.replace(/[^0-9]/g, '')) || 850) 
+        : 850;
+
       const bookingData = {
           userName: userData.name || "Anonymous", 
           userEmail: userData.email || "guest@example.com",
+          userPhone: userData.phone || "",
           therapistId: selectedTherapist ? selectedTherapist._id : null,
           date: bookingDetails.date,
           time: bookingDetails.time,
+          amount: numAmount,
+          paymentMethod: selectedPayment,
           status: "Pending Verification" // Keep it pending until admin approves from dashboard after talking on WhatsApp
       };
 
@@ -241,11 +248,10 @@ export default function Booking() {
           setCurrentOrder(savedData);
         } catch (e) {}
         setIsMockPaymentOpen(true);
-        setStep(STEPS.CHECKOUT); // keep them on the checkout screen underneath the modal
       } else {
         const errorData = await response.json();
         alert(errorData.msg || "Failed to save booking. Please try again.");
-        setStep(STEPS.SCHEDULING);
+        setStep(STEPS.CHECKOUT);
       }
 
     } catch (error) {
@@ -859,6 +865,18 @@ export default function Booking() {
                         className="w-full p-5 bg-gray-50 border-2 border-transparent focus:border-aakaa-green focus:bg-white rounded-2xl transition-all font-bold outline-none"
                       />
                     </div>
+                    <div>
+                      <label className="text-[10px] font-black text-aakaa-gold uppercase tracking-widest mb-2 block">
+                        WhatsApp / Phone <span className="text-gray-400 font-normal lowercase">(for appointment link & confirmation)</span>
+                      </label>
+                      <input 
+                        type="tel" 
+                        placeholder="+91 98765 43210"
+                        value={userData.phone}
+                        onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
+                        className="w-full p-5 bg-gray-50 border-2 border-transparent focus:border-aakaa-green focus:bg-white rounded-2xl transition-all font-bold outline-none"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -869,7 +887,7 @@ export default function Booking() {
                   
                   <div className="space-y-4">
                     {[
-                      { id: "upi", label: "UPI (Google Pay, PhonePe)", icon: Smartphone },
+                      { id: "upi", label: "UPI (Google Pay, PhonePe, Paytm)", icon: Smartphone },
                       { id: "card", label: "Credit / Debit Card", icon: CreditCard },
                       { id: "net", label: "Net Banking", icon: Sparkles }
                     ].map((method) => (
@@ -887,6 +905,13 @@ export default function Booking() {
                         {selectedPayment === method.id && <div className="w-6 h-6 bg-aakaa-green rounded-full flex items-center justify-center text-white"><CheckCircle size={14} /></div>}
                       </button>
                     ))}
+                  </div>
+
+                  <div className="flex items-start gap-3.5 p-5 bg-aakaa-green/5 rounded-2xl border border-aakaa-green/10 mt-6">
+                    <Sparkles size={18} className="text-aakaa-gold shrink-0 mt-0.5" />
+                    <p className="text-xs font-semibold text-aakaa-green/90 leading-relaxed">
+                      <strong>Immediate Slot Reservation:</strong> Your session is logged instantly in our ledger. You'll connect with our concierge coordinator on WhatsApp to finalize matching and complete secure checkout.
+                    </p>
                   </div>
                 </div>
 
@@ -986,43 +1011,72 @@ export default function Booking() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", damping: 12, stiffness: 200 }}
-                className="w-32 h-32 bg-aakaa-green/10 text-aakaa-green rounded-full flex items-center justify-center mb-10 shadow-2xl shadow-aakaa-green/20"
+                className="w-28 h-28 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-8 shadow-xl shadow-emerald-500/10"
               >
-                <CheckCircle size={64} />
+                <CheckCircle size={56} />
               </motion.div>
               
-              <h2 className="text-5xl font-black text-gray-900 mb-6 tracking-tight">Booking Confirmed!</h2>
+              <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-3 tracking-tight">Booking Reserved!</h2>
+              <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm leading-relaxed">
+                Your consultation request has been logged. Our clinical coordinator is confirming your slot and connecting with your therapist.
+              </p>
               
-              <div className="bg-white border border-gray-100 rounded-[2.5rem] p-10 w-full mb-12 shadow-xl relative overflow-hidden">
+              <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 md:p-10 w-full mb-10 shadow-xl relative overflow-hidden text-left">
                 <div className="absolute top-0 left-0 w-full h-2 bg-aakaa-green" />
-                <div className="grid grid-cols-2 gap-8 text-left mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Patient Details</p>
-                    <p className="font-black text-gray-900">{userData.name}</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Client Details</p>
+                    <p className="font-black text-gray-900 text-lg">{userData.name || "Client"}</p>
                     <p className="text-sm text-gray-500 font-medium">{userData.email}</p>
+                    {userData.phone && <p className="text-sm text-aakaa-green font-bold mt-1">{userData.phone}</p>}
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Session Receipt</p>
-                    <p className="font-black text-gray-900">#AK-984421</p>
-                    <p className="text-sm text-emerald-500 font-bold uppercase tracking-tighter">Status: Paid</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Booking Reference</p>
+                    <p className="font-black text-gray-900 font-mono text-lg">
+                      #{currentOrder?._id ? currentOrder._id.slice(-8).toUpperCase() : "AK-" + Math.floor(100000 + Math.random() * 900000)}
+                    </p>
+                    <span className="inline-block px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-bold uppercase tracking-wider mt-2">
+                      {currentOrder?.status || "Pending Verification"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-100 pt-6 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Practitioner</p>
+                    <p className="font-bold text-gray-800">{selectedTherapist ? selectedTherapist.name : "Expert Match Assignment"}</p>
+                    <p className="text-xs text-gray-400">{selectedTherapist?.title || "Specialist Care"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Scheduled Slot</p>
+                    <p className="font-bold text-gray-800">{bookingDetails.date || "Date confirmed"}</p>
+                    <p className="text-xs text-aakaa-gold font-bold">{bookingDetails.time || "Time confirmed"}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                  <Video size={20} className="text-aakaa-green" />
-                  <p className="text-sm font-bold text-gray-700">Google Meet link sent to your email.</p>
+                <div className="flex items-center gap-4 p-4 bg-aakaa-cream/50 rounded-2xl border border-gray-100">
+                  <Video size={20} className="text-aakaa-green shrink-0" />
+                  <p className="text-xs text-gray-700 font-medium leading-relaxed">
+                    Your secure consultation link and onboarding details will be confirmed directly on WhatsApp and email prior to the session.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 w-full">
-                <button className="flex-1 py-5 bg-gray-900 text-white rounded-2xl font-bold shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3">
-                  <Download size={20} /> Get Receipt
+              <div className="flex flex-col sm:flex-row gap-4 w-full">
+                <button 
+                  onClick={() => window.print()}
+                  className="flex-1 py-4 bg-gray-900 text-white rounded-2xl font-bold shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 cursor-pointer"
+                >
+                  <Download size={18} /> Print / Save Summary
                 </button>
                 <button 
-                  onClick={() => setStep(STEPS.RESULTS)}
-                  className="flex-1 py-5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all"
+                  onClick={() => {
+                    setStep(STEPS.RESULTS);
+                    setSelectedTherapist(null);
+                  }}
+                  className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all cursor-pointer"
                 >
-                  Return Home
+                  Return to Directory
                 </button>
               </div>
             </motion.div>
@@ -1045,8 +1099,15 @@ export default function Booking() {
 
         <ContactModal 
           isOpen={isMockPaymentOpen}
-          onClose={() => setIsMockPaymentOpen(false)}
-          amount={selectedTherapist ? (selectedTherapist.price.replace(/[^0-9]/g, '') || '850') : '850'}
+          onClose={() => {
+            setIsMockPaymentOpen(false);
+            setStep(STEPS.SUCCESS);
+          }}
+          onComplete={() => {
+            setIsMockPaymentOpen(false);
+            setStep(STEPS.SUCCESS);
+          }}
+          amount={selectedTherapist ? (selectedTherapist.price?.replace(/[^0-9]/g, '') || '850') : '850'}
           orderId={currentOrder?._id || currentOrder?.id}
           bookingType="therapy"
           therapistName={selectedTherapist?.name}
@@ -1055,6 +1116,7 @@ export default function Booking() {
           time={bookingDetails?.time}
           userName={userData?.name}
           userEmail={userData?.email}
+          userPhone={userData?.phone}
           onPaymentSuccess={async (paymentResponse) => {
             setIsMockPaymentOpen(false);
             setStep(STEPS.PROCESSING);
