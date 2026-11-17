@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import mindfulnessImage from "../../assets/mindfulness.jpg";
 
 export default function HeroSection() {
@@ -77,15 +78,21 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="mt-12 flex flex-wrap gap-5"
+            className="mt-12 flex flex-wrap items-center gap-4 sm:gap-5"
           >
-            <a href="#waitlist" className="bg-aakaa-green text-white px-10 py-4 rounded-full hover:bg-aakaa-green/90 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(30,77,54,0.25)] transition-all duration-500 shadow-[0_12px_25px_rgba(30,77,54,0.15)] text-[13px] font-bold tracking-widest uppercase">
-              Join Waitlist
-            </a>
+            <Link 
+              to="/booking" 
+              className="bg-aakaa-green text-white px-9 py-4 rounded-full hover:bg-aakaa-green/90 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(30,77,54,0.25)] transition-all duration-500 shadow-[0_12px_25px_rgba(30,77,54,0.15)] text-[12px] sm:text-[13px] font-bold tracking-widest uppercase cursor-pointer"
+            >
+              Book a Consultation
+            </Link>
 
-            <a href="/booking" className="inline-flex items-center border border-aakaa-green/10 text-aakaa-green px-10 py-4 rounded-full bg-white/40 backdrop-blur-md hover:bg-white/80 hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.03)] transition-all duration-500 text-[13px] font-bold tracking-widest uppercase">
-              Book a Session
-            </a>
+            <Link 
+              to="/yoga" 
+              className="inline-flex items-center border border-aakaa-green/20 text-aakaa-green px-8 py-4 rounded-full bg-white/60 backdrop-blur-md hover:bg-white hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.04)] transition-all duration-500 text-[12px] sm:text-[13px] font-bold tracking-widest uppercase cursor-pointer"
+            >
+              Somatics & Yoga
+            </Link>
           </motion.div>
         </motion.div>
 
