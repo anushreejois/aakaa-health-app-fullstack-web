@@ -191,4 +191,21 @@ router.get('/bookings', auth, async (req, res) => {
   }
 });
 
+// @route   PATCH /api/yoga/bookings/:id
+// @desc    Update a yoga booking (status, meetLink) (Admin only)
+router.patch('/bookings/:id', auth, async (req, res) => {
+  try {
+    const booking = await YogaBooking.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    ).populate('classId');
+    if (!booking) return res.status(404).json({ msg: 'Booking not found' });
+    res.json(booking);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
