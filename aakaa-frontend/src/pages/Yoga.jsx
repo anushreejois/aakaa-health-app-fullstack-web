@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, Clock, User, Award, CheckCircle, Info, Sparkles, X, Brain, Heart, ChevronRight } from "lucide-react";
+import { Calendar, Clock, User, Award, CheckCircle, Info, Sparkles, X, Brain, Heart, ChevronRight, Video, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "../components/Home/Footer";
 import ContactModal from "../components/Booking/ContactModal";
@@ -741,38 +741,70 @@ export default function Yoga() {
                     </div>
                     <h4 className="text-2xl font-bold text-gray-900 mb-2 font-heading">Booking Confirmed!</h4>
                     <p className="text-gray-600 mb-6 text-sm">
-                      We've reserved your spot. A confirmation email has been simulated and sent to <span className="font-semibold">{bookingSuccess.userEmail}</span>.
+                      We've reserved your spot. A confirmation receipt has been logged for <span className="font-semibold text-gray-800">{bookingSuccess.userEmail}</span>.
                     </p>
 
-                    <div className="bg-aakaa-cream p-5 rounded-2xl border border-gray-100 text-left mb-8">
+                    <div className="bg-aakaa-cream p-5 rounded-2xl border border-gray-100 text-left mb-6">
                       <div className="flex items-start gap-3.5">
-                        <Info className="w-5 h-5 text-aakaa-green mt-0.5" />
-                        <div>
-                          <p className="text-sm font-bold text-gray-800">Your Streaming Link / Details</p>
+                        <Video className="w-5 h-5 text-aakaa-green mt-0.5 shrink-0" />
+                        <div className="w-full">
+                          <p className="text-sm font-bold text-gray-800">Session Access & Live Stream Details</p>
                           {bookingType === "private" && (
                             <p className="text-xs text-gray-600 mt-1">
-                              Instructor: <strong className="text-gray-800">{bookingSuccess.instructorName}</strong><br />
-                              Schedule: <strong className="text-gray-800">{bookingSuccess.date} @ {bookingSuccess.time}</strong>
+                              Instructor: <strong className="text-gray-800">{bookingSuccess.instructorName || privateInstructor}</strong><br />
+                              Schedule: <strong className="text-gray-800">{bookingSuccess.date || privateDate} @ {bookingSuccess.time || privateTime}</strong>
                             </p>
                           )}
-                          <a
-                            href={bookingSuccess.meetLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-aakaa-green font-mono break-all underline hover:text-aakaa-green/80 mt-2 block font-semibold"
-                          >
-                            {bookingSuccess.meetLink}
-                          </a>
+                          {bookingType === "class" && bookingClass && (
+                            <p className="text-xs text-gray-600 mt-1">
+                              Class: <strong className="text-gray-800">{bookingClass.title}</strong><br />
+                              Instructor: <strong className="text-gray-800">{bookingClass.instructorName || bookingClass.instructor}</strong><br />
+                              Schedule: <strong className="text-gray-800">{bookingClass.date} @ {bookingClass.time}</strong>
+                            </p>
+                          )}
+                          {bookingType === "monthly" && (
+                            <p className="text-xs text-gray-600 mt-1">
+                              Program: <strong className="text-gray-800">Monthly Somatics & Yoga Pass ({classCount} sessions)</strong>
+                            </p>
+                          )}
+
+                          {/* Only show meetLink if it is a REAL link and NOT a mock link */}
+                          {bookingSuccess.meetLink && !bookingSuccess.meetLink.includes("mock-") ? (
+                            <a
+                              href={bookingSuccess.meetLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-aakaa-green font-mono break-all underline hover:text-aakaa-green/80 mt-2 block font-semibold"
+                            >
+                              {bookingSuccess.meetLink}
+                            </a>
+                          ) : (
+                            <div className="mt-3 p-3 bg-white/80 rounded-xl border border-gray-200/60 text-xs text-gray-600 leading-relaxed font-medium">
+                              Your private Google Meet room link will be dispatched directly to your WhatsApp ({formData.phone || bookingSuccess.userPhone || "your registered number"}) and email prior to the session start.
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => setIsModalOpen(false)}
-                      className="px-8 py-3.5 bg-aakaa-green text-white rounded-2xl font-bold shadow-md hover:shadow-lg transition-all text-xs uppercase tracking-widest"
-                    >
-                      Done
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button
+                        onClick={() => {
+                          const text = encodeURIComponent(`Hi AakaA Team! I just confirmed my booking for ${bookingType === "private" ? "Private Somatic Session" : bookingType === "class" ? (bookingClass?.title || "Yoga Class") : "Monthly Somatics Pass"}. Could you please send me the session details and Google Meet link? Thank you!`);
+                          window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
+                        }}
+                        className="flex-1 py-3.5 px-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-sm hover:bg-emerald-700 transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <MessageSquare size={14} /> Connect on WhatsApp
+                      </button>
+
+                      <button
+                        onClick={() => setIsModalOpen(false)}
+                        className="flex-1 py-3.5 px-4 bg-gray-900 text-white rounded-2xl font-bold shadow-md hover:bg-black transition-all text-xs uppercase tracking-widest cursor-pointer"
+                      >
+                        Done
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <form onSubmit={handleBookingSubmit} className="space-y-5">

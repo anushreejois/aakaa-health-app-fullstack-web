@@ -15,7 +15,7 @@ const yogaBookingSchema = new mongoose.Schema({
   status: { type: String, default: 'confirmed', enum: ['confirmed', 'cancelled', 'Pending Payment', 'Pending Verification'] },
   transactionId: { type: String, default: "" },
   paymentId: { type: String, default: "" },
-  meetLink: { type: String, default: 'https://meet.google.com/mock-yoga-class' }
+  meetLink: { type: String, default: '' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('YogaBooking', yogaBookingSchema);

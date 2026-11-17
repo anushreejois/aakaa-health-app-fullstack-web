@@ -145,7 +145,7 @@ router.post('/bookings', async (req, res) => {
         amount: amount || 0,
         classCount: classCount || 1,
         pricingTier: pricingTier || null,
-        meetLink: 'https://meet.google.com/mock-yoga-monthly-pass'
+        meetLink: ''
       });
 
       const booking = await newBooking.save();
@@ -163,7 +163,7 @@ router.post('/bookings', async (req, res) => {
         time,
         amount: amount || 0,
         classCount: classCount || 1,
-        meetLink: 'https://meet.google.com/mock-yoga-private-session'
+        meetLink: ''
       });
 
       const booking = await newBooking.save();
