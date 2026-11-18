@@ -2,11 +2,11 @@ import { Mail, MessageSquare } from "lucide-react";
 
 export default function ContactSection() {
   return (
-    <section className="py-28 ">
+    <section className="pt-20 pb-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
 
         {/* Top Button */}
-        <div className="flex justify-center mb-16">
+        <div className="flex justify-center mb-10">
           <span className="bg-aakaa-green text-white px-8 py-3 rounded-full font-semibold shadow-[0_12px_30px_rgba(30,77,54,0.45)]">
             Get In Touch
           </span>
