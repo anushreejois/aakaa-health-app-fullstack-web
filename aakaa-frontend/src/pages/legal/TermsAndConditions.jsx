@@ -79,7 +79,7 @@ export default function TermsAndConditions() {
             <section>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">Grievance and Feedback</h3>
               <p className="leading-relaxed">
-                If you are unsatisfied with a session, you can rate it and provide feedback via the link sent after the session within 2 working days. General feedback can be sent to our support email.
+                If you are unsatisfied with a session, you can rate it and provide feedback via the link sent after the session within 2 working days. General feedback can be sent to our support team at <a href="mailto:support@aakaa.co.in" className="text-aakaa-green font-semibold hover:underline">support@aakaa.co.in</a>.
               </p>
             </section>
           </div>

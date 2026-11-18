@@ -34,7 +34,12 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Email Us</p>
-                  <p className="text-sm text-gray-600">support@aakaa.com</p>
+                  <a
+                    href="mailto:support@aakaa.co.in"
+                    className="text-sm text-gray-600 hover:text-aakaa-green transition-colors"
+                  >
+                    support@aakaa.co.in
+                  </a>
                 </div>
               </div>
 

@@ -65,7 +65,10 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-1 md:col-span-2 lg:col-span-2">
             <h4 className="font-bold text-aakaa-gold uppercase tracking-widest text-[10px] mb-2.5">Reach Us</h4>
             <ul className="space-y-1.5 text-white/60 text-xs font-medium">
-              <li className="flex items-center gap-1.5"><Mail size={12} className="shrink-0" /> hello@aakaa.app</li>
+              <li className="flex items-center gap-1.5">
+                <Mail size={12} className="shrink-0" />
+                <a href="mailto:support@aakaa.co.in" className="hover:text-white transition-colors">support@aakaa.co.in</a>
+              </li>
               <li className="flex items-center gap-1.5"><MapPin size={12} className="shrink-0" /> Bengaluru, India</li>
             </ul>
           </div>

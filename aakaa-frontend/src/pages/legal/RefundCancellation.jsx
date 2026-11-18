@@ -60,7 +60,7 @@ export default function RefundCancellation() {
               <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-100 pb-4">Contact for Disputes</h3>
               <p className="leading-relaxed">
                 If you believe you have been charged in error or have an extenuating circumstance regarding a cancellation, 
-                please contact our support team at <strong>hello@aakaa.app</strong> within 48 hours of the scheduled session.
+                please contact our support team at <a href="mailto:support@aakaa.co.in" className="text-aakaa-green font-semibold hover:underline">support@aakaa.co.in</a> within 48 hours of the scheduled session.
               </p>
             </section>
           </div>

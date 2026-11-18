@@ -81,7 +81,7 @@ const AdminLoginPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-6 py-4 rounded-2xl bg-aakaa-cream/10 border-2 border-aakaa-green/5 focus:border-aakaa-green/20 focus:outline-none focus:ring-4 focus:ring-aakaa-green/5 transition-all font-bold text-aakaa-green"
-                  placeholder="admin@aakaa.com"
+                  placeholder="admin@aakaa.co.in"
                   required
                 />
               </div>

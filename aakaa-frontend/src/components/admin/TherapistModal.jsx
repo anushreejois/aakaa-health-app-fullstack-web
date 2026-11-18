@@ -150,7 +150,7 @@ const TherapistModal = ({ isOpen, onClose, therapist, onSave }) => {
                   value={formData.email || ''}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-6 py-4 bg-aakaa-cream/10 border border-aakaa-green/5 rounded-2xl focus:ring-4 focus:ring-aakaa-green/5 focus:outline-none transition-all font-bold text-aakaa-green"
-                  placeholder="e.g. jane.smith@aakaa.com"
+                  placeholder="e.g. jane.smith@aakaa.co.in"
                 />
               </div>
 
