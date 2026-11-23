@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Calendar, 
   Clock, 
@@ -27,6 +27,8 @@ const API_BASE = `${API_BASE_URL}/api/bookings`;
 
 const BookingRescheduler = () => {
   const [bookings, setBookings] = useState([]);
+  const [yogaBookings, setYogaBookings] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('all'); // 'all' | 'therapy' | 'yoga'
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -45,11 +47,14 @@ const BookingRescheduler = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch(API_BASE, {
-        headers: { 'x-auth-token': token }
-      });
-      const data = await response.json();
-      setBookings(Array.isArray(data) ? data : []);
+      const [therapyRes, yogaRes] = await Promise.all([
+        fetch(API_BASE, { headers: { 'x-auth-token': token } }),
+        fetch(`${API_BASE_URL}/api/yoga/bookings`, { headers: { 'x-auth-token': token } })
+      ]);
+      const therapyData = await therapyRes.json();
+      const yogaData = await yogaRes.json();
+      setBookings(Array.isArray(therapyData) ? therapyData : []);
+      setYogaBookings(Array.isArray(yogaData) ? yogaData : []);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -62,7 +67,7 @@ const BookingRescheduler = () => {
   }, []);
 
   const handleExport = () => {
-    exportToCSV(bookings, 'upcoming_bookings.csv');
+    exportToCSV(displayedBookings, 'upcoming_bookings.csv');
   };
 
   const showNotification = (msg) => {
@@ -70,9 +75,10 @@ const BookingRescheduler = () => {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const handleStatusUpdate = async (id, status) => {
+  const handleStatusUpdate = async (id, status, isYoga = false) => {
     try {
-      const response = await fetch(`${API_BASE}/${id}`, {
+      const endpoint = isYoga ? `${API_BASE_URL}/api/yoga/bookings/${id}` : `${API_BASE}/${id}`;
+      const response = await fetch(endpoint, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -82,7 +88,11 @@ const BookingRescheduler = () => {
       });
       
       if (response.ok) {
-        setBookings(prev => prev.map(b => b._id === id ? { ...b, status: status.toLowerCase() } : b));
+        if (isYoga) {
+          setYogaBookings(prev => prev.map(b => b._id === id ? { ...b, status: status.toLowerCase() } : b));
+        } else {
+          setBookings(prev => prev.map(b => b._id === id ? { ...b, status: status.toLowerCase() } : b));
+        }
         showNotification(`Booking updated to ${status}`);
       }
     } catch (error) {
@@ -93,7 +103,7 @@ const BookingRescheduler = () => {
   // Open Google Meet Modal
   const openMeetModal = (booking) => {
     setSelectedMeetBooking(booking);
-    setMeetLinkInput(booking.meetLink || '');
+    setMeetLinkInput(booking.meetLink || booking.classId?.meetLink || '');
     setShowMeetModal(true);
     setCopiedLink(false);
   };
@@ -104,7 +114,11 @@ const BookingRescheduler = () => {
     setIsSavingMeet(true);
     try {
       const cleanLink = meetLinkInput.trim();
-      const response = await fetch(`${API_BASE}/${selectedMeetBooking._id}`, {
+      const endpoint = selectedMeetBooking.isYoga 
+        ? `${API_BASE_URL}/api/yoga/bookings/${selectedMeetBooking._id}`
+        : `${API_BASE}/${selectedMeetBooking._id}`;
+
+      const response = await fetch(endpoint, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -114,9 +128,15 @@ const BookingRescheduler = () => {
       });
 
       if (response.ok) {
-        setBookings(prev => prev.map(b => 
-          b._id === selectedMeetBooking._id ? { ...b, meetLink: cleanLink } : b
-        ));
+        if (selectedMeetBooking.isYoga) {
+          setYogaBookings(prev => prev.map(b => 
+            b._id === selectedMeetBooking._id ? { ...b, meetLink: cleanLink } : b
+          ));
+        } else {
+          setBookings(prev => prev.map(b => 
+            b._id === selectedMeetBooking._id ? { ...b, meetLink: cleanLink } : b
+          ));
+        }
         showNotification("Google Meet link saved successfully!");
         
         if (andDispatch) {
@@ -137,9 +157,36 @@ const BookingRescheduler = () => {
   // Send WhatsApp message with Meet link
   const handleWhatsAppDispatch = (booking, linkOverride = null) => {
     const phone = (booking.userPhone || '').replace(/[^0-9]/g, '');
-    const practitioner = booking.therapistId?.name || booking.therapistName || 'an assigned clinical specialist';
-    const link = linkOverride !== null ? linkOverride : (booking.meetLink || '');
+    const link = linkOverride !== null ? linkOverride : (booking.meetLink || booking.classId?.meetLink || '');
 
+    if (booking.isYoga || booking.bookingType) {
+      const sessionName = booking.bookingType === 'private' 
+        ? 'Private Somatic Session' 
+        : booking.bookingType === 'monthly' 
+          ? 'Monthly Somatics Batch' 
+          : (booking.classId?.title || 'Yoga Class');
+      const scheduleInfo = booking.date ? `\n• Date: ${booking.date}\n• Time: ${booking.time || ''}` : '';
+
+      let message = `Hi ${booking.userName}! Reaching out from AakaA Yoga & Somatics.\n\n`;
+      message += `Your spot for "${sessionName}" is confirmed!${scheduleInfo}\n`;
+      if (link && link.trim() !== '') {
+        message += `\n🔗 Google Meet Session Link:\n${link}\n`;
+        message += `\nPlease join 5 minutes early with your mat ready.`;
+      } else {
+        message += `\nYour direct session link will be shared here shortly.`;
+      }
+      message += `\n\nIf you have any questions, reply right here!\n\nWarm regards,\nTeam AakaA\nhttps://www.aakaa.co.in`;
+
+      const text = encodeURIComponent(message);
+      if (phone) {
+        window.open(`https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${text}`, '_blank');
+      } else {
+        window.open(`https://wa.me/918075009937?text=${text}`, '_blank');
+      }
+      return;
+    }
+
+    const practitioner = booking.therapistId?.name || booking.therapistName || 'an assigned clinical specialist';
     let message = `Hi ${booking.userName}! Reaching out from AakaA Clinical Care.\n\n`;
     message += `Your therapy consultation with ${practitioner} is confirmed:\n`;
     message += `• Date: ${booking.date}\n`;
@@ -197,6 +244,24 @@ const BookingRescheduler = () => {
     }
   };
 
+  const displayedBookings = useMemo(() => {
+    const formattedTherapy = bookings.map(b => ({ ...b, isYoga: false, displayCategory: 'Therapy' }));
+    const formattedYoga = yogaBookings.map(b => ({
+      ...b,
+      isYoga: true,
+      displayCategory: 'Yoga & Somatics',
+      therapistName: b.bookingType === 'private' 
+        ? `Private Yoga (${b.instructorName || 'Elena Rostova'})` 
+        : b.bookingType === 'monthly' 
+          ? `Monthly Package (${b.classCount} classes)` 
+          : (b.classId?.title || 'Yoga Class')
+    }));
+
+    if (activeCategory === 'therapy') return formattedTherapy;
+    if (activeCategory === 'yoga') return formattedYoga;
+    return [...formattedTherapy, ...formattedYoga].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }, [bookings, yogaBookings, activeCategory]);
+
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -214,6 +279,40 @@ const BookingRescheduler = () => {
             <span className="hidden md:inline">Export Schedule</span>
           </button>
         </div>
+      </div>
+
+      {/* Category Filter Pills */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => setActiveCategory('all')}
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+            activeCategory === 'all'
+              ? 'bg-aakaa-green text-white shadow-md'
+              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+          }`}
+        >
+          All Appointments ({bookings.length + yogaBookings.length})
+        </button>
+        <button
+          onClick={() => setActiveCategory('therapy')}
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+            activeCategory === 'therapy'
+              ? 'bg-aakaa-green text-white shadow-md'
+              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+          }`}
+        >
+          Therapy Sessions ({bookings.length})
+        </button>
+        <button
+          onClick={() => setActiveCategory('yoga')}
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+            activeCategory === 'yoga'
+              ? 'bg-aakaa-green text-white shadow-md'
+              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+          }`}
+        >
+          Yoga & Somatics ({yogaBookings.length})
+        </button>
       </div>
 
       <AnimatePresence>
@@ -251,9 +350,10 @@ const BookingRescheduler = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-aakaa-green/5">
-                {Array.isArray(bookings) && bookings.length > 0 ? (
-                  bookings.map((booking) => {
-                    const hasLink = booking.meetLink && booking.meetLink.trim() !== '' && !booking.meetLink.includes('mock-');
+                {Array.isArray(displayedBookings) && displayedBookings.length > 0 ? (
+                  displayedBookings.map((booking) => {
+                    const effectiveLink = booking.meetLink || booking.classId?.meetLink;
+                    const hasLink = effectiveLink && effectiveLink.trim() !== '' && !effectiveLink.includes('mock-');
                     return (
                       <tr key={booking._id} className={`${booking.status === 'cancelled' ? 'opacity-40 grayscale' : ''} hover:bg-aakaa-cream/10 transition-all group`}>
                         <td className="px-6 py-6 text-[10px] font-black text-aakaa-gold/60 font-mono tracking-tighter">
@@ -274,7 +374,18 @@ const BookingRescheduler = () => {
                           </div>
                         </td>
                         <td className="px-6 py-6 text-sm font-medium text-aakaa-gold/80">
-                          {booking.therapistId?.name || booking.therapistName || "Unassigned"}
+                          <div className="flex flex-col gap-1">
+                            <span className="font-bold text-gray-800">
+                              {booking.therapistId?.name || booking.therapistName || "Unassigned"}
+                            </span>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider w-fit ${
+                              booking.isYoga 
+                                ? 'bg-purple-50 text-purple-700 border border-purple-200' 
+                                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            }`}>
+                              {booking.isYoga ? 'Yoga & Somatics' : 'Therapy Session'}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-6 py-6">
                           <div className="text-xs font-bold text-gray-800">
@@ -290,7 +401,7 @@ const BookingRescheduler = () => {
                             <button
                               onClick={() => openMeetModal(booking)}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer"
-                              title={booking.meetLink}
+                              title={effectiveLink}
                             >
                               <Video size={12} className="text-emerald-600" />
                               <span>Meet Ready</span>
@@ -342,15 +453,17 @@ const BookingRescheduler = () => {
                                 <MessageSquare size={16} />
                               </button>
 
-                              <button 
-                                onClick={() => openRescheduleModal(booking)}
-                                className="text-[10px] font-black uppercase tracking-widest text-aakaa-green hover:underline cursor-pointer"
-                              >
-                                Reschedule
-                              </button>
+                              {!booking.isYoga && (
+                                <button 
+                                  onClick={() => openRescheduleModal(booking)}
+                                  className="text-[10px] font-black uppercase tracking-widest text-aakaa-green hover:underline cursor-pointer"
+                                >
+                                  Reschedule
+                                </button>
+                              )}
                               
                               <button 
-                                onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
+                                onClick={() => handleStatusUpdate(booking._id, 'cancelled', booking.isYoga)}
                                 className="text-[10px] font-black uppercase tracking-widest text-rose-500 hover:underline cursor-pointer"
                               >
                                 Cancel

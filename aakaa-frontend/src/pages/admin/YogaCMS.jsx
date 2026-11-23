@@ -32,12 +32,19 @@ const YogaCMS = () => {
   const [notification, setNotification] = useState(null);
   const { token } = useAuth();
 
-  // Google Meet Dispatch State
+  // Google Meet Dispatch State for Bookings
   const [showMeetModal, setShowMeetModal] = useState(false);
   const [selectedMeetBooking, setSelectedMeetBooking] = useState(null);
   const [meetLinkInput, setMeetLinkInput] = useState('');
   const [isSavingMeet, setIsSavingMeet] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Google Meet State for Classes
+  const [showClassMeetModal, setShowClassMeetModal] = useState(false);
+  const [selectedClassForMeet, setSelectedClassForMeet] = useState(null);
+  const [classMeetLinkInput, setClassMeetLinkInput] = useState('');
+  const [isSavingClassMeet, setIsSavingClassMeet] = useState(false);
+  const [copiedClassLink, setCopiedClassLink] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -51,7 +58,8 @@ const YogaCMS = () => {
     capacity: 15,
     description: '',
     level: 'All Levels',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2000&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2000&auto=format&fit=crop',
+    meetLink: ''
   });
 
   const [formLoading, setFormLoading] = useState(false);
@@ -84,9 +92,45 @@ const YogaCMS = () => {
 
   const openMeetModal = (booking) => {
     setSelectedMeetBooking(booking);
-    setMeetLinkInput(booking.meetLink || '');
+    // Prefill with booking link or class link
+    setMeetLinkInput(booking.meetLink || booking.classId?.meetLink || '');
     setShowMeetModal(true);
     setCopiedLink(false);
+  };
+
+  const openClassMeetModal = (cls) => {
+    setSelectedClassForMeet(cls);
+    setClassMeetLinkInput(cls.meetLink || '');
+    setShowClassMeetModal(true);
+    setCopiedClassLink(false);
+  };
+
+  const handleSaveClassMeetLink = async () => {
+    if (!selectedClassForMeet) return;
+    setIsSavingClassMeet(true);
+    try {
+      const cleanLink = classMeetLinkInput.trim();
+      const res = await fetch(`${API_BASE_URL}/api/yoga/classes/${selectedClassForMeet._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ meetLink: cleanLink })
+      });
+      if (res.ok) {
+        setClasses(prev => prev.map(c => c._id === selectedClassForMeet._id ? { ...c, meetLink: cleanLink } : c));
+        showToast("Class Google Meet link updated successfully!");
+        setShowClassMeetModal(false);
+      } else {
+        alert("Failed to save class link on server.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving class link.");
+    } finally {
+      setIsSavingClassMeet(false);
+    }
   };
 
   const handleSaveMeetLink = async (andDispatch = false) => {
@@ -122,7 +166,7 @@ const YogaCMS = () => {
 
   const handleWhatsAppDispatch = (booking, linkOverride = null) => {
     const phone = (booking.userPhone || '').replace(/[^0-9]/g, '');
-    const link = linkOverride !== null ? linkOverride : (booking.meetLink || '');
+    const link = linkOverride !== null ? linkOverride : (booking.meetLink || booking.classId?.meetLink || '');
     const sessionName = booking.bookingType === 'private' ? 'Private Somatic Session' : booking.bookingType === 'monthly' ? 'Monthly Somatics Batch' : (booking.classId?.title || 'Yoga Class');
     const scheduleInfo = booking.date ? `\n• Date: ${booking.date}\n• Time: ${booking.time || ''}` : '';
 
@@ -197,7 +241,8 @@ const YogaCMS = () => {
           capacity: 15,
           description: '',
           level: 'All Levels',
-          image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2000&auto=format&fit=crop'
+          image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2000&auto=format&fit=crop',
+          meetLink: ''
         });
         fetchData();
       } else {
@@ -307,6 +352,48 @@ const YogaCMS = () => {
                           <span className="font-semibold">{cls.bookedSpots} / {cls.capacity} spots filled</span>
                         </div>
                       </div>
+
+                      {/* Class Google Meet Streaming Bar */}
+                      <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 mb-4 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Video size={14} className={cls.meetLink && !cls.meetLink.includes('mock-') ? "text-emerald-600 shrink-0" : "text-gray-400 shrink-0"} />
+                          {cls.meetLink && !cls.meetLink.includes('mock-') ? (
+                            <a
+                              href={cls.meetLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[11px] font-mono font-bold text-emerald-700 hover:underline truncate max-w-[130px]"
+                              title={cls.meetLink}
+                            >
+                              {cls.meetLink.replace(/^https?:\/\//, '')}
+                            </a>
+                          ) : (
+                            <span className="text-[11px] text-gray-400 font-medium">No live link set</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {cls.meetLink && !cls.meetLink.includes('mock-') && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(cls.meetLink);
+                                showToast("Class Google Meet link copied!");
+                              }}
+                              className="p-1.5 hover:bg-white rounded-lg text-gray-500 hover:text-emerald-600 transition cursor-pointer"
+                              title="Copy Meet Link"
+                            >
+                              <Copy size={13} />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => openClassMeetModal(cls)}
+                            className="px-2.5 py-1 bg-aakaa-green/10 hover:bg-aakaa-green text-aakaa-green hover:text-white rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer"
+                          >
+                            <Video size={11} /> {cls.meetLink ? "Edit Link" : "+ Set Link"}
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between pt-3 border-t border-gray-50 mt-auto">
@@ -405,7 +492,7 @@ const YogaCMS = () => {
                     {/* Google Meet & WhatsApp Action Row */}
                     <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        {booking.meetLink && booking.meetLink.trim() !== '' && !booking.meetLink.includes('mock-') ? (
+                        {(booking.meetLink || booking.classId?.meetLink) && !(booking.meetLink || booking.classId?.meetLink).includes('mock-') ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <Video size={10} className="text-emerald-600" /> Link Ready
                           </span>
@@ -585,6 +672,35 @@ const YogaCMS = () => {
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-aakaa-green outline-none"
                     />
                   </div>
+
+                  <div className="md:col-span-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs uppercase tracking-wider text-gray-700 font-bold">
+                        Live Session / Google Meet Link
+                      </label>
+                      <a
+                        href="https://meet.google.com/new"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline"
+                      >
+                        <ExternalLink size={12} /> Create new link in Google Meet
+                      </a>
+                    </div>
+                    <div className="relative">
+                      <Video className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <input
+                        type="url"
+                        placeholder="https://meet.google.com/xxx-yyyy-zzz"
+                        value={formData.meetLink}
+                        onChange={(e) => setFormData({ ...formData, meetLink: e.target.value })}
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-aakaa-green outline-none font-mono text-xs"
+                      />
+                    </div>
+                    <p className="text-[11px] text-gray-400 mt-1">
+                      Students registered for this class will receive this link automatically.
+                    </p>
+                  </div>
                 </div>
 
                 <div>
@@ -615,6 +731,129 @@ const YogaCMS = () => {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>,
+          document.body
+        )}
+      </AnimatePresence>
+
+      {/* GOOGLE MEET MODAL FOR CLASS */}
+      <AnimatePresence>
+        {showClassMeetModal && selectedClassForMeet && createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowClassMeetModal(false)}
+              className="absolute inset-0 bg-aakaa-green/40 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white rounded-[2.5rem] p-8 md:p-10 max-w-lg w-full relative z-10 shadow-2xl border border-aakaa-green/10"
+            >
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <span className="text-[10px] font-black text-aakaa-gold uppercase tracking-[0.25em] block mb-1">
+                    Live Class Link
+                  </span>
+                  <h3 className="text-2xl font-black text-aakaa-green tracking-tight">
+                    Set Google Meet for Class
+                  </h3>
+                </div>
+                <button 
+                  onClick={() => setShowClassMeetModal(false)}
+                  className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Class Summary Box */}
+              <div className="bg-aakaa-cream/40 rounded-2xl p-4 mb-6 border border-gray-100 text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-gray-500 font-medium">Class:</span>
+                  <span className="font-bold text-gray-900">{selectedClassForMeet.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500 font-medium">Instructor:</span>
+                  <span className="font-bold text-gray-900">{selectedClassForMeet.instructorName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500 font-medium">Schedule:</span>
+                  <span className="font-bold text-gray-900">{selectedClassForMeet.date} @ {selectedClassForMeet.time}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500 font-medium">Enrolled:</span>
+                  <span className="font-bold text-emerald-700">{selectedClassForMeet.bookedSpots || 0} / {selectedClassForMeet.capacity} registered</span>
+                </div>
+              </div>
+
+              {/* Google Meet Input */}
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-gray-700 uppercase tracking-wider">
+                    Google Meet URL
+                  </label>
+                  <a
+                    href="https://meet.google.com/new"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline"
+                  >
+                    <ExternalLink size={12} /> Create new link in Google Meet
+                  </a>
+                </div>
+
+                <div className="relative">
+                  <Video className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="url"
+                    value={classMeetLinkInput}
+                    onChange={(e) => setClassMeetLinkInput(e.target.value)}
+                    placeholder="https://meet.google.com/xxx-yyyy-zzz"
+                    className="w-full pl-12 pr-10 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-xs font-mono font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-aakaa-green/20 focus:border-aakaa-green transition"
+                  />
+                  {classMeetLinkInput && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(classMeetLinkInput);
+                        setCopiedClassLink(true);
+                        setTimeout(() => setCopiedClassLink(false), 2000);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 cursor-pointer"
+                      title="Copy link"
+                    >
+                      {copiedClassLink ? <Check size={16} className="text-emerald-600" /> : <Copy size={16} />}
+                    </button>
+                  )}
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  Any student who registers for this class will automatically be sent this Google Meet room link.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  disabled={isSavingClassMeet}
+                  onClick={handleSaveClassMeetLink}
+                  className="flex-1 py-3.5 bg-aakaa-green hover:bg-aakaa-green/90 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-md transition cursor-pointer disabled:opacity-60"
+                >
+                  {isSavingClassMeet ? "Saving Link..." : "Save Class Link"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowClassMeetModal(false)}
+                  className="px-6 py-3.5 border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-2xl font-bold text-xs uppercase tracking-wider transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
             </motion.div>
           </div>,
           document.body

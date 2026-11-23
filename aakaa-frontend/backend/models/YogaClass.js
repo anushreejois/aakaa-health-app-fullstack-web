@@ -12,7 +12,8 @@ const yogaClassSchema = new mongoose.Schema({
   bookedSpots: { type: Number, default: 0 },
   description: { type: String, default: "" },
   level: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced', 'All Levels'], default: 'All Levels' },
-  image: { type: String, required: true }
+  image: { type: String, required: true },
+  meetLink: { type: String, default: '' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('YogaClass', yogaClassSchema);

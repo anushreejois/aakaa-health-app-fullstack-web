@@ -36,7 +36,7 @@ router.get('/classes', async (req, res) => {
 // @route   POST /api/yoga/classes
 // @desc    Create a new yoga class (Admin only)
 router.post('/classes', auth, async (req, res) => {
-  const { title, instructorName, instructorTitle, date, time, duration, price, capacity, description, level, image } = req.body;
+  const { title, instructorName, instructorTitle, date, time, duration, price, capacity, description, level, image, meetLink } = req.body;
 
   try {
     const newClass = new YogaClass({
@@ -50,7 +50,8 @@ router.post('/classes', auth, async (req, res) => {
       capacity,
       description,
       level,
-      image
+      image,
+      meetLink: meetLink || ''
     });
 
     const yogaClass = await newClass.save();
@@ -124,7 +125,8 @@ router.post('/bookings', async (req, res) => {
         userPhone: userPhone || '',
         classId,
         bookingType: 'class',
-        amount: amount || 0
+        amount: amount || 0,
+        meetLink: yogaClass.meetLink || ''
       });
 
       const booking = await newBooking.save();
