@@ -98,7 +98,22 @@ router.delete('/classes/:id', auth, async (req, res) => {
 // @route   POST /api/yoga/bookings
 // @desc    Book a yoga class, monthly pass, or private session (Public for Concierge Flow)
 router.post('/bookings', async (req, res) => {
-  const { userName, userEmail, userPhone, classId, bookingType, instructorName, date, time, amount, classCount, pricingTier } = req.body;
+  const { 
+    userName, 
+    userEmail, 
+    userPhone, 
+    classId, 
+    bookingType, 
+    instructorName, 
+    date, 
+    time, 
+    amount, 
+    classCount, 
+    pricingTier,
+    therapistRole,
+    therapistAffiliation,
+    therapistProfileLink
+  } = req.body;
 
   try {
     const type = bookingType || 'class';
@@ -139,6 +154,7 @@ router.post('/bookings', async (req, res) => {
     }
 
     if (type === 'monthly') {
+      const isTherapist = pricingTier === 'therapist';
       const newBooking = new YogaBooking({
         userName,
         userEmail,
@@ -147,7 +163,12 @@ router.post('/bookings', async (req, res) => {
         amount: amount || 0,
         classCount: classCount || 1,
         pricingTier: pricingTier || null,
-        meetLink: ''
+        meetLink: '',
+        therapistRole: therapistRole || '',
+        therapistAffiliation: therapistAffiliation || '',
+        therapistProfileLink: therapistProfileLink || '',
+        verificationStatus: isTherapist ? 'Pending Verification' : 'Not Applicable',
+        status: isTherapist ? 'Pending Verification' : 'confirmed'
       });
 
       const booking = await newBooking.save();

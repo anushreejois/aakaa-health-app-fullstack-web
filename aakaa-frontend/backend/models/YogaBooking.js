@@ -15,7 +15,11 @@ const yogaBookingSchema = new mongoose.Schema({
   status: { type: String, default: 'confirmed', enum: ['confirmed', 'cancelled', 'Pending Payment', 'Pending Verification'] },
   transactionId: { type: String, default: "" },
   paymentId: { type: String, default: "" },
-  meetLink: { type: String, default: '' }
+  meetLink: { type: String, default: '' },
+  therapistRole: { type: String, default: '' },
+  therapistAffiliation: { type: String, default: '' },
+  therapistProfileLink: { type: String, default: '' },
+  verificationStatus: { type: String, enum: ['Pending Verification', 'Verified', 'Not Applicable'], default: 'Not Applicable' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('YogaBooking', yogaBookingSchema);

@@ -17,7 +17,8 @@ import {
   Copy,
   Check,
   Send,
-  Phone
+  Phone,
+  ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -210,6 +211,28 @@ const YogaCMS = () => {
       }
     } catch (err) {
       console.error("Failed to approve payment", err);
+    }
+  };
+
+  const handleVerifyPractitioner = async (bookingId) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/yoga/bookings/${bookingId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ verificationStatus: 'Verified', status: 'confirmed' })
+      });
+      if (res.ok) {
+        setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, verificationStatus: 'Verified', status: 'confirmed' } : b));
+        showToast("Practitioner credentials verified & cohort pass confirmed!");
+      } else {
+        alert("Failed to update verification status on server.");
+      }
+    } catch (err) {
+      console.error("Failed to verify practitioner", err);
+      alert("Error updating verification status.");
     }
   };
 
@@ -469,9 +492,52 @@ const YogaCMS = () => {
                     )}
 
                     {booking.bookingType === "monthly" && (
-                      <div className="mt-2 flex items-center gap-1.5 text-xs text-aakaa-gold font-bold">
-                        <Layers size={11} />
-                        <span className="capitalize">{booking.classCount} Classes ({booking.pricingTier})</span>
+                      <div className="mt-2 space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs text-aakaa-gold font-bold">
+                          <Layers size={11} />
+                          <span className="capitalize">{booking.classCount} Classes ({booking.pricingTier})</span>
+                        </div>
+                        {booking.pricingTier === 'therapist' && (
+                          <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200/70 text-xs space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-emerald-900 flex items-center gap-1">
+                                <ShieldCheck size={13} className="text-emerald-700" />
+                                {booking.therapistRole || 'Practitioner'}
+                              </span>
+                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                                booking.verificationStatus === 'Verified' 
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                                  : 'bg-amber-100 text-amber-800 border border-amber-300'
+                              }`}>
+                                {booking.verificationStatus || 'Pending Verification'}
+                              </span>
+                            </div>
+                            {booking.therapistAffiliation && (
+                              <p className="text-gray-700 text-[11px]">
+                                Workplace: <strong className="text-gray-900">{booking.therapistAffiliation}</strong>
+                              </p>
+                            )}
+                            {booking.therapistProfileLink && (
+                              <a 
+                                href={booking.therapistProfileLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-blue-600 hover:underline text-[11px] block truncate"
+                              >
+                                🔗 {booking.therapistProfileLink}
+                              </a>
+                            )}
+                            {booking.verificationStatus !== 'Verified' && (
+                              <button
+                                type="button"
+                                onClick={() => handleVerifyPractitioner(booking._id)}
+                                className="mt-1 px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider shadow-sm transition cursor-pointer flex items-center gap-1"
+                              >
+                                <CheckCircle size={12} /> Approve Practitioner
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
                     {booking.bookingType === "private" && (

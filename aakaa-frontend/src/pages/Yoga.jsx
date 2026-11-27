@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, Clock, User, Award, CheckCircle, Info, Sparkles, X, Brain, Heart, ChevronRight, Video, MessageSquare } from "lucide-react";
+import { Calendar, Clock, User, Award, CheckCircle, Info, Sparkles, X, Brain, Heart, ChevronRight, Video, MessageSquare, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "../components/Home/Footer";
 import ContactModal from "../components/Booking/ContactModal";
@@ -38,7 +38,14 @@ export default function Yoga() {
   const [privateDate, setPrivateDate] = useState("");
   const [privateTime, setPrivateTime] = useState("10:00 AM");
 
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const [formData, setFormData] = useState({ 
+    name: "", 
+    email: "", 
+    phone: "",
+    therapistRole: "Counseling Psychologist",
+    therapistAffiliation: "",
+    therapistProfileLink: ""
+  });
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [bookingError, setBookingError] = useState("");
@@ -123,7 +130,10 @@ export default function Yoga() {
       amount: getSelectedAmount(),
       status: "Pending Verification",
       classCount: bookingType !== "class" ? classCount : 1,
-      pricingTier: pricingTier
+      pricingTier: pricingTier,
+      therapistRole: pricingTier === "therapist" ? formData.therapistRole : "",
+      therapistAffiliation: pricingTier === "therapist" ? formData.therapistAffiliation : "",
+      therapistProfileLink: pricingTier === "therapist" ? formData.therapistProfileLink : ""
     };
 
     if (bookingType === "class") {
@@ -937,6 +947,69 @@ export default function Yoga() {
                       />
                     </div>
 
+                    {/* Practitioner Verification fields when booking Therapist Tier */}
+                    {pricingTier === "therapist" && bookingType === "monthly" && (
+                      <div className="p-5 bg-emerald-50/60 rounded-2xl border border-emerald-100 space-y-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-emerald-600/10 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                            <ShieldCheck size={18} />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900">Practitioner & Caregiver Cohort</p>
+                            <p className="text-[11px] text-gray-500 leading-relaxed">
+                              This cohort is tailored to prevent clinical burnout for practicing professionals.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-1.5">
+                            Professional Role / Specialization
+                          </label>
+                          <select
+                            value={formData.therapistRole}
+                            onChange={(e) => setFormData({ ...formData, therapistRole: e.target.value })}
+                            className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-aakaa-green text-xs font-semibold text-gray-800"
+                          >
+                            <option value="Counseling Psychologist">Counseling Psychologist</option>
+                            <option value="Clinical Psychologist">Clinical Psychologist</option>
+                            <option value="Psychotherapist / Counselor">Psychotherapist / Counselor</option>
+                            <option value="Psychiatrist">Psychiatrist</option>
+                            <option value="Expressive Arts / Somatic Practitioner">Expressive Arts / Somatic Practitioner</option>
+                            <option value="Social Worker / Caregiver">Social Worker / Caregiver</option>
+                            <option value="Trainee / Psychology Scholar">Trainee / Psychology Scholar</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-1.5">
+                            Current Practice / Workplace / Organization <span className="text-rose-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={formData.therapistAffiliation}
+                            onChange={(e) => setFormData({ ...formData, therapistAffiliation: e.target.value })}
+                            placeholder="e.g. Private Practice, Clinic, Hospital, University"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-aakaa-green text-xs font-semibold text-gray-800 placeholder:text-gray-400 placeholder:font-normal"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-1.5">
+                            Professional Profile or LinkedIn (Optional)
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.therapistProfileLink}
+                            onChange={(e) => setFormData({ ...formData, therapistProfileLink: e.target.value })}
+                            placeholder="https://linkedin.com/in/... or clinic profile"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-aakaa-green text-xs font-semibold text-gray-800 placeholder:text-gray-400 placeholder:font-normal"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     {/* Extra fields for Private Sessions */}
                     {bookingType === "private" && (
                       <div className="space-y-4 border-t border-gray-100 pt-4">
@@ -1052,6 +1125,8 @@ export default function Yoga() {
         userName={formData?.name}
         userEmail={formData?.email}
         userPhone={formData?.phone}
+        therapistRole={pricingTier === "therapist" ? formData?.therapistRole : ""}
+        therapistAffiliation={pricingTier === "therapist" ? formData?.therapistAffiliation : ""}
         onPaymentSuccess={async (paymentResponse) => {
           setIsMockPaymentOpen(false);
           await handlePaymentSuccess(paymentResponse);

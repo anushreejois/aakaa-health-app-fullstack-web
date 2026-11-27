@@ -16,7 +16,8 @@ import {
   Copy, 
   Check, 
   Send,
-  Plus
+  Plus,
+  ShieldCheck
 } from 'lucide-react';
 import { exportToCSV } from '../../utils/csvUtils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -97,6 +98,28 @@ const BookingRescheduler = () => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    }
+  };
+
+  const handleVerifyPractitioner = async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/yoga/bookings/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({
+          verificationStatus: 'Verified',
+          status: 'confirmed'
+        })
+      });
+      if (response.ok) {
+        setYogaBookings(prev => prev.map(b => b._id === id ? { ...b, verificationStatus: 'Verified', status: 'confirmed' } : b));
+        showNotification('Practitioner credentials approved & spot confirmed!');
+      }
+    } catch (error) {
+      console.error("Error verifying practitioner:", error);
     }
   };
 
@@ -250,11 +273,13 @@ const BookingRescheduler = () => {
       ...b,
       isYoga: true,
       displayCategory: 'Yoga & Somatics',
-      therapistName: b.bookingType === 'private' 
-        ? `Private Yoga (${b.instructorName || 'Elena Rostova'})` 
-        : b.bookingType === 'monthly' 
-          ? `Monthly Package (${b.classCount} classes)` 
-          : (b.classId?.title || 'Yoga Class')
+      therapistName: b.pricingTier === 'therapist'
+        ? `Therapist Cohort (${b.therapistRole || 'Practitioner'})`
+        : b.bookingType === 'private' 
+          ? `Private Yoga (${b.instructorName || 'Elena Rostova'})` 
+          : b.bookingType === 'monthly' 
+            ? `Monthly Package (${b.classCount} classes)` 
+            : (b.classId?.title || 'Yoga Class')
     }));
 
     if (activeCategory === 'therapy') return formattedTherapy;
@@ -378,13 +403,40 @@ const BookingRescheduler = () => {
                             <span className="font-bold text-gray-800">
                               {booking.therapistId?.name || booking.therapistName || "Unassigned"}
                             </span>
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider w-fit ${
-                              booking.isYoga 
-                                ? 'bg-purple-50 text-purple-700 border border-purple-200' 
-                                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            }`}>
-                              {booking.isYoga ? 'Yoga & Somatics' : 'Therapy Session'}
-                            </span>
+                            {booking.therapistAffiliation && (
+                              <span className="text-[11px] text-gray-500 font-medium">
+                                Practice: {booking.therapistAffiliation}
+                              </span>
+                            )}
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider w-fit ${
+                                booking.isYoga 
+                                  ? 'bg-purple-50 text-purple-700 border border-purple-200' 
+                                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              }`}>
+                                {booking.isYoga ? 'Yoga & Somatics' : 'Therapy Session'}
+                              </span>
+                              {booking.pricingTier === 'therapist' && (
+                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
+                                  booking.verificationStatus === 'Verified'
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                                }`}>
+                                  <ShieldCheck size={10} />
+                                  {booking.verificationStatus === 'Verified' ? 'Verified Practitioner' : 'Verification Required'}
+                                </span>
+                              )}
+                              {booking.therapistProfileLink && (
+                                <a
+                                  href={booking.therapistProfileLink.startsWith('http') ? booking.therapistProfileLink : `https://${booking.therapistProfileLink}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[10px] text-blue-600 hover:underline font-bold"
+                                >
+                                  <ExternalLink size={10} /> Profile
+                                </a>
+                              )}
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-6">
@@ -452,6 +504,17 @@ const BookingRescheduler = () => {
                               >
                                 <MessageSquare size={16} />
                               </button>
+
+                              {booking.isYoga && booking.pricingTier === 'therapist' && booking.verificationStatus !== 'Verified' && (
+                                <button
+                                  onClick={() => handleVerifyPractitioner(booking._id)}
+                                  className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-[11px] font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                                  title="Approve Practitioner Credentials"
+                                >
+                                  <ShieldCheck size={13} />
+                                  <span className="hidden lg:inline">Approve</span>
+                                </button>
+                              )}
 
                               {!booking.isYoga && (
                                 <button 
