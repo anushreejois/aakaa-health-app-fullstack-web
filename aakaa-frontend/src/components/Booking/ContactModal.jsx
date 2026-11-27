@@ -21,6 +21,7 @@ const ContactModal = ({
   userPhone,
   therapistRole,
   therapistAffiliation,
+  therapistProfileLink,
   onComplete
 }) => {
   if (!isOpen) return null;
@@ -50,6 +51,7 @@ const ContactModal = ({
       if (pricingTier) message += `• Tier: ${pricingTier === "therapist" ? "Practitioner / Caregiver Self-Care" : "Client General"}\n`;
       if (therapistRole) message += `• Professional Role: ${therapistRole}\n`;
       if (therapistAffiliation) message += `• Practice / Workplace: ${therapistAffiliation}\n`;
+      if (therapistProfileLink) message += `• Profile Link: ${therapistProfileLink}\n`;
       if (userName && userName !== "Anonymous") message += `• Client Name: ${userName}\n`;
       if (userPhone) message += `• Phone: ${userPhone}\n`;
       message += `• Monthly Fee: ₹${amount}\n`;

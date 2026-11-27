@@ -113,6 +113,36 @@ export default function Yoga() {
   const handleBookingSubmit = async (e) => {
     if (e) e.preventDefault();
 
+    if (!formData.name?.trim()) {
+      setBookingError("Please enter your full name.");
+      return;
+    }
+
+    if (!formData.email?.trim()) {
+      setBookingError("Please enter your email address.");
+      return;
+    }
+
+    if (!formData.phone?.trim()) {
+      setBookingError("Please enter your WhatsApp / phone number.");
+      return;
+    }
+
+    if (pricingTier === "therapist" && bookingType === "monthly") {
+      if (!formData.therapistRole?.trim()) {
+        setBookingError("Professional Role / Specialization is mandatory for the Therapist Cohort.");
+        return;
+      }
+      if (!formData.therapistAffiliation?.trim()) {
+        setBookingError("Current Practice / Workplace / Organization is mandatory for the Therapist Cohort.");
+        return;
+      }
+      if (!formData.therapistProfileLink?.trim()) {
+        setBookingError("Professional Profile or LinkedIn link is mandatory for practitioner verification.");
+        return;
+      }
+    }
+
     if (bookingType === "private" && !showPrivateWarning) {
       setShowPrivateWarning(true);
       return;
@@ -936,10 +966,11 @@ export default function Yoga() {
 
                     <div>
                       <label className="block text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">
-                        WhatsApp / Phone <span className="text-gray-400 font-normal lowercase">(for session link & batch details)</span>
+                        WhatsApp / Phone <span className="text-rose-500 font-bold">*</span> <span className="text-gray-400 font-normal lowercase">(for session link & batch details)</span>
                       </label>
                       <input
                         type="tel"
+                        required
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl outline-none focus:border-aakaa-green transition-all text-sm text-gray-800 font-medium"
@@ -955,18 +986,24 @@ export default function Yoga() {
                             <ShieldCheck size={18} />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-900">Practitioner & Caregiver Cohort</p>
-                            <p className="text-[11px] text-gray-500 leading-relaxed">
-                              This cohort is tailored to prevent clinical burnout for practicing professionals.
+                            <div className="flex items-center gap-2">
+                              <p className="text-xs font-bold text-gray-900">Practitioner & Caregiver Cohort</p>
+                              <span className="text-[9px] bg-rose-100 text-rose-700 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                Mandatory Details
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-gray-500 leading-relaxed mt-0.5">
+                              This cohort is strictly tailored to prevent clinical burnout for practicing professionals. All details below are mandatory for credential verification.
                             </p>
                           </div>
                         </div>
 
                         <div>
                           <label className="block text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-1.5">
-                            Professional Role / Specialization
+                            Professional Role / Specialization <span className="text-rose-500 font-black">*</span>
                           </label>
                           <select
+                            required
                             value={formData.therapistRole}
                             onChange={(e) => setFormData({ ...formData, therapistRole: e.target.value })}
                             className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-aakaa-green text-xs font-semibold text-gray-800"
@@ -983,7 +1020,7 @@ export default function Yoga() {
 
                         <div>
                           <label className="block text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-1.5">
-                            Current Practice / Workplace / Organization <span className="text-rose-500">*</span>
+                            Current Practice / Workplace / Organization <span className="text-rose-500 font-black">*</span>
                           </label>
                           <input
                             type="text"
@@ -997,13 +1034,14 @@ export default function Yoga() {
 
                         <div>
                           <label className="block text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-1.5">
-                            Professional Profile or LinkedIn (Optional)
+                            Professional Profile or LinkedIn <span className="text-rose-500 font-black">*</span>
                           </label>
                           <input
-                            type="url"
+                            type="text"
+                            required
                             value={formData.therapistProfileLink}
                             onChange={(e) => setFormData({ ...formData, therapistProfileLink: e.target.value })}
-                            placeholder="https://linkedin.com/in/... or clinic profile"
+                            placeholder="https://linkedin.com/in/... or professional website / directory"
                             className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-aakaa-green text-xs font-semibold text-gray-800 placeholder:text-gray-400 placeholder:font-normal"
                           />
                         </div>
@@ -1127,6 +1165,7 @@ export default function Yoga() {
         userPhone={formData?.phone}
         therapistRole={pricingTier === "therapist" ? formData?.therapistRole : ""}
         therapistAffiliation={pricingTier === "therapist" ? formData?.therapistAffiliation : ""}
+        therapistProfileLink={pricingTier === "therapist" ? formData?.therapistProfileLink : ""}
         onPaymentSuccess={async (paymentResponse) => {
           setIsMockPaymentOpen(false);
           await handlePaymentSuccess(paymentResponse);

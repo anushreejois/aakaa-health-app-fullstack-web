@@ -155,6 +155,15 @@ router.post('/bookings', async (req, res) => {
 
     if (type === 'monthly') {
       const isTherapist = pricingTier === 'therapist';
+
+      if (isTherapist) {
+        if (!therapistRole || !therapistRole.trim() || !therapistAffiliation || !therapistAffiliation.trim() || !therapistProfileLink || !therapistProfileLink.trim()) {
+          return res.status(400).json({ 
+            msg: 'All practitioner details (Professional Role, Practice/Affiliation, and Profile/LinkedIn Link) are mandatory for the therapist cohort.' 
+          });
+        }
+      }
+
       const newBooking = new YogaBooking({
         userName,
         userEmail,
